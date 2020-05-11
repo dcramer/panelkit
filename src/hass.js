@@ -97,6 +97,7 @@ export default class HomeAssistant {
             );
           } else {
             let [resolve, reject] = promiseHandler;
+            delete this._pendingRequests[payload.id];
             if (payload.success) {
               resolve(payload.result);
             } else {
@@ -171,12 +172,16 @@ export default class HomeAssistant {
   sendCommand(message) {
     const id = this._messageCounter;
     this._messageCounter += 1;
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       this._pendingRequests[id] = [resolve, reject];
       this.sendMessage({
         id,
         ...message,
       });
     });
+    promise.cancel = () => {
+      delete this._pendingRequests[id];
+    };
+    return promise;
   }
 }
