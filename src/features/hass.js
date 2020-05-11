@@ -1,19 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const hassAuthenticated = () => ({ type: "HASS_AUTHENTICATED" });
+export const hassAuthenticated = () => ({
+  type: "HASS_AUTHENTICATED",
+  phase: HassPhase.COMMAND,
+});
 export const hassConnect = (host) => ({
   type: "HASS_CONNECT",
   host,
-  state: "connecting",
+  state: HassState.CONNECTING,
+  phase: HassPhase.AUTHENTICATION,
 });
 export const hassConnected = () => ({
   type: "HASS_CONNECTED",
-  state: "connected",
+  state: HassState.CONNECTED,
 });
 export const hassDisconnect = () => ({ type: "HASS_DISCONNECT" });
 export const hassDisconnected = () => ({
   type: "HASS_DISCONNECTED",
-  state: "disconnected",
+  state: HassState.DISCONNECTED,
 });
 export const hassError = () => ({ type: "HASS_ERROR" });
 export const hassInit = (host, accessToken) => ({
@@ -22,10 +26,22 @@ export const hassInit = (host, accessToken) => ({
   accessToken,
 });
 
+export const HassState = {
+  DISCONNECTED: "DISCONNECTED",
+  CONNECTED: "CONNECTED",
+  CONNECTING: "CONNECTING",
+};
+
+export const HassPhase = {
+  AUTHENTICATION: "AUTHENTICATION",
+  COMMAND: "COMMAND",
+};
+
 export const hassSlice = createSlice({
   name: "hass",
   initialState: {
-    state: "disconnected",
+    state: HassState.DISCONNECTED,
+    phase: HassPhase.AUTHENTICATION,
   },
   reducers: {
     // increment: (state) => {
@@ -139,7 +155,7 @@ export const hassMiddleware = () => {
     }
 
     // reset timer to 250ms on open of websocket connection
-    if (store.getState().hass.state === "open") {
+    if (store.getState().hass.state === HassState.CONNECTED) {
       timeout = 250;
     }
 
