@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Grid, Cell } from "styled-css-grid";
 
-import { hassInit } from "./features/hass";
+import HomeAssistant from "./hass";
 
-export class App extends Component {
+export default class App extends Component {
   static propTypes = {
     host: PropTypes.string,
     accessToken: PropTypes.string,
@@ -16,8 +15,21 @@ export class App extends Component {
     accessToken: process.env.REACT_APP_HASS_ACCESS_TOKEN,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.hass = new HomeAssistant({
+      host: this.props.host,
+      accessToken: this.props.accessToken,
+    });
+  }
+
   componentDidMount() {
-    this.props.hassInit(this.props.host, this.props.accessToken);
+    this.hass.connect();
+  }
+
+  componentWillUnmount() {
+    this.hass.disconnect();
   }
 
   render() {
@@ -31,12 +43,3 @@ export class App extends Component {
     );
   }
 }
-
-export default connect(
-  (state) => {
-    return {
-      // counter: state.counter,
-    };
-  },
-  { hassInit }
-)(App);
