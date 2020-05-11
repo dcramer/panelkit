@@ -38,8 +38,10 @@ export default class HomeAssistant {
   };
 
   onClose = (event) => {
+    this.state = State.DISCONNECTED;
+    this.phase = Phase.AUTHENTICATION;
     if (this._shouldReconnect) {
-      // increment retry interval
+      // increment retry interval - max of 10s
       this._timeout = Math.min(this._timeout + this._timeout, 10000);
 
       console.log(
@@ -50,13 +52,18 @@ export default class HomeAssistant {
       );
 
       // call check function after timeout
-      this._connectTimer = setTimeout(this.check, this._timeout);
+      this._connectTimer = setTimeout(this.checkConnection, this._timeout);
     }
   };
 
   onMessage = (event) => {
     const payload = JSON.parse(event.data);
-    console.log("[hass] Received message of type", payload.type);
+    console.log(
+      "[hass] Received message of type",
+      payload.type,
+      "and id",
+      payload.id >= 0 ? payload.id : "null"
+    );
 
     switch (payload.type) {
       case "auth_required":
@@ -79,6 +86,24 @@ export default class HomeAssistant {
         this.phase = Phase.COMMAND;
         break;
       default:
+        if (payload.id) {
+          let promiseHandler = this._pendingRequests[payload.id];
+          if (!promiseHandler) {
+            console.warn(
+              "[hass] No pending request found for event",
+              payload.id,
+              "of type",
+              payload.type
+            );
+          } else {
+            let [resolve, reject] = promiseHandler;
+            if (payload.success) {
+              resolve(payload.result);
+            } else {
+              reject(payload.error);
+            }
+          }
+        }
         break;
     }
   };
@@ -94,7 +119,7 @@ export default class HomeAssistant {
   /**
    * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
    */
-  check = () => {
+  checkConnection = () => {
     // check if websocket instance is closed, if so call `connect` function.
     if (!this._socket || this._socket.readyState === WebSocket.CLOSED) {
       this.connect();
@@ -144,10 +169,14 @@ export default class HomeAssistant {
   }
 
   sendCommand(message) {
+    const id = this._messageCounter;
     this._messageCounter += 1;
-    this.sendMessage({
-      id: this._messageCounter,
-      ...message,
+    return new Promise((resolve, reject) => {
+      this._pendingRequests[id] = [resolve, reject];
+      this.sendMessage({
+        id,
+        ...message,
+      });
     });
   }
 }
