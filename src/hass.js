@@ -187,7 +187,12 @@ export default class HomeAssistant {
   }
 
   sendMessage(message) {
-    console.log("[hass] Sending message of type", message.type);
+    console.log(
+      "[hass] Sending message of type",
+      message.type,
+      "and id",
+      message.id >= 0 ? message.id : "null"
+    );
     this._socket.send(JSON.stringify(message));
     this._messageCounter += 1;
   }
