@@ -100,22 +100,18 @@ export default class HomeAssistant {
         });
         break;
       default:
-        if (payload.id !== undefined) {
-          let promiseHandler = this._pendingRequests[payload.id];
+        if (payload.type === "result") {
+          const { id, success } = payload;
+          const promiseHandler = this._pendingRequests[id];
           if (!promiseHandler) {
-            console.warn(
-              "[hass] No pending request found for event",
-              payload.id,
-              "of type",
-              payload.type
-            );
+            console.warn("[hass] No pending request found for event", id);
           } else {
             let [resolve, reject] = promiseHandler;
-            delete this._pendingRequests[payload.id];
-            if (payload.success) {
-              resolve(payload.result);
+            delete this._pendingRequests[id];
+            if (success) {
+              resolve(payload);
             } else {
-              reject(payload.error);
+              reject(payload);
             }
           }
         }
@@ -243,4 +239,21 @@ export default class HomeAssistant {
       throw new Error("ping did not receive a pong response");
     return response;
   }
+
+  // TODO(dcramer): if we're going to support subscriptions, we'll want to bake in
+  // a full event model to automatically handle subscribers/unsubscribers
+  // subscribeEvents(eventType) {
+  //   return this.sendCommand({
+  //     type: "subscribe_events",
+  //     event_type: eventType,
+  //   });
+  // }
+
+  // unsubscribeEvents(subscription) {
+  //   // subscription is the 'id'
+  //   return this.sendCommand({
+  //     type: "subscribe_events",
+  //     subscription,
+  //   });
+  // }
 }

@@ -33,7 +33,7 @@ export default class CameraWidget extends Widget {
   refreshCameraImage = () => {
     return this.props.hass
       .fetchCameraThumbnail(this.props.entityId)
-      .then((result) => {
+      .then(({ result }) => {
         this.setState({
           result,
           loading: false,
