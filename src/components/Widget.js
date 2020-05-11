@@ -45,13 +45,27 @@ export default class Widget extends Component {
     return this.props.hass.getState(entityId);
   }
 
+  callService(domain, service, serviceData) {
+    return this.props.hass.callService(domain, service, serviceData);
+  }
+
   onStateChange = (_entityId, _newState, _oldState) => {
     // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
     this.forceUpdate();
   };
 
+  onClick = null;
+
   render() {
-    return <div classNaame="widget">{this.renderBody()}</div>;
+    return (
+      <div
+        className="widget"
+        onClick={this.onClick}
+        style={{ cursor: this.onClick ? "pointer" : "none" }}
+      >
+        {this.renderBody()}
+      </div>
+    );
   }
 
   renderBody() {}

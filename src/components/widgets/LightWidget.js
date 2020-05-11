@@ -23,6 +23,17 @@ export default class LightWidget extends Widget {
     return [this.props.entityId];
   }
 
+  async toggleLight() {
+    const { state } = this.getEntity(this.props.entityId);
+    await this.callService("light", state === "on" ? "turn_off" : "turn_on", {
+      entity_id: this.props.entityId,
+    });
+  }
+
+  onClick = () => {
+    this.toggleLight();
+  };
+
   renderBody() {
     const {
       state,

@@ -20,17 +20,13 @@ const makeSubscribeId = () => {
   return `${s4()}${s4()}`;
 };
 
+// TODO(dcramer): move to home-assistant-js-websocket
 export default class HomeAssistant {
-  constructor({
-    host,
-    accessToken,
-    onConnectionChange = null,
-    onReady = null,
-  }) {
+  constructor({ url, accessToken, onReady = null }) {
     this._socket = null;
     this._timeout = 250;
     this._connectTimer = null;
-    this._messageCounter = 0;
+    this._messageCounter = 1;
 
     this._hasPrepared = false;
     this._shouldReconnect = true;
@@ -50,9 +46,8 @@ export default class HomeAssistant {
     this.phase = Phase.AUTHENTICATION;
 
     // options
-    this.host = host;
+    this.url = url;
     this.accessToken = accessToken;
-    this.onConnectionChange = onConnectionChange || function () {};
     this.onReady = onReady || function () {};
   }
 
@@ -60,19 +55,11 @@ export default class HomeAssistant {
     console.log("[hass] Connection opened", event.target.url);
     this.state = State.CONNECTED;
     this.phase = Phase.AUTHENTICATION;
-    this.onConnectionChange(this, {
-      state: this.state,
-      phase: this.phase,
-    });
   };
 
   _onClose = (event) => {
     this.state = State.DISCONNECTED;
     this.phase = Phase.AUTHENTICATION;
-    this.onConnectionChange(this, {
-      state: this.state,
-      phase: this.phase,
-    });
     if (this._shouldReconnect) {
       // increment retry interval - max of 10s
       this._timeout = Math.min(this._timeout + this._timeout, 10000);
@@ -95,7 +82,7 @@ export default class HomeAssistant {
       "[hass] Received message of type",
       payload.type,
       "and id",
-      payload.id >= 0 ? payload.id : "null"
+      payload.id || "null"
     );
 
     switch (payload.type) {
@@ -117,14 +104,13 @@ export default class HomeAssistant {
       case "auth_ok":
         console.log("[hass] Authenticated successfully");
         this.phase = Phase.COMMAND;
-        this.onConnectionChange(this, {
-          state: this.state,
-          phase: this.phase,
-        });
         this._prepareApp();
         break;
       case "event":
         const { entity_id, new_state, old_state } = payload.event.data;
+        if (payload.event.event_type === "state_changed") {
+          this._stateCache[entity_id] = new_state;
+        }
         this._eventSubscribers.forEach(({ entityId, callback }) => {
           if (entity_id === entityId) {
             callback(entity_id, new_state, old_state);
@@ -156,10 +142,6 @@ export default class HomeAssistant {
     this._socket = null;
     this.phase = Phase.AUTHENTICATION;
     this.state = State.DISCONNECTED;
-    this.onConnectionChange(this, {
-      state: this.state,
-      phase: this.phase,
-    });
   };
 
   /**
@@ -173,14 +155,13 @@ export default class HomeAssistant {
   };
 
   _prepareApp = async () => {
+    await this.subscribeEvents("state_changed");
     const _stateCache = this._stateCache;
-    const subPromise = this.subscribeEvents("state_change");
     const { result } = await this.getStates();
     result.forEach((state) => {
       _stateCache[state.entity_id] = state;
     });
 
-    await subPromise;
     this._hasPrepared = true;
     this.onReady(this);
   };
@@ -216,7 +197,9 @@ export default class HomeAssistant {
     if (this._connectTimer) clearTimeout(this._connectTimer);
 
     // connect to the remote host
-    this._socket = new WebSocket(`ws://${this.host}/api/websocket`);
+    this._socket = new WebSocket(
+      `ws://${this.url.split("://", 2)[1]}/api/websocket`
+    );
 
     // websocket handlers
     this._socket.onmessage = this._onMessage;
@@ -236,11 +219,11 @@ export default class HomeAssistant {
   }
 
   sendMessage(message) {
-    console.log(
+    console.debug(
       "[hass] Sending message of type",
       message.type,
       "and id",
-      message.id >= 0 ? message.id : "null"
+      message.id || "null"
     );
     this._socket.send(JSON.stringify(message));
     this._messageCounter += 1;
@@ -261,6 +244,7 @@ export default class HomeAssistant {
     return promise;
   }
 
+  // TODO(dcramer): > The websocket command 'camera_thumbnail' has been deprecated.
   fetchCameraThumbnail(entityId) {
     return this.sendCommand({
       type: "camera_thumbnail",
@@ -313,21 +297,20 @@ export default class HomeAssistant {
     return response;
   }
 
-  // TODO(dcramer): if we're going to support subscriptions, we'll may want to bake in
-  // a full event model to automatically handle subscribers/unsubscribers
   async subscribeEvents(eventType) {
     const response = await this.sendCommand({
       type: "subscribe_events",
       event_type: eventType,
     });
     this._rootSubscriptions[response.id] = eventType;
+    return response;
   }
 
-  // unsubscribeEvents(subscription) {
-  //   // subscription is the 'id'
-  //   return this.sendCommand({
-  //     type: "subscribe_events",
-  //     subscription,
-  //   });
-  // }
+  unsubscribeEvents(subscription) {
+    // subscription is the 'id'
+    return this.sendCommand({
+      type: "unsubscribe_events",
+      subscription,
+    });
+  }
 }

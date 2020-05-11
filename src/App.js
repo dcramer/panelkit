@@ -8,12 +8,12 @@ import LightWidget from "./components/widgets/LightWidget";
 
 export default class App extends Component {
   static propTypes = {
-    host: PropTypes.string,
+    url: PropTypes.string,
     accessToken: PropTypes.string,
   };
 
   static defaultProps = {
-    host: process.env.REACT_APP_HASS_HOST || "localhost:8123",
+    url: process.env.REACT_APP_HASS_URL || "http://localhost:8123",
     accessToken: process.env.REACT_APP_HASS_ACCESS_TOKEN,
   };
 
@@ -21,7 +21,7 @@ export default class App extends Component {
     super(props);
 
     this.hass = new HomeAssistant({
-      host: this.props.host,
+      url: this.props.url,
       accessToken: this.props.accessToken,
       onReady: this.onReady,
     });
@@ -56,14 +56,14 @@ export default class App extends Component {
         <Cell width={1}>
           <LightWidget
             hass={hass}
-            entityId="light.guest_bedroom_office_room_center_light"
+            entityId="light.guest_bedroom_office_room_wall_cans"
             name="Custom Light Name"
           />
         </Cell>
         <Cell width={1}>
           <LightWidget
             hass={hass}
-            entityId="light.guest_bedroom_office_room_center_light"
+            entityId="light.guest_bedroom_office_room_wall_cans"
           />
         </Cell>
         <Cell width={2}>1/6</Cell>
