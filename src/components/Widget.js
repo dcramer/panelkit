@@ -11,10 +11,29 @@ export default class Widget extends Component {
   constructor(...params) {
     super(...params);
     this.state = this.getInitialState();
+    this._activeSubscriptions = [];
   }
 
   getInitialState() {
     return {};
+  }
+
+  getSubscriptions() {
+    return [
+      // [entityId, callback]
+    ];
+  }
+
+  componentDidMount() {
+    this.getSubscriptions().forEach((sub) => {
+      this._activeSubscriptions.push(this.props.hass.subscribe(...sub));
+    });
+  }
+
+  componentWillUnmount() {
+    this._activeSubscriptions.forEach((sub) => {
+      this.props.hass.unsubscribe(...sub);
+    });
   }
 
   render() {

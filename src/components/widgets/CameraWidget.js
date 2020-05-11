@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Thumbnail from "./Thumbnail";
-import Widget, { WidgetProps } from "./Widget";
+import Thumbnail from "../Thumbnail";
+import Widget, { WidgetProps } from "../Widget";
 
 export default class CameraWidget extends Widget {
   static propTypes = {
@@ -23,10 +23,12 @@ export default class CameraWidget extends Widget {
   }
 
   componentDidMount() {
+    super.componentDidMount();
     this.refreshCameraImage();
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
     if (this._timer) clearTimeout(this._timer);
   }
 

@@ -11,18 +11,40 @@ export const Phase = Object.freeze({
 
 const DEFAULT_TIMEOUT = 250; // ms
 
+const makeSubscribeId = () => {
+  const s4 = () => {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  };
+  return `${s4()}${s4()}`;
+};
+
 export default class HomeAssistant {
-  constructor({ host, accessToken, onConnectionChange = null }) {
+  constructor({
+    host,
+    accessToken,
+    onConnectionChange = null,
+    onReady = null,
+  }) {
     this._socket = null;
     this._timeout = 250;
     this._connectTimer = null;
     this._messageCounter = 0;
 
+    this._hasPrepared = false;
     this._shouldReconnect = true;
 
     this._pendingRequests = {
       // requestId: Promise
     };
+    this._eventSubscribers = [
+      // {id, entityId, callback(entityId, oldState, newState)}
+    ];
+    this._rootSubscriptions = {
+      // ID: eventType
+    };
+    this._stateCache = {};
 
     this.state = State.DISCONNECTED;
     this.phase = Phase.AUTHENTICATION;
@@ -30,7 +52,8 @@ export default class HomeAssistant {
     // options
     this.host = host;
     this.accessToken = accessToken;
-    this.onConnectionChange = onConnectionChange;
+    this.onConnectionChange = onConnectionChange || function () {};
+    this.onReady = onReady || function () {};
   }
 
   _onOpen = (event) => {
@@ -68,7 +91,7 @@ export default class HomeAssistant {
 
   _onMessage = (event) => {
     const payload = JSON.parse(event.data);
-    console.log(
+    console.debug(
       "[hass] Received message of type",
       payload.type,
       "and id",
@@ -98,23 +121,31 @@ export default class HomeAssistant {
           state: this.state,
           phase: this.phase,
         });
+        this._prepareApp();
         break;
-      default:
-        if (payload.type === "result") {
-          const { id, success } = payload;
-          const promiseHandler = this._pendingRequests[id];
-          if (!promiseHandler) {
-            console.warn("[hass] No pending request found for event", id);
+      case "event":
+        const { entity_id, new_state, old_state } = payload.event.data;
+        this._eventSubscribers.forEach(({ entityId, callback }) => {
+          if (entity_id === entityId) {
+            callback(entity_id, new_state, old_state);
+          }
+        });
+        break;
+      case "result":
+        const promiseHandler = this._pendingRequests[payload.id];
+        if (!promiseHandler) {
+          console.warn("[hass] No pending request found for event", payload.id);
+        } else {
+          let [resolve, reject] = promiseHandler;
+          delete this._pendingRequests[payload.id];
+          if (payload.success) {
+            resolve(payload);
           } else {
-            let [resolve, reject] = promiseHandler;
-            delete this._pendingRequests[id];
-            if (success) {
-              resolve(payload);
-            } else {
-              reject(payload);
-            }
+            reject(payload);
           }
         }
+        break;
+      default:
         break;
     }
   };
@@ -141,8 +172,29 @@ export default class HomeAssistant {
     }
   };
 
+  _prepareApp = async () => {
+    const _stateCache = this._stateCache;
+    const subPromise = this.subscribeEvents("state_change");
+    const { result } = await this.getStates();
+    result.forEach((state) => {
+      _stateCache[state.entity_id] = state;
+    });
+
+    await subPromise;
+    this._hasPrepared = true;
+    this.onReady(this);
+  };
+
   isReady() {
-    return this.state === State.CONNECTED && this.phase === Phase.COMMAND;
+    return (
+      this._hasPrepared &&
+      this.state === State.CONNECTED &&
+      this.phase === Phase.COMMAND
+    );
+  }
+
+  getState(entityId) {
+    return this._stateCache[entityId];
   }
 
   connect() {
@@ -158,6 +210,7 @@ export default class HomeAssistant {
     this.state = State.CONNECTING;
     this.phase = Phase.AUTHENTICATION;
     this._shouldReconnect = true;
+    this._hasPrepared = false;
 
     // clear timer on open of websocket connection
     if (this._connectTimer) clearTimeout(this._connectTimer);
@@ -231,6 +284,26 @@ export default class HomeAssistant {
     });
   }
 
+  getStates() {
+    return this.sendCommand({
+      type: "get_states",
+    });
+  }
+
+  subscribe(entityId, callback) {
+    const id = makeSubscribeId();
+    this._eventSubscribers.push({
+      entityId,
+      callback,
+      id,
+    });
+    return id;
+  }
+
+  unsubscribe(id) {
+    this._eventSubscribers = this._eventSubscribers.filter((c) => c.id !== id);
+  }
+
   async ping() {
     const response = await this.sendCommand({
       type: "ping",
@@ -240,14 +313,15 @@ export default class HomeAssistant {
     return response;
   }
 
-  // TODO(dcramer): if we're going to support subscriptions, we'll want to bake in
+  // TODO(dcramer): if we're going to support subscriptions, we'll may want to bake in
   // a full event model to automatically handle subscribers/unsubscribers
-  // subscribeEvents(eventType) {
-  //   return this.sendCommand({
-  //     type: "subscribe_events",
-  //     event_type: eventType,
-  //   });
-  // }
+  async subscribeEvents(eventType) {
+    const response = await this.sendCommand({
+      type: "subscribe_events",
+      event_type: eventType,
+    });
+    this._rootSubscriptions[response.id] = eventType;
+  }
 
   // unsubscribeEvents(subscription) {
   //   // subscription is the 'id'
