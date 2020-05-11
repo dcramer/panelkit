@@ -1,8 +1,19 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-import Widget from "./Widget";
+import Widget, { WidgetProps } from "./Widget";
 
 export default class CameraWidget extends Widget {
+  static propTypes = {
+    ...WidgetProps,
+    entityId: PropTypes.string.isRequired,
+    refreshInterval: PropTypes.number,
+  };
+
+  static defaultProps = {
+    refreshInterval: 3000,
+  };
+
   getInitialState() {
     return {
       loading: true,
@@ -11,7 +22,15 @@ export default class CameraWidget extends Widget {
   }
 
   componentDidMount() {
-    this.props.hass
+    this.refreshCameraImage();
+  }
+
+  componentWillUnmount() {
+    if (this._timer) clearTimeout(this._timer);
+  }
+
+  refreshCameraImage = () => {
+    return this.props.hass
       .sendCommand({
         type: "camera_thumbnail",
         entity_id: this.props.entityId,
@@ -21,8 +40,14 @@ export default class CameraWidget extends Widget {
           result,
           loading: false,
         });
+      })
+      .then(() => {
+        this._timer = setTimeout(
+          this.refreshCameraImage,
+          this.props.refreshInterval
+        );
       });
-  }
+  };
 
   render() {
     const { loading, result } = this.state;

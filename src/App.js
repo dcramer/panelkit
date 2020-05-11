@@ -51,7 +51,7 @@ export default class App extends Component {
       return <div>Connecting to Home Assistant...</div>;
     }
     return (
-      <Grid columns={12}>
+      <Grid columns="repeat(auto-fit,minmax(120px,1fr))">
         <Cell width={1}>1/12</Cell>
         <Cell width={1}>2/12</Cell>
         <Cell width={2}>1/6</Cell>
