@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import CameraThumbnail from "./CameraThumbnail";
 import Widget, { WidgetProps } from "./Widget";
 
 export default class CameraWidget extends Widget {
@@ -54,10 +55,7 @@ export default class CameraWidget extends Widget {
     if (loading) return <div>loading camera</div>;
     return (
       <div>
-        <img
-          src={`data:${result.content_type};base64,${result.content}`}
-          alt={this.props.entityId}
-        />
+        <CameraThumbnail result={result} alt={this.props.entityId} />
       </div>
     );
   }
