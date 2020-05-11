@@ -174,8 +174,32 @@ export default class HomeAssistant {
     );
   }
 
+  buildUrl(path) {
+    return `${this.url}${path}`;
+  }
+
   getState(entityId) {
-    return this._stateCache[entityId];
+    const result = this._stateCache[entityId];
+    if (!result)
+      throw new Error(`Unable to find entity in state cache: ${entityId}`);
+    return result;
+  }
+
+  getEntityPicture(entityId) {
+    const {
+      attributes: { entity_picture },
+    } = this.getState(entityId);
+    return this.buildUrl(entity_picture);
+  }
+
+  getCameraList() {
+    return Object.keys(this._stateCache)
+      .filter((entityId) => {
+        if (entityId.indexOf("camera.") === 0) return true;
+      })
+      .map((entityId) => {
+        return this._stateCache[entityId];
+      });
   }
 
   connect() {

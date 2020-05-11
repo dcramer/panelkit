@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import Thumbnail from "../Thumbnail";
 import Widget, { WidgetProps } from "../Widget";
+import CameraModal from "../CameraModal";
 
 export default class CameraWidget extends Widget {
   static propTypes = {
@@ -19,6 +20,7 @@ export default class CameraWidget extends Widget {
     return {
       loading: true,
       result: null,
+      showModal: false,
     };
   }
 
@@ -49,7 +51,30 @@ export default class CameraWidget extends Widget {
       });
   };
 
+  onClick = () => {
+    if (this.state.showModal) return;
+    this.setState({ showModal: true });
+  };
+
+  closeModal = () => {
+    this.setState({ showModal: false });
+  };
+
   renderBody() {
+    return (
+      <CameraModal
+        hass={this.props.hass}
+        entityId={this.props.entityId}
+        isOpen={this.state.showModal}
+        onRequestClose={this.closeModal}
+        cameraList={this.props.hass.getCameraList()}
+      />
+    );
+  }
+
+  renderStatus() {}
+
+  renderCover() {
     const { loading, result } = this.state;
     if (loading) return <div>loading camera</div>;
     return <Thumbnail result={result} alt={this.props.entityId} />;

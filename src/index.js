@@ -1,8 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import WebFont from "webfontloader";
+import Modal from "react-modal";
+
+import "./index.css";
+
+WebFont.load({
+  google: {
+    families: ["Rubik:300,500"],
+  },
+});
+
+Modal.setAppElement("#root");
 
 ReactDOM.render(
   <React.StrictMode>

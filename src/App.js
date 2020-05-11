@@ -1,10 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Grid, Cell } from "styled-css-grid";
+import { Flex, Box } from "reflexbox/styled-components";
+
+import { mdiPiHole } from "@mdi/js";
 
 import HomeAssistant from "./hass";
+
+import Header from "./components/Header";
+
+import AlarmWidget from "./components/widgets/AlarmWidget";
 import CameraWidget from "./components/widgets/CameraWidget";
+import DoorControlWidget from "./components/widgets/DoorControlWidget";
 import LightWidget from "./components/widgets/LightWidget";
+import SwitchWidget from "./components/widgets/SwitchWidget";
 
 export default class App extends Component {
   static propTypes = {
@@ -52,25 +60,81 @@ export default class App extends Component {
       return <div>Connecting to Home Assistant...</div>;
     }
     return (
-      <Grid columns="repeat(auto-fit,minmax(120px,1fr))">
-        <Cell width={1}>
-          <LightWidget
-            hass={hass}
-            entityId="light.guest_bedroom_office_room_wall_cans"
-            name="Custom Light Name"
-          />
-        </Cell>
-        <Cell width={1}>
-          <LightWidget
-            hass={hass}
-            entityId="light.guest_bedroom_office_room_wall_cans"
-          />
-        </Cell>
-        <Cell width={2}>1/6</Cell>
-        <Cell width={2}>
-          <CameraWidget hass={hass} entityId="camera.garage" />
-        </Cell>
-      </Grid>
+      <div>
+        <Header />
+        <Flex>
+          <Box width={2 / 8} p={3}>
+            <Flex>
+              <Box width={1 / 2} p={1}>
+                <DoorControlWidget hass={hass} name="Front Door" />
+              </Box>
+              <Box width={1 / 2} p={1}>
+                <AlarmWidget hass={hass} entityId="alarm_control_panel.home" />
+              </Box>
+            </Flex>
+            <Flex>
+              <Box width={1 / 2} p={1}>
+                <SwitchWidget
+                  hass={hass}
+                  entityId="switch.pi_hole"
+                  icon={mdiPiHole}
+                />
+              </Box>
+            </Flex>
+          </Box>
+          <Box width={2 / 8} p={3}>
+            <Flex p={1}>
+              <Box width={1}>
+                <LightWidget
+                  hass={hass}
+                  entityId="light.guest_bedroom_office_room_wall_cans"
+                  name="Multi Light Widget"
+                />
+              </Box>
+            </Flex>
+            <Flex>
+              <Box width={1 / 2} p={1}>
+                <LightWidget
+                  hass={hass}
+                  entityId="light.guest_bedroom_office_room_wall_cans"
+                  name="Custom"
+                />
+              </Box>
+              <Box width={1 / 2} p={1}>
+                <LightWidget
+                  hass={hass}
+                  entityId="light.guest_bedroom_office_room_wall_cans"
+                />
+              </Box>
+            </Flex>
+          </Box>
+          <Box width={4 / 8} p={3}>
+            <Flex>
+              <Box width={1} p={1}>
+                <CameraWidget
+                  hass={hass}
+                  entityId="camera.front_door_exterior"
+                />
+              </Box>
+            </Flex>
+            <Flex>
+              <Box width={1} p={1}>
+                <CameraWidget hass={hass} entityId="camera.garage_exterior" />
+              </Box>
+            </Flex>
+            <Flex>
+              <Box width={1} p={1}>
+                <CameraWidget hass={hass} entityId="camera.garage" />
+              </Box>
+            </Flex>
+            <Flex>
+              <Box width={1} p={1}>
+                <CameraWidget hass={hass} entityId="camera.backyard" />
+              </Box>
+            </Flex>
+          </Box>
+        </Flex>
+      </div>
     );
   }
 }
