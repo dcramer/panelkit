@@ -211,4 +211,36 @@ export default class HomeAssistant {
     };
     return promise;
   }
+
+  fetchCameraThumbnail(entityId) {
+    return this.sendCommand({
+      type: "camera_thumbnail",
+      entity_id: entityId,
+    });
+  }
+
+  fetchMediaPlayerThumbnail(entityId) {
+    return this.sendCommand({
+      type: "media_player_thumbnail",
+      entity_id: entityId,
+    });
+  }
+
+  callService(domain, service, serviceData) {
+    return this.sendCommand({
+      type: "call_service",
+      domain,
+      service,
+      service_data: serviceData,
+    });
+  }
+
+  async ping() {
+    const response = await this.sendCommand({
+      type: "ping",
+    });
+    if (response.type !== "pong")
+      throw new Error("ping did not receive a pong response");
+    return response;
+  }
 }

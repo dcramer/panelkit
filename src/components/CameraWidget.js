@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import CameraThumbnail from "./CameraThumbnail";
+import Thumbnail from "./Thumbnail";
 import Widget, { WidgetProps } from "./Widget";
 
 export default class CameraWidget extends Widget {
@@ -32,10 +32,7 @@ export default class CameraWidget extends Widget {
 
   refreshCameraImage = () => {
     return this.props.hass
-      .sendCommand({
-        type: "camera_thumbnail",
-        entity_id: this.props.entityId,
-      })
+      .fetchCameraThumbnail(this.props.entityId)
       .then((result) => {
         this.setState({
           result,
@@ -55,7 +52,7 @@ export default class CameraWidget extends Widget {
     if (loading) return <div>loading camera</div>;
     return (
       <div>
-        <CameraThumbnail result={result} alt={this.props.entityId} />
+        <Thumbnail result={result} alt={this.props.entityId} />
       </div>
     );
   }
