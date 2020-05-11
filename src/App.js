@@ -1,58 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Grid, Cell } from "styled-css-grid";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+import { hassInit } from "./features/hass";
+
+export class App extends Component {
+  static propTypes = {
+    host: PropTypes.string,
+    accessToken: PropTypes.string,
+  };
+
+  static defaultProps = {
+    host: process.env.REACT_APP_HASS_HOST || "localhost:8123",
+    accessToken: process.env.REACT_APP_HASS_ACCESS_TOKEN,
+  };
+
+  componentDidMount() {
+    this.props.hassInit(this.props.host, this.props.accessToken);
+  }
+
+  render() {
+    return (
+      <Grid columns={12}>
+        <Cell width={1}>1/12</Cell>
+        <Cell width={1}>2/12</Cell>
+        <Cell width={2}>1/6</Cell>
+        <Cell width={2}>2/6</Cell>
+      </Grid>
+    );
+  }
 }
 
-export default App;
+export default connect(
+  (state) => {
+    return {
+      // counter: state.counter,
+    };
+  },
+  { hassInit }
+)(App);
