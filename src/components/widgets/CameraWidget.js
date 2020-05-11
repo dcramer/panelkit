@@ -49,13 +49,9 @@ export default class CameraWidget extends Widget {
       });
   };
 
-  render() {
+  renderBody() {
     const { loading, result } = this.state;
     if (loading) return <div>loading camera</div>;
-    return (
-      <div>
-        <Thumbnail result={result} alt={this.props.entityId} />
-      </div>
-    );
+    return <Thumbnail result={result} alt={this.props.entityId} />;
   }
 }

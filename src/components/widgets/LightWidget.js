@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 
 import Widget, { WidgetProps } from "../Widget";
 
+import Icon from "@mdi/react";
+import { mdiLightbulb, mdiLightbulbOn } from "@mdi/js";
+
 export default class LightWidget extends Widget {
   static propTypes = {
     ...WidgetProps,
@@ -13,23 +16,22 @@ export default class LightWidget extends Widget {
   getInitialState() {
     return {
       loading: true,
-      currentState: null,
     };
   }
 
-  getSubscriptions() {
-    return [[this.props.entityId, this.onStateChange]];
+  getWatchedEntityIds() {
+    return [this.props.entityId];
   }
 
-  onStateChange = (_entityId, newState, _oldState) => {
-    this.forceUpdate();
-  };
-
-  render() {
-    const state = this.props.hass.getState(this.props.entityId);
+  renderBody() {
+    const {
+      state,
+      attributes: { friendly_name },
+    } = this.getEntity(this.props.entityId);
     return (
       <div>
-        {this.props.name || state.attributes.friendly_name} {state.state}
+        {this.props.name || friendly_name} {state.state}
+        <Icon path={state === "on" ? mdiLightbulbOn : mdiLightbulb} />
       </div>
     );
   }

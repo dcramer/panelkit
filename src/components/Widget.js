@@ -18,15 +18,11 @@ export default class Widget extends Component {
     return {};
   }
 
-  getSubscriptions() {
-    return [
-      // [entityId, callback]
-    ];
-  }
-
   componentDidMount() {
-    this.getSubscriptions().forEach((sub) => {
-      this._activeSubscriptions.push(this.props.hass.subscribe(...sub));
+    this.getWatchedEntityIds().forEach((entityId) => {
+      this._activeSubscriptions.push(
+        this.props.hass.subscribe(entityId, this.onStateChange)
+      );
     });
   }
 
@@ -36,7 +32,27 @@ export default class Widget extends Component {
     });
   }
 
-  render() {
-    return <div>widget!</div>;
+  /* Defines a list of entity IDs to monitor for update.
+   *
+   * When an entity is updated, it will call `onStateChange`, which
+   * by default will simply force the widget to re-render.
+   */
+  getWatchedEntityIds() {
+    return [];
   }
+
+  getEntity(entityId) {
+    return this.props.hass.getState(entityId);
+  }
+
+  onStateChange = (_entityId, _newState, _oldState) => {
+    // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
+    this.forceUpdate();
+  };
+
+  render() {
+    return <div classNaame="widget">{this.renderBody()}</div>;
+  }
+
+  renderBody() {}
 }
