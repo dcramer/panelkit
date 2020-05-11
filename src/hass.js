@@ -12,7 +12,7 @@ export const Phase = Object.freeze({
 const DEFAULT_TIMEOUT = 250; // ms
 
 export default class HomeAssistant {
-  constructor({ host, accessToken }) {
+  constructor({ host, accessToken, onConnectionChange = null }) {
     this._socket = null;
     this._timeout = 250;
     this._connectTimer = null;
@@ -30,16 +30,26 @@ export default class HomeAssistant {
     // options
     this.host = host;
     this.accessToken = accessToken;
+    this.onConnectionChange = onConnectionChange;
   }
 
-  onOpen = (event) => {
+  _onOpen = (event) => {
     console.log("[hass] Connection opened", event.target.url);
     this.state = State.CONNECTED;
+    this.phase = Phase.AUTHENTICATION;
+    this.onConnectionChange(this, {
+      state: this.state,
+      phase: this.phase,
+    });
   };
 
-  onClose = (event) => {
+  _onClose = (event) => {
     this.state = State.DISCONNECTED;
     this.phase = Phase.AUTHENTICATION;
+    this.onConnectionChange(this, {
+      state: this.state,
+      phase: this.phase,
+    });
     if (this._shouldReconnect) {
       // increment retry interval - max of 10s
       this._timeout = Math.min(this._timeout + this._timeout, 10000);
@@ -56,7 +66,7 @@ export default class HomeAssistant {
     }
   };
 
-  onMessage = (event) => {
+  _onMessage = (event) => {
     const payload = JSON.parse(event.data);
     console.log(
       "[hass] Received message of type",
@@ -84,9 +94,13 @@ export default class HomeAssistant {
       case "auth_ok":
         console.log("[hass] Authenticated successfully");
         this.phase = Phase.COMMAND;
+        this.onConnectionChange(this, {
+          state: this.state,
+          phase: this.phase,
+        });
         break;
       default:
-        if (payload.id) {
+        if (payload.id !== undefined) {
           let promiseHandler = this._pendingRequests[payload.id];
           if (!promiseHandler) {
             console.warn(
@@ -109,23 +123,31 @@ export default class HomeAssistant {
     }
   };
 
-  onError = (event) => {
+  _onError = (event) => {
     console.error("[hass] Socket encountered error. Closing socket");
     this._socket.close();
     this._socket = null;
     this.phase = Phase.AUTHENTICATION;
     this.state = State.DISCONNECTED;
+    this.onConnectionChange(this, {
+      state: this.state,
+      phase: this.phase,
+    });
   };
 
   /**
    * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
    */
-  checkConnection = () => {
+  _checkConnection = () => {
     // check if websocket instance is closed, if so call `connect` function.
     if (!this._socket || this._socket.readyState === WebSocket.CLOSED) {
       this.connect();
     }
   };
+
+  isReady() {
+    return this.state === State.CONNECTED && this.phase === Phase.COMMAND;
+  }
 
   connect() {
     if (this._socket !== null) {
@@ -148,10 +170,10 @@ export default class HomeAssistant {
     this._socket = new WebSocket(`ws://${this.host}/api/websocket`);
 
     // websocket handlers
-    this._socket.onmessage = this.onMessage;
-    this._socket.onclose = this.onClose;
-    this._socket.onopen = this.onOpen;
-    this._socket.onerror = this.onError;
+    this._socket.onmessage = this._onMessage;
+    this._socket.onclose = this._onClose;
+    this._socket.onopen = this._onOpen;
+    this._socket.onerror = this._onError;
   }
 
   disconnect() {
@@ -167,11 +189,11 @@ export default class HomeAssistant {
   sendMessage(message) {
     console.log("[hass] Sending message of type", message.type);
     this._socket.send(JSON.stringify(message));
+    this._messageCounter += 1;
   }
 
   sendCommand(message) {
     const id = this._messageCounter;
-    this._messageCounter += 1;
     const promise = new Promise((resolve, reject) => {
       this._pendingRequests[id] = [resolve, reject];
       this.sendMessage({
