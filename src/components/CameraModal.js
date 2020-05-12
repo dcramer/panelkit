@@ -51,8 +51,12 @@ const CameraList = styled.div`
     margin: 0;
 
     li {
-      padding: 10px 10px;
       cursor: pointer;
+    }
+
+    li a {
+      padding: 10px 10px;
+      display: block;
     }
 
     li.active {
@@ -84,7 +88,7 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
     >
       <CameraViewer>
         <ModalHeader>
-          <a onClick={onRequestClose} href>
+          <a onClick={onRequestClose} href={null}>
             <Icon path={mdiClose} />
           </a>
           <h2>{activeEntity.attributes.friendly_name}</h2>
@@ -95,9 +99,9 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
               return (
                 <li
                   key={entity.entity_id}
-                  className={entity.entity_id === activeCamera && "active"}
+                  className={entity.entity_id === activeCamera ? "active" : ""}
                 >
-                  <a onClick={() => selectCamera(entity.entity_id)} href>
+                  <a onClick={() => selectCamera(entity.entity_id)} href={null}>
                     {entity.attributes.friendly_name}
                   </a>
                 </li>

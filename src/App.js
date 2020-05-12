@@ -136,7 +136,11 @@ export default class App extends Component {
             let WidgetComponent;
             if (widgetName === "Group") {
               return (
-                <Cell width={tile.width || 1} height={tile.height || 1}>
+                <Cell
+                  key={index}
+                  width={tile.width || 1}
+                  height={tile.height || 1}
+                >
                   {renderTiles(tile.tiles, tile.width || 1)}
                 </Cell>
               );
@@ -147,8 +151,8 @@ export default class App extends Component {
                 .default;
             }
             return (
-              <Cell width={tile.width || 1}>
-                <WidgetComponent hass={hass} {...tile} />
+              <Cell key={index} width={tile.width || 1}>
+                <WidgetComponent hass={hass} {...tile} cameraList />
               </Cell>
             );
           })}
