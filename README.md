@@ -46,7 +46,7 @@ A basic alarm control, showing the current state of the alarm and allowing disar
 
 ### CameraTile
 
-A still capture of a camera, refreshed every few seconds. A single tap goes into a full screen video (progressive from gif -> video as loadable), and gives access to other defined cameras.
+A still capture of a camera, refreshed every few seconds. A single tap goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
 
 `type`
 
@@ -111,3 +111,19 @@ A simple switch. A single tap toggles the switch.
 `entityId`
 
 : The `switch` entity ID.
+
+## Development
+
+PanelKit is built using [`create-react-app`](https://github.com/facebook/create-react-app), and you'll find your standard helper scripts available.
+
+Install dependencies:
+
+```shell
+yarn install
+```
+
+Run the development server:
+
+```shell
+yarn start
+```
