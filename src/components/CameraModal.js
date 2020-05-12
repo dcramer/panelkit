@@ -4,7 +4,11 @@ import styled from "styled-components";
 import Icon from "@mdi/react";
 import { mdiClose } from "@mdi/js";
 
-const CameraViewer = styled.div`
+import CameraStream from "./CameraStream";
+import ModalHeader from "./ModalHeader";
+import TransparentButton from "./TransparentButton";
+
+const CameraViewerContainer = styled.div`
   display: grid;
   height: 100%;
   grid-template-columns: 240px auto;
@@ -15,32 +19,7 @@ const CameraViewer = styled.div`
   background-color: #222;
 `;
 
-const ModalHeader = styled.div`
-  grid-area: header;
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 20px 20px 0 20px;
-
-  button {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    margin-right: 20px;
-  }
-
-  button svg {
-    max-width: 100%;
-    max-height: 100%;
-  }
-
-  h2 {
-    display: inline-block;
-    margin: 0;
-  }
-`;
-
-const CameraList = styled.div`
+const CameraListContainer = styled.div`
   background: #000;
   grid-area: sidebar;
   padding: 20px;
@@ -65,7 +44,7 @@ const CameraList = styled.div`
   }
 `;
 
-const CameraStream = styled.div`
+const CameraStreamContainer = styled.div`
   grid-area: main;
 
   video,
@@ -73,18 +52,6 @@ const CameraStream = styled.div`
     object-fit: contain;
     width: 100%;
   }
-`;
-
-const TransparentButton = styled.button`
-  background: inherit;
-  color: inherit;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  font-size: inherit;
-  display: inline;
-  outline: none;
-  cursor: pointer;
 `;
 
 export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
@@ -98,14 +65,14 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
       className="Modal"
       overlayClassName="Overlay"
     >
-      <CameraViewer>
+      <CameraViewerContainer>
         <ModalHeader>
           <TransparentButton onClick={onRequestClose}>
             <Icon path={mdiClose} />
           </TransparentButton>
           <h2>{activeEntity.attributes.friendly_name}</h2>
         </ModalHeader>
-        <CameraList>
+        <CameraListContainer>
           <ul>
             {cameraList.map((entityId) => {
               const {
@@ -123,17 +90,15 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
               );
             })}
           </ul>
-        </CameraList>
-        <CameraStream>
-          <img
-            src={hass.buildUrl(
-              `/api/camera_proxy_stream/${activeCamera}?token=${activeEntity.attributes.access_token}`
-            )}
-            key={activeCamera}
-            alt="stream"
+        </CameraListContainer>
+        <CameraStreamContainer>
+          <CameraStream
+            hass={hass}
+            entityId={activeCamera}
+            accessToken={activeEntity.attributes.access_token}
           />
-        </CameraStream>
-      </CameraViewer>
+        </CameraStreamContainer>
+      </CameraViewerContainer>
     </Modal>
   );
 };

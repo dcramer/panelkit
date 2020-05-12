@@ -18,6 +18,8 @@ const config = {
       tiles: [
         {
           type: TILE.DOOR_CONTROL,
+          camera: "camera.front_door_exterior",
+          name: "Front Door",
         },
         {
           type: TILE.ALARM,
