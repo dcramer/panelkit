@@ -6,6 +6,7 @@ export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,
   name: PropTypes.string,
   entityId: PropTypes.string,
+  icon: PropTypes.element,
   cameraList: PropTypes.array.isRequired,
 });
 
