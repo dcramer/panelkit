@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import { mdiBell, mdiBellOff } from "@mdi/js";
 
-import Widget, { WidgetProps } from "../Widget";
+import Tile, { TileProps } from "../Tile";
 
-export default class AlarmWidget extends Widget {
+export default class AlarmTile extends Tile {
   static propTypes = {
-    ...WidgetProps,
+    ...TileProps,
     entityId: PropTypes.string.isRequired,
   };
 

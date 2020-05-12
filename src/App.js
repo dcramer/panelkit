@@ -7,12 +7,7 @@ import { mdiPiHole, mdiLightbulbGroupOff } from "@mdi/js";
 import HomeAssistant from "./hass";
 
 import Header from "./components/Header";
-
-// import AlarmWidget from "./components/widgets/AlarmWidget";
-// import CameraWidget from "./components/widgets/CameraWidget";
-// import DoorControlWidget from "./components/widgets/DoorControlWidget";
-// import LightWidget from "./components/widgets/LightWidget";
-// import SwitchWidget from "./components/widgets/SwitchWidget";
+import { TILE } from "./components/tiles";
 
 const config = {
   tiles: [
@@ -20,14 +15,14 @@ const config = {
       width: 2,
       tiles: [
         {
-          type: "DoorControlWidget",
+          type: TILE.DOOR_CONTROL,
         },
         {
-          type: "AlarmWidget",
+          type: TILE.ALARM,
           entityId: "alarm_control_panel.home",
         },
         {
-          type: "SwitchWidget",
+          type: TILE.SWITCH,
           entityId: "switch.pi_hole",
           icon: mdiPiHole,
         },
@@ -38,48 +33,48 @@ const config = {
       tiles: [
         {
           width: 2,
-          type: "SceneWidget",
+          type: TILE.SCENE,
           entityId: "scene.lights_off",
           name: "Turn Off Lights",
           icon: mdiLightbulbGroupOff,
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.master_bedroom_lights",
           name: "Master Bd",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.guest_bedroom_lights",
           name: "Guest Bd",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.hallway_lights",
           name: "Hallway",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.office_lights",
           name: "Office",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.dining_room_lights",
           name: "Dining",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.kitchen_lights",
           name: "Kitchen",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.entryway_lights",
           name: "Entryway",
         },
         {
-          type: "LightWidget",
+          type: TILE.LIGHT,
           entityId: "light.front_door_lights",
           name: "Front Door",
         },
@@ -90,22 +85,22 @@ const config = {
       tiles: [
         {
           width: 4,
-          type: "CameraWidget",
+          type: TILE.CAMERA,
           entityId: "camera.front_door_exterior",
         },
         {
           width: 4,
-          type: "CameraWidget",
+          type: TILE.CAMERA,
           entityId: "camera.garage_exterior",
         },
         {
           width: 4,
-          type: "CameraWidget",
+          type: TILE.CAMERA,
           entityId: "camera.garage",
         },
         {
           width: 4,
-          type: "CameraWidget",
+          type: TILE.CAMERA,
           entityId: "camera.backyard",
         },
       ],
@@ -177,8 +172,6 @@ export default class App extends Component {
     return (
       <Grid columns={colWidth}>
         {tiles.map((tile, index) => {
-          const widgetName = tile.type;
-          let WidgetComponent;
           if (tile.tiles) {
             return (
               <Cell
@@ -189,17 +182,13 @@ export default class App extends Component {
                 {this.renderTiles(tile.tiles, tile.width || 1)}
               </Cell>
             );
-          } else if (widgetName.indexOf("/") !== -1) {
-            WidgetComponent = require(widgetName).default;
           } else {
-            WidgetComponent = require(`./components/widgets/${widgetName}`)
-              .default;
+            return (
+              <Cell key={index} width={tile.width || 1}>
+                <tile.type hass={hass} {...tile} cameraList={cameraList} />
+              </Cell>
+            );
           }
-          return (
-            <Cell key={index} width={tile.width || 1}>
-              <WidgetComponent hass={hass} {...tile} cameraList={cameraList} />
-            </Cell>
-          );
         })}
       </Grid>
     );

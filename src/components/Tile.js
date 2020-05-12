@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Icon from "@mdi/react";
 
-export const WidgetProps = Object.freeze({
+export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,
   name: PropTypes.string,
   entityId: PropTypes.string,
@@ -16,8 +16,8 @@ const toTitleCase = (str) => {
   );
 };
 
-export default class Widget extends Component {
-  static propTypes = WidgetProps;
+export default class Tile extends Component {
+  static propTypes = TileProps;
 
   constructor(...params) {
     super(...params);

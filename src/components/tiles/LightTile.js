@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 
-import Widget, { WidgetProps } from "../Widget";
+import Tile, { TileProps } from "../Tile";
 
 import { mdiLightbulb, mdiLightbulbOn } from "@mdi/js";
 
-export default class LightWidget extends Widget {
+export default class LightTile extends Tile {
   static propTypes = {
-    ...WidgetProps,
+    ...TileProps,
     entityId: PropTypes.string.isRequired,
   };
 

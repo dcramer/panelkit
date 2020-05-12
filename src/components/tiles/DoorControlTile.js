@@ -1,8 +1,8 @@
 import { mdiDoor } from "@mdi/js";
 
-import Widget from "../Widget";
+import Tile from "../Tile";
 
-export default class DoorControlWidget extends Widget {
+export default class DoorControlTile extends Tile {
   getIcon() {
     if (this.props.icon) return this.props.icon;
     return mdiDoor;

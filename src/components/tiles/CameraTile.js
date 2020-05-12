@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Thumbnail from "../Thumbnail";
-import Widget, { WidgetProps } from "../Widget";
+import Tile, { TileProps } from "../Tile";
 import CameraModal from "../CameraModal";
 
-export default class CameraWidget extends Widget {
+export default class CameraTile extends Tile {
   static propTypes = {
-    ...WidgetProps,
+    ...TileProps,
     entityId: PropTypes.string.isRequired,
     refreshInterval: PropTypes.number,
   };

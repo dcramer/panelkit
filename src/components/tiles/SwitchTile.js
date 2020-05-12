@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 
-import Widget, { WidgetProps } from "../Widget";
+import Tile, { TileProps } from "../Tile";
 
-export default class SwitchWidget extends Widget {
+export default class SwitchTile extends Tile {
   static propTypes = {
-    ...WidgetProps,
+    ...TileProps,
     entityId: PropTypes.string.isRequired,
   };
 
@@ -18,4 +18,6 @@ export default class SwitchWidget extends Widget {
       entity_id: this.props.entityId,
     });
   };
+
+  renderStatus() {}
 }

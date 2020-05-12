@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 
-import Widget, { WidgetProps } from "../Widget";
+import Tile, { TileProps } from "../Tile";
 
-export default class SceneWidget extends Widget {
+export default class SceneTile extends Tile {
   static propTypes = {
-    ...WidgetProps,
+    ...TileProps,
     entityId: PropTypes.string.isRequired,
   };
 
