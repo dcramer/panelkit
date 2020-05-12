@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Grid, Cell } from "styled-css-grid";
+import styled from "styled-components";
 
 import { mdiPiHole, mdiLightbulbGroupOff } from "@mdi/js";
 
@@ -108,6 +109,10 @@ const config = {
   ],
 };
 
+const Container = styled.div`
+  padding: 20px;
+`;
+
 export default class App extends Component {
   static propTypes = {
     url: PropTypes.string,
@@ -198,10 +203,10 @@ export default class App extends Component {
       return <div>Connecting to Home Assistant...</div>;
     }
     return (
-      <div>
+      <Container>
         <Header />
         {this.renderTiles(config.tiles, this.props.gridWidth)}
-      </div>
+      </Container>
     );
   }
 }

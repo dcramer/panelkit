@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const Header = styled.div`
-  height: 120px;
-  padding: 0 20px;
+  height: 110px;
+  padding: 0;
   font-size: 20pt;
+  margin-bottom: 20px;
   color: var(--white);
   display: flex;
   align-items: flex-end;
