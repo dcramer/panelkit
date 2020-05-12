@@ -18,20 +18,40 @@ export default class CameraStream extends Component {
   }
 
   componentWillMount() {
-    this.props.hass
+    this.loadVideoStream(this.props);
+  }
+
+  // TOOD(dcramer): doesnt seem to work... not sure why
+  // the bug is within loadVideoStream (HLS doesnt seem to remount)
+  componentWillReceiveProps(nextProps) {
+    if (this.props.entityId !== nextProps.entityId) {
+      this.setState({ videoUrl: null });
+      this.loadVideoStream(nextProps);
+    }
+  }
+
+  componentWillUnmount() {
+    this.hls && this.hls.destroy();
+  }
+
+  loadVideoStream({ hass, entityId }) {
+    hass
       .sendCommand({
         type: "camera/stream",
-        entity_id: this.props.entityId,
+        entity_id: entityId,
       })
       .then(({ result: { url } }) => {
-        var hls = new Hls({
+        if (this.hls) this.hls.destroy();
+        this.hls = new Hls({
           maxBufferLength: 5,
           maxMaxBufferLength: 5,
         });
-        hls.loadSource(this.props.hass.buildUrl(url));
-        hls.attachMedia(this.playerRef.current);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
           this.playerRef.current.play();
+        });
+        this.hls.attachMedia(this.playerRef.current);
+        this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+          this.hls.loadSource(hass.buildUrl(url));
         });
         this.setState({ videoUrl: url });
       })

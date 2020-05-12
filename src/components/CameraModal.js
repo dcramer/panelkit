@@ -94,6 +94,7 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
         <CameraStreamContainer>
           <CameraStream
             hass={hass}
+            key={activeCamera}
             entityId={activeCamera}
             accessToken={activeEntity.attributes.access_token}
           />
