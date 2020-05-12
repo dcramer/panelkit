@@ -83,10 +83,10 @@ export default class App extends Component {
     return (
       <Grid
         columns={
-          isChild ? `repeat(${colWidth}, 150px)` : "repeat(auto-fit, 150px)"
+          colWidth ? `repeat(${colWidth}, 1fr)` : "repeat(auto-fit, 1fr)"
         }
         columnGap={!isChild ? "40px" : null}
-        rows="repeat(auto-fit, 150px)"
+        rows="repeat(auto-fit, 1fr)"
       >
         {tiles.map((tile, index) => {
           if (tile.tiles) {
