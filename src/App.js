@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Grid, Cell } from "styled-css-grid";
 
-// import { mdiPiHole } from "@mdi/js";
+import { mdiPiHole, mdiLightbulbGroupOff } from "@mdi/js";
 
 import HomeAssistant from "./hass";
 
@@ -29,7 +29,7 @@ const config = {
         {
           type: "SwitchWidget",
           entityId: "switch.pi_hole",
-          // icon: "mdiPiHole",
+          icon: mdiPiHole,
         },
       ],
     },
@@ -38,17 +38,50 @@ const config = {
       tiles: [
         {
           width: 2,
-          type: "LightWidget",
-          entityId: "light.guest_bedroom_office_room_wall_cans",
-          name: "Multi Light Widget",
+          type: "SceneWidget",
+          entityId: "scene.lights_off",
+          name: "Turn Off Lights",
+          icon: mdiLightbulbGroupOff,
         },
         {
           type: "LightWidget",
-          entityId: "light.guest_bedroom_office_room_wall_cans",
+          entityId: "light.master_bedroom_lights",
+          name: "Master Bd",
         },
         {
           type: "LightWidget",
-          entityId: "light.guest_bedroom_office_room_wall_cans",
+          entityId: "light.guest_bedroom_lights",
+          name: "Guest Bd",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.hallway_lights",
+          name: "Hallway",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.office_lights",
+          name: "Office",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.dining_room_lights",
+          name: "Dining",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.kitchen_lights",
+          name: "Kitchen",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.entryway_lights",
+          name: "Entryway",
+        },
+        {
+          type: "LightWidget",
+          entityId: "light.front_door_lights",
+          name: "Front Door",
         },
       ],
     },
