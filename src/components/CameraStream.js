@@ -46,14 +46,14 @@ export default class CameraStream extends Component {
           maxBufferLength: 5,
           maxMaxBufferLength: 5,
         });
-        this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          this.playerRef.current.play();
-        });
         this.hls.attachMedia(this.playerRef.current);
         this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
           this.hls.loadSource(hass.buildUrl(url));
         });
-        this.setState({ videoUrl: url });
+        this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          this.playerRef.current.play();
+          this.setState({ videoUrl: url });
+        });
       })
       .catch((err) => {
         console.error({ err });
