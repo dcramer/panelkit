@@ -25,6 +25,7 @@ export default class App extends Component {
       ).isRequired,
     }).isRequired,
     gridWidth: PropTypes.number.isRequired,
+    cellHeight: 150,
   };
 
   static defaultProps = {
@@ -76,11 +77,17 @@ export default class App extends Component {
     return results;
   }
 
-  renderTiles(tiles, colWidth) {
+  renderTiles(tiles, colWidth, isChild = false) {
     const hass = this.hass;
     const cameraList = this.getCameraList();
     return (
-      <Grid columns={colWidth}>
+      <Grid
+        columns={
+          isChild ? `repeat(${colWidth}, 150px)` : "repeat(auto-fit, 150px)"
+        }
+        columnGap={!isChild ? "40px" : null}
+        rows="repeat(auto-fit, 150px)"
+      >
         {tiles.map((tile, index) => {
           if (tile.tiles) {
             return (
@@ -89,12 +96,16 @@ export default class App extends Component {
                 width={tile.width || 1}
                 height={tile.height || 1}
               >
-                {this.renderTiles(tile.tiles, tile.width || 1)}
+                {this.renderTiles(tile.tiles, tile.width || 1, true)}
               </Cell>
             );
           } else {
             return (
-              <Cell key={index} width={tile.width || 1}>
+              <Cell
+                key={index}
+                width={tile.width || 1}
+                height={tile.height || 1}
+              >
                 <tile.type hass={hass} {...tile} cameraList={cameraList} />
               </Cell>
             );

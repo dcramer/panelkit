@@ -17,4 +17,6 @@ export default class SceneTile extends Tile {
       entity_id: this.props.entityId,
     });
   };
+
+  renderStatus() {}
 }
