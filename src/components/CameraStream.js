@@ -60,7 +60,10 @@ export default class CameraStream extends Component {
           autoPlay
           muted
           playsInline
-          style={{ pointerEvents: "none" }}
+          style={{
+            pointerEvents: "none",
+            display: this.state.videoLoaded ? "block" : "none",
+          }}
         />
         {!this.state.videoLoaded && (
           <img
