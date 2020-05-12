@@ -17,7 +17,7 @@ export default class CameraStream extends Component {
     this.playerRef = React.createRef();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadVideoStream(this.props);
   }
 
