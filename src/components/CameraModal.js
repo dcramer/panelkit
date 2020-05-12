@@ -8,7 +8,7 @@ const CameraViewer = styled.div`
   display: grid;
   height: 100%;
   grid-template-columns: 240px auto;
-  grid-template-rows: minmax(60px, 80px) auto;
+  grid-template-rows: 60px auto;
   grid-template-areas:
     "header header"
     "sidebar main";
@@ -22,14 +22,14 @@ const ModalHeader = styled.div`
   margin-bottom: 20px;
   padding: 20px 20px 0 20px;
 
-  a {
+  button {
     display: inline-block;
     width: 32px;
     height: 32px;
     margin-right: 20px;
   }
 
-  a svg {
+  button svg {
     max-width: 100%;
     max-height: 100%;
   }
@@ -54,7 +54,7 @@ const CameraList = styled.div`
       cursor: pointer;
     }
 
-    li a {
+    li button {
       padding: 10px 10px;
       display: block;
     }
@@ -75,9 +75,21 @@ const CameraStream = styled.div`
   }
 `;
 
+const TransparentButton = styled.button`
+  background: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  display: inline;
+  outline: none;
+  cursor: pointer;
+`;
+
 export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
   let [activeCamera, selectCamera] = React.useState(entityId);
-  let activeEntity = cameraList.find((e) => e.entity_id === activeCamera);
+  let activeEntity = hass.getState(activeCamera);
 
   return (
     <Modal
@@ -88,22 +100,25 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
     >
       <CameraViewer>
         <ModalHeader>
-          <a onClick={onRequestClose} href={null}>
+          <TransparentButton onClick={onRequestClose}>
             <Icon path={mdiClose} />
-          </a>
+          </TransparentButton>
           <h2>{activeEntity.attributes.friendly_name}</h2>
         </ModalHeader>
         <CameraList>
           <ul>
-            {cameraList.map((entity) => {
+            {cameraList.map((entityId) => {
+              const {
+                attributes: { friendly_name },
+              } = hass.getState(entityId);
               return (
                 <li
-                  key={entity.entity_id}
-                  className={entity.entity_id === activeCamera ? "active" : ""}
+                  key={entityId}
+                  className={entityId === activeCamera ? "active" : ""}
                 >
-                  <a onClick={() => selectCamera(entity.entity_id)} href={null}>
-                    {entity.attributes.friendly_name}
-                  </a>
+                  <TransparentButton onClick={() => selectCamera(entityId)}>
+                    {friendly_name}
+                  </TransparentButton>
                 </li>
               );
             })}

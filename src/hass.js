@@ -192,16 +192,6 @@ export default class HomeAssistant {
     return this.buildUrl(entity_picture);
   }
 
-  getCameraList() {
-    return Object.keys(this._stateCache)
-      .filter((entityId) => {
-        if (entityId.indexOf("camera.") === 0) return true;
-      })
-      .map((entityId) => {
-        return this._stateCache[entityId];
-      });
-  }
-
   connect() {
     if (this._socket !== null) {
       this._socket.close();

@@ -17,7 +17,6 @@ import Header from "./components/Header";
 const config = {
   tiles: [
     {
-      type: "Group",
       width: 2,
       tiles: [
         {
@@ -35,7 +34,6 @@ const config = {
       ],
     },
     {
-      type: "Group",
       width: 2,
       tiles: [
         {
@@ -55,7 +53,6 @@ const config = {
       ],
     },
     {
-      type: "Group",
       width: 4,
       tiles: [
         {
@@ -127,47 +124,61 @@ export default class App extends Component {
     this.setState({ isReady: true });
   };
 
-  render() {
-    const renderTiles = (tiles, colWidth) => {
-      return (
-        <Grid columns={colWidth}>
-          {tiles.map((tile, index) => {
-            const widgetName = tile.type;
-            let WidgetComponent;
-            if (widgetName === "Group") {
-              return (
-                <Cell
-                  key={index}
-                  width={tile.width || 1}
-                  height={tile.height || 1}
-                >
-                  {renderTiles(tile.tiles, tile.width || 1)}
-                </Cell>
-              );
-            } else if (widgetName.indexOf("/") !== -1) {
-              WidgetComponent = require(widgetName).default;
-            } else {
-              WidgetComponent = require(`./components/widgets/${widgetName}`)
-                .default;
-            }
+  // TODO: should cache this somewhere
+  getCameraList() {
+    const results = [];
+    function recurse(tiles) {
+      tiles.forEach((tile) => {
+        if (tile.tiles) recurse(tile.tiles);
+        else if (tile.entityId && tile.entityId.indexOf("camera.") === 0)
+          results.push(tile.entityId);
+      });
+    }
+    recurse(this.props.config.tiles);
+    return results;
+  }
+
+  renderTiles(tiles, colWidth) {
+    const hass = this.hass;
+    const cameraList = this.getCameraList();
+    return (
+      <Grid columns={colWidth}>
+        {tiles.map((tile, index) => {
+          const widgetName = tile.type;
+          let WidgetComponent;
+          if (tile.tiles) {
             return (
-              <Cell key={index} width={tile.width || 1}>
-                <WidgetComponent hass={hass} {...tile} cameraList />
+              <Cell
+                key={index}
+                width={tile.width || 1}
+                height={tile.height || 1}
+              >
+                {this.renderTiles(tile.tiles, tile.width || 1)}
               </Cell>
             );
-          })}
-        </Grid>
-      );
-    };
-
-    const hass = this.hass;
+          } else if (widgetName.indexOf("/") !== -1) {
+            WidgetComponent = require(widgetName).default;
+          } else {
+            WidgetComponent = require(`./components/widgets/${widgetName}`)
+              .default;
+          }
+          return (
+            <Cell key={index} width={tile.width || 1}>
+              <WidgetComponent hass={hass} {...tile} cameraList={cameraList} />
+            </Cell>
+          );
+        })}
+      </Grid>
+    );
+  }
+  render() {
     if (!this.state.isReady) {
       return <div>Connecting to Home Assistant...</div>;
     }
     return (
       <div>
         <Header />
-        {renderTiles(config.tiles, this.props.gridWidth)}
+        {this.renderTiles(config.tiles, this.props.gridWidth)}
       </div>
     );
   }

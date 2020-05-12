@@ -6,6 +6,7 @@ export const WidgetProps = Object.freeze({
   hass: PropTypes.object.isRequired,
   name: PropTypes.string,
   entityId: PropTypes.string,
+  cameraList: PropTypes.array.isRequired,
 });
 
 const toTitleCase = (str) => {

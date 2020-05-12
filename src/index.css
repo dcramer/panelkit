@@ -11,6 +11,11 @@
   --alarm-armed-color: #ffa726;
 }
 
+* {
+  font-family: "Rubik", "Ubuntu", "Helvetica Neue", sans-serif;
+}
+
+html,
 body {
   margin: 0;
   font-size: 13px;

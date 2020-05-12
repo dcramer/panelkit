@@ -67,7 +67,7 @@ export default class CameraWidget extends Widget {
         entityId={this.props.entityId}
         isOpen={this.state.showModal}
         onRequestClose={this.closeModal}
-        cameraList={this.props.hass.getCameraList()}
+        cameraList={this.props.cameraList}
       />
     );
   }
