@@ -2,32 +2,24 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Hls from "hls.js";
 
+// You __must__ use key=entityId to ensure the video player updates on prop changes
 export default class CameraStream extends Component {
   static propTypes = {
     hass: PropTypes.object.isRequired,
     entityId: PropTypes.string.isRequired,
-    accessToken: PropTypes.string,
+    accessToken: PropTypes.string.isRequired,
   };
 
   constructor(...params) {
     super(...params);
     this.state = {
-      videoUrl: true,
+      videoLoaded: false,
     };
     this.playerRef = React.createRef();
   }
 
   componentDidMount() {
     this.loadVideoStream(this.props);
-  }
-
-  // TOOD(dcramer): doesnt seem to work... not sure why
-  // the bug is within loadVideoStream (HLS doesnt seem to remount)
-  componentWillReceiveProps(nextProps) {
-    if (this.props.entityId !== nextProps.entityId) {
-      this.setState({ videoUrl: null });
-      this.loadVideoStream(nextProps);
-    }
   }
 
   componentWillUnmount() {
@@ -52,7 +44,7 @@ export default class CameraStream extends Component {
         });
         this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
           this.playerRef.current.play();
-          this.setState({ videoUrl: url });
+          this.setState({ videoLoaded: true });
         });
       })
       .catch((err) => {
@@ -61,9 +53,8 @@ export default class CameraStream extends Component {
   }
 
   render() {
-    const { videoUrl } = this.state;
-    if (videoUrl) {
-      return (
+    return (
+      <React.Fragment>
         <video
           ref={this.playerRef}
           autoPlay
@@ -71,16 +62,15 @@ export default class CameraStream extends Component {
           playsInline
           style={{ pointerEvents: "none" }}
         />
-      );
-    }
-    if (!this.props.accessToken) return;
-    return (
-      <img
-        src={this.props.hass.buildUrl(
-          `/api/camera_proxy_stream/${this.props.entityId}?token=${this.props.accessToken}`
+        {!this.state.videoLoaded && (
+          <img
+            src={this.props.hass.buildUrl(
+              `/api/camera_proxy_stream/${this.props.entityId}?token=${this.props.accessToken}`
+            )}
+            alt={this.props.entityId}
+          />
         )}
-        alt={this.props.entityId}
-      />
+      </React.Fragment>
     );
   }
 }
