@@ -7,7 +7,7 @@ import Modal from "react-modal";
 
 import "./index.css";
 
-import { TILE } from "./components/tiles";
+import { TILE } from "./tiles";
 // TODO(dcramer): how do we define icons without importing things?
 
 WebFont.load({

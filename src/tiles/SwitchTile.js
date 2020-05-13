@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 
-import Tile, { TileProps } from "../Tile";
+import Tile, { TileProps } from "./Tile";
 
-export default class SceneTile extends Tile {
+export default class SwitchTile extends Tile {
   static propTypes = {
     ...TileProps,
     entityId: PropTypes.string.isRequired,
@@ -13,7 +13,8 @@ export default class SceneTile extends Tile {
   }
 
   onClick = async () => {
-    await this.callService("scene", "turn_on", {
+    const { state } = this.getEntity(this.props.entityId);
+    await this.callService("switch", state === "on" ? "turn_off" : "turn_on", {
       entity_id: this.props.entityId,
     });
   };

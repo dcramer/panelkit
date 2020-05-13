@@ -4,9 +4,8 @@ import { Grid, Cell } from "styled-css-grid";
 import styled from "styled-components";
 
 import HomeAssistant from "./hass";
-
 import Header from "./components/Header";
-import { TileProps } from "./components/Tile";
+import { TileProps } from "./tiles/Tile";
 
 const Container = styled.div`
   padding: 20px;

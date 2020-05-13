@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Thumbnail from "../Thumbnail";
-import Tile, { TileProps } from "../Tile";
-import CameraModal from "../CameraModal";
+import Thumbnail from "../components/Thumbnail";
+import Tile, { TileProps } from "./Tile";
+import CameraModal from "../components/CameraModal";
 
 export default class CameraTile extends Tile {
   static propTypes = {

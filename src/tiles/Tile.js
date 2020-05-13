@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Icon from "./Icon";
+import Icon from "../components/Icon";
 
 export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,

@@ -1,7 +1,7 @@
 import React from "react";
 
-import Tile from "../Tile";
-import DoorControlModal from "../DoorControlModal";
+import Tile from "./Tile";
+import DoorControlModal from "../components/DoorControlModal";
 
 export default class DoorControlTile extends Tile {
   static defaultIcon = "door";

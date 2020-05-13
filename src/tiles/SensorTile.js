@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Tile, { TileProps } from "../Tile";
+import Tile, { TileProps } from "./Tile";
 
 export default class SensorTile extends Tile {
   static propTypes = {

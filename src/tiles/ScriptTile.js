@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import Tile, { TileProps } from "../Tile";
+import Tile, { TileProps } from "./Tile";
 
 export default class ScriptTile extends Tile {
   static propTypes = {
