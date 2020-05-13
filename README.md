@@ -74,11 +74,25 @@ A tile designed for a door control system, including a main camera feed as well 
 
 : The `camera` entity ID.
 
+### FanTile
+
+**NOT FINISHED**
+
+A simple fan switch. A single tap toggles the fan, a long press brings up a speed control.
+
+`type`
+
+: `TILE.FAN`
+
+`entityId`
+
+: The `fan` entity ID.
+
 ### LightTile
 
 **NOT FINISHED**
 
-A simple light switch. A single tap toggles the light switch, a long press brings up a brightness slider.
+A simple light switch. A single tap toggles the light, a long press brings up a brightness control.
 
 `type`
 

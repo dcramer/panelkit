@@ -19,6 +19,10 @@ window.CONFIG = {
           entityId: "switch.pi_hole",
           icon: "pi-hole",
         },
+        {
+          type: TILE.FAN,
+          entityId: "fan.master_bedroom",
+        },
       ],
     },
     {
