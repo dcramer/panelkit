@@ -12,6 +12,7 @@ const ModalHeader = ({ children, title, className, onRequestClose }) => {
         <Icon name="close" size="22pt" />
       </TransparentButton>
       {title && <h2>{title}</h2>}
+      {children}
     </div>
   );
 };
