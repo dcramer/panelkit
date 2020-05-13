@@ -8,6 +8,18 @@ export default class SwitchTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
+  getDefaultIcon() {
+    const { state } = this.getEntity(this.props.entityId);
+    switch (state) {
+      case "on":
+        return "toggle-switch";
+      case "off":
+        return "toggle-switch-off";
+      default:
+        return "toggle-switch";
+    }
+  }
+
   onClick = async () => {
     const { state } = this.getEntity(this.props.entityId);
     await this.callService("switch", state === "on" ? "turn_off" : "turn_on", {
