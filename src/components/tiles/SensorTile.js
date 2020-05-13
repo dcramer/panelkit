@@ -1,3 +1,4 @@
+import React from "react";
 import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "../Tile";
@@ -7,10 +8,15 @@ export default class SensorTile extends Tile {
     ...TileProps,
     entityId: PropTypes.string.isRequired,
     format: PropTypes.function,
+    unit: PropTypes.string,
   };
 
   static defaultProps = {
-    format: (state, attributes) => `${state} ${attributes.unit_of_measurement}`,
+    format: (state, _attributes, unitOfMeasurement = null) => (
+      <React.Fragment>
+        {state} <span className="unit">{unitOfMeasurement}</span>
+      </React.Fragment>
+    ),
   };
 
   getWatchedEntityIds() {
@@ -19,7 +25,11 @@ export default class SensorTile extends Tile {
 
   renderBody() {
     const { state, attributes } = this.getEntity(this.props.entityId);
-    return this.props.format(state, attributes);
+    return this.props.format(
+      state,
+      attributes,
+      this.props.unit || attributes.unit_of_measurement
+    );
   }
 
   renderStatus() {}

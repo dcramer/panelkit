@@ -12,7 +12,7 @@ import { TILE } from "./components/tiles";
 
 WebFont.load({
   google: {
-    families: ["Rubik:300,500"],
+    families: ["Rubik:300,400,500"],
   },
 });
 

@@ -151,7 +151,7 @@ A tile which displays the result of a sensor.
 : A function to format the value.
 
 ```javascript
-(state, attributes) => `${state} ${attributes.unit_of_measurement}`;
+(state, attributes, unitOfMeasurement) => `${state} ${unitOfMeasurement}`;
 ```
 
 ### ScriptTile

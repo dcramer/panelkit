@@ -111,6 +111,13 @@ code {
   text-transform: uppercase;
 }
 
+.tile-body .unit {
+  font-weight: 300;
+  font-size: 0.4em;
+  vertical-align: super;
+  margin-top: -15%;
+}
+
 .tile-icon {
 }
 
