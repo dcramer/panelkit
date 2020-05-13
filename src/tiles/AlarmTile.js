@@ -10,8 +10,16 @@ export default class AlarmTile extends Tile {
 
   getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);
-    return state === "armed_home" || state === "armed_away"
-      ? "bell"
-      : "bell-off";
+    switch (state) {
+      case "armed_home":
+      case "armed_away":
+        return "bell";
+      case "triggered":
+        return "bell-ring";
+      case "disarmed":
+        return "bell-off";
+      default:
+        return "bell";
+    }
   }
 }
