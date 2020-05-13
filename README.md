@@ -102,6 +102,18 @@ A simple light switch. A single tap toggles the light, a long press brings up a 
 
 : The `light` entity ID.
 
+### LockTile
+
+A simple lock swtich. A single tap toggles the lock.
+
+`type`
+
+: `TILE.LOCK`
+
+`entityId`
+
+: The `lock` entity ID.
+
 ### SceneTile
 
 A tile which can be clicked to activate a scene.

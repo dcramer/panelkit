@@ -23,6 +23,10 @@ window.CONFIG = {
           type: TILE.FAN,
           entityId: "fan.master_bedroom",
         },
+        {
+          type: TILE.LOCK,
+          entityId: "lock.garage_storage_deadbolt",
+        },
       ],
     },
     {
