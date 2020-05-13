@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const util = require("@mdi/util");
+
+const fileName = "public/icons.js";
+const version = util.getVersion();
+const meta = util.getMeta(true); // withPaths
+
+const icons = {};
+meta.forEach((icon) => (icons[icon.name] = icon.path));
+util.write(fileName, `window.ICONS = ${JSON.stringify(icons, null, 2)}`);
+console.log(`\u2714 Build ${version}`);

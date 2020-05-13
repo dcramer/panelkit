@@ -1,18 +1,14 @@
 import React from "react";
+import MdiIcon from "@mdi/react";
 
-import "@mdi/font/css/materialdesignicons.css";
+const ICONS = {};
 
-export default ({
-  name,
-  light,
-  dark,
-  inactive,
-  color,
-  size = "calc(3vw + 3vh)",
-}) => {
-  let className = `mdi mdi-${name}`;
-  if (light) className += " mdi-light";
-  if (dark) className += " mdi-dark";
-  if (inactive) className += " mdi-inactive";
-  return <i className={className} style={{ color: color, fontSize: size }}></i>;
+export const loadIcons = (data) => {
+  Object.keys(data).forEach((k) => {
+    ICONS[k] = data[k];
+  });
+};
+
+export default ({ name, size = 4, ...props }) => {
+  return <MdiIcon path={ICONS[name]} size={size} {...props} />;
 };

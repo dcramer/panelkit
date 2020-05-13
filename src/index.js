@@ -7,6 +7,7 @@ import Modal from "react-modal";
 
 import "./index.css";
 
+import { loadIcons } from "./components/Icon";
 import { TILE } from "./tiles";
 // TODO(dcramer): how do we define icons without importing things?
 
@@ -34,6 +35,8 @@ const initApp = () => {
 
 const bootApp = () => {
   window.TILE = TILE;
+
+  loadIcons(window.ICONS);
 
   const script = document.createElement("script");
   script.type = "text/javascript";

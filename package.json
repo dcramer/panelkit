@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mdi/font": "^5.2.45",
+    "@mdi/react": "^1.4.0",
+    "@mdi/svg": "^5.2.45",
+    "@mdi/util": "^0.3.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -18,7 +20,10 @@
     "webfontloader": "^1.6.28"
   },
   "scripts": {
+    "build-mdi": "bin/build-mdi",
+    "prestart": "bin/build-mdi",
     "start": "react-scripts start",
+    "prebuild": "bin/build-mdi",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -1330,10 +1330,20 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@mdi/font@^5.2.45":
+"@mdi/react@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@mdi/react/-/react-1.4.0.tgz#7f6bad1bd8801226d0e5bad91659b215ce68a93f"
+  integrity sha512-OUH9RhfDJPhybQL3owwrSDIXz2yVKXg5lYeOZjyRCiT9wqywNK0FeYyDByOwNIZnnIQoQYmuSrMv+pOX0Uqkmw==
+
+"@mdi/svg@^5.2.45":
   version "5.2.45"
-  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-5.2.45.tgz#88d3d83954b7e9b88a9691567ae6c8b922cbab53"
-  integrity sha512-3ReoMrZh2OJR8loD7to2hheYWh6pD+ypv6EpuvnEvoR04fsShwpDfS2ZErM3k98REEk4XIqPzuctAztmhWm+Pw==
+  resolved "https://registry.yarnpkg.com/@mdi/svg/-/svg-5.2.45.tgz#9ba77a1703c7f8f5c4c821250346010cdab0fcdf"
+  integrity sha512-sLkQtBuws+mTTMRbFjD6KiWPqeMfntTIwfhLuJ9N+XckOxDlE/3GnEEcYQP5Rm89b/dpkgsPzdGH1W6V/ZcsYA==
+
+"@mdi/util@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@mdi/util/-/util-0.3.2.tgz#8964f14ad86f9a355042824553958cc01a94886f"
+  integrity sha512-0ICbKIcsI+OYSqz6SWsYVJA6+kM+irQQiwYGBtJlq0a0sI0JrB2bCrc4S/xVfexqwa1EG8dlSY/ohsQllEXnyQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
