@@ -8,6 +8,7 @@ export const TileProps = Object.freeze({
   name: PropTypes.string,
   entityId: PropTypes.string,
   icon: PropTypes.string,
+  icons: PropTypes.objectOf(PropTypes.string),
   cameraList: PropTypes.array.isRequired,
 });
 
@@ -68,6 +69,16 @@ export default class Tile extends Component {
   };
 
   getIcon() {
+    if (this.props.entityId) {
+      return this.getIconForEntity(this.props.entityId);
+    }
+    return this.props.icon;
+  }
+
+  getIconForEntity(entityId) {
+    const { state } = this.getEntity(entityId);
+    if (this.props.icons && this.props.icons[state])
+      return this.props.icons[state];
     return this.props.icon;
   }
 

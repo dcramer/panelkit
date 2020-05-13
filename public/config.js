@@ -27,6 +27,16 @@ window.CONFIG = {
           type: TILE.LOCK,
           entityId: "lock.garage_storage_deadbolt",
         },
+        {
+          type: TILE.SCRIPT,
+          id: "sonos_say",
+          data: {
+            entity_id: "media_player.office",
+            volume: 0.5,
+            message: "Test",
+            delay: "00:00:05",
+          },
+        },
       ],
     },
     {

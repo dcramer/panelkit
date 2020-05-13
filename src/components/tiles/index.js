@@ -5,6 +5,7 @@ import FanTile from "./FanTile";
 import LightTile from "./LightTile";
 import LockTile from "./LockTile";
 import SceneTile from "./SceneTile";
+import ScriptTile from "./ScriptTile";
 import SwitchTile from "./SwitchTile";
 
 export const TILE = {
@@ -15,5 +16,6 @@ export const TILE = {
   LIGHT: LightTile,
   LOCK: LockTile,
   SCENE: SceneTile,
+  SCRIPT: ScriptTile,
   SWITCH: SwitchTile,
 };

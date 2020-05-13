@@ -26,9 +26,13 @@ Every tile is a React component. A few common attributes are shared:
 
 : Required by some tiles, this will couple the state of the tile to the given entity.
 
+`icons`
+
+: Optional mapping of icons to react to state changes.
+
 `icon`
 
-: Optional icon component to override the default.
+: Optional icon component to override the default (and the fallback when no other icon is available).
 
 ### AlarmTile
 
@@ -125,6 +129,22 @@ A tile which can be clicked to activate a scene.
 `entityId`
 
 : The `scene` entity ID.
+
+### ScriptTile
+
+A tile which can be clicked to activate a script.
+
+`type`
+
+: `TILE.SCRIPT`
+
+`id`
+
+: The `script` ID. e.g. `turn_on` if your script is `script.turn_on`.
+
+`data`
+
+: The payload to send along with the script.
 
 ### SwitchTile
 
