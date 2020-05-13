@@ -8,10 +8,6 @@ export default class SceneTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
-  getWatchedEntityIds() {
-    return [this.props.entityId];
-  }
-
   onClick = async () => {
     await this.callService("scene", "turn_on", {
       entity_id: this.props.entityId,

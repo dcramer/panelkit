@@ -52,6 +52,28 @@ A basic alarm control, showing the current state of the alarm and allowing disar
 
 : The `alarm_control_panel` entity ID.
 
+### AutomationTile
+
+A tile which to trigger an automation
+
+`type`
+
+: `TILE.AUTOMATION`
+
+`entityId`
+
+: The `automation` ID.
+
+`action`
+
+: The action to perform: `toggle` (default), `trigger`, `turn_on`, `turn_off`.
+
+```json
+{
+  "volume": 0.5
+}
+```
+
 ### CameraTile
 
 A still capture of a camera, refreshed every few seconds. A single tap goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.

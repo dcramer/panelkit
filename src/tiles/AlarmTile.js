@@ -14,8 +14,4 @@ export default class AlarmTile extends Tile {
       ? "bell"
       : "bell-off";
   }
-
-  getWatchedEntityIds() {
-    return [this.props.entityId];
-  }
 }

@@ -42,6 +42,10 @@ window.CONFIG = {
           entityId: "sensor.dryer_power",
           subtitle: "Garage",
         },
+        {
+          type: TILE.AUTOMATION,
+          entityId: "automation.start_homekit",
+        },
       ],
     },
     {

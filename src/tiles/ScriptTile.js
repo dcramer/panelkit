@@ -19,6 +19,4 @@ export default class ScriptTile extends Tile {
   renderTitle() {
     return this.props.title || this.props.entityId;
   }
-
-  renderStatus() {}
 }

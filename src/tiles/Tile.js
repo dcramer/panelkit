@@ -59,6 +59,7 @@ export default class Tile extends Component {
    * by default will simply force the tile to re-render.
    */
   getWatchedEntityIds() {
+    if (this.props.entityId) return [this.props.entityId];
     return [];
   }
 

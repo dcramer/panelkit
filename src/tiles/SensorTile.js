@@ -19,10 +19,6 @@ export default class SensorTile extends Tile {
     ),
   };
 
-  getWatchedEntityIds() {
-    return [this.props.entityId];
-  }
-
   renderBody() {
     const { state, attributes } = this.getEntity(this.props.entityId);
     return this.props.format(
