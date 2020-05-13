@@ -23,6 +23,8 @@ const toTitleCase = (str) => {
 export default class Tile extends Component {
   static propTypes = TileProps;
 
+  static defaultIcon;
+
   constructor(...params) {
     super(...params);
     this.state = this.getInitialState();
@@ -73,14 +75,21 @@ export default class Tile extends Component {
     if (this.props.entityId) {
       return this.getIconForEntity(this.props.entityId);
     }
-    return this.props.icon;
+    return this.props.icon || this.getDefaultIcon();
   }
 
   getIconForEntity(entityId) {
     const { state } = this.getEntity(entityId);
     if (this.props.icons && this.props.icons[state])
       return this.props.icons[state];
-    return this.props.icon;
+    return this.props.icon || this.getDefaultIcon();
+  }
+
+  /*
+   * Return the default icon when no overrides are present.
+   */
+  getDefaultIcon() {
+    return this.constructor.defaultIcon;
   }
 
   onClick = null;

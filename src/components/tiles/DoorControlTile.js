@@ -4,6 +4,8 @@ import Tile from "../Tile";
 import DoorControlModal from "../DoorControlModal";
 
 export default class DoorControlTile extends Tile {
+  static defaultIcon = "door";
+
   onClick = () => {
     if (this.state.showModal) return;
     this.setState({ showModal: true });
@@ -12,11 +14,6 @@ export default class DoorControlTile extends Tile {
   closeModal = () => {
     this.setState({ showModal: false });
   };
-
-  getIcon() {
-    if (this.props.icon) return this.props.icon;
-    return "door";
-  }
 
   renderBody() {
     return (

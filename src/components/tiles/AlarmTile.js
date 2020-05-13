@@ -8,8 +8,7 @@ export default class AlarmTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
-  getIcon() {
-    if (this.props.icon) return this.props.icon;
+  getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);
     return state === "armed_home" || state === "armed_away"
       ? "bell"

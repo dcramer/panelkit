@@ -9,6 +9,8 @@ export default class ScriptTile extends Tile {
     data: PropTypes.object,
   };
 
+  static defaultIcon = "script";
+
   onClick = async () => {
     let [domain, service] = this.props.entityId.split(".", 2);
     await this.callService(domain, service, this.props.data);
