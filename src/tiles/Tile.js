@@ -3,13 +3,17 @@ import PropTypes from "prop-types";
 
 import Icon from "../components/Icon";
 
-export const TileProps = Object.freeze({
-  hass: PropTypes.object.isRequired,
+export const TileConfig = Object.freeze({
   title: PropTypes.string,
   subtitle: PropTypes.string,
   entityId: PropTypes.string,
   icon: PropTypes.string,
   icons: PropTypes.objectOf(PropTypes.string),
+});
+
+export const TileProps = Object.freeze({
+  ...TileConfig,
+  hass: PropTypes.object.isRequired,
   cameraList: PropTypes.array.isRequired,
 });
 
