@@ -14,17 +14,30 @@ export default class SensorTile extends Tile {
   static defaultProps = {
     format: (state, _attributes, unitOfMeasurement = null) => (
       <React.Fragment>
-        {state} <span className="unit">{unitOfMeasurement}</span>
+        {state}
+        <span className="unit">{unitOfMeasurement}</span>
       </React.Fragment>
     ),
   };
 
+  getUnit(entityId) {
+    if (this.props.unit) return this.props.unit;
+    const {
+      attributes: { unit_of_measurement },
+    } = this.getEntity(entityId);
+    return unit_of_measurement || "";
+  }
+
   renderBody() {
     const { state, attributes } = this.getEntity(this.props.entityId);
-    return this.props.format(
-      state,
-      attributes,
-      this.props.unit || attributes.unit_of_measurement
+    return (
+      <div className="tile-sensor">
+        {this.props.format(
+          state,
+          attributes,
+          this.getUnit(this.props.entityId)
+        )}
+      </div>
     );
   }
 

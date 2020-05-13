@@ -1,0 +1,147 @@
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 167px;
+  background: rgba(132, 122, 116, 0.1);
+  -webkit-column-break-inside: avoid;
+  box-sizing: border-box;
+  box-shadow: 1px 1px 0 rgba(54, 47, 36, 0.35),
+    -1px -1px 0 rgba(200, 200, 200, 0.1);
+  padding: 6px;
+}
+
+.tile.clickable:focus,
+.tile.clickable:hover {
+  border: 3px solid #adb8bc;
+  padding: 3px;
+}
+
+.tile.clickable::after {
+  content: " ";
+  display: block;
+  left: 5px;
+  top: 5px;
+  height: 6px;
+  width: 6px;
+  border-left: 3px solid #adb8bc;
+  border-top: 3px solid #adb8bc;
+  opacity: 0.5;
+  position: absolute;
+}
+
+.tile.clickable:focus::after,
+.tile.clickable:hover::after {
+  left: 2px;
+  top: 2px;
+  opacity: 1;
+}
+
+.tile-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.tile.state-off {
+  color: var(--switch-off-color);
+}
+
+.tile.state-off .tile-icon {
+  opacity: 0.5;
+}
+
+.tile.state-on {
+  color: var(--switch-on-color);
+}
+
+.tile.state-armed_home,
+.tile.state-armed_away {
+  color: var(--alarm-armed-color);
+}
+
+.tile.state-disarmed {
+  color: var(--alarm-disarmed-color);
+}
+
+.tile-body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 32pt;
+  line-height: 32pt;
+  text-transform: uppercase;
+}
+
+.tile-body .unit {
+  font-weight: 300;
+  font-size: 0.4em;
+  vertical-align: super;
+  margin-top: -15%;
+  margin-left: 5px;
+}
+
+.tile-status .unit {
+  font-weight: 300;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.tile-icon {
+}
+
+.tile-cover {
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: -6px;
+  bottom: -6px;
+}
+.tile-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: -50% 50%;
+}
+
+.tile-title,
+.tile-subtitle,
+.tile-status {
+  position: absolute;
+  padding: 1px 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+.tile-title {
+  font-weight: bold;
+  color: var(--text-color);
+  left: 0;
+  bottom: 0;
+}
+
+.tile-subtitle {
+  font-weight: 300;
+  color: var(--text-color);
+  left: 0;
+  bottom: 20px;
+  opacity: 0.9;
+}
+
+.tile-status {
+  font-weight: bold;
+  text-align: right;
+  top: 0;
+  right: 0;
+  font-size: 0.9em;
+}

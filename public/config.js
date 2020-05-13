@@ -46,6 +46,11 @@ window.CONFIG = {
           type: TILE.AUTOMATION,
           entityId: "automation.start_homekit",
         },
+        {
+          type: TILE.CLIMATE,
+          entityId: "climate.master_bedroom",
+          unit: "F",
+        },
       ],
     },
     {

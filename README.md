@@ -90,6 +90,20 @@ A still capture of a camera, refreshed every few seconds. A single tap goes into
 
 : The refresh interval for the camera still in milliseconds. Defaults to `3000` (3s).
 
+### ClimateTile
+
+**NOT FINISHED**
+
+A tile designed for climate control.
+
+`type`
+
+: `TILE.CLIMATE`
+
+`entityId`
+
+: The `climate` entity ID.
+
 ### DoorControlTile
 
 **NOT FINISHED**

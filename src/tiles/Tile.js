@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import "./Tile.css";
 import Icon from "../components/Icon";
+import { toTitleCase } from "../utils";
 
 export const TileConfig = Object.freeze({
   title: PropTypes.string,
@@ -16,13 +18,6 @@ export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,
   cameraList: PropTypes.array.isRequired,
 });
-
-const toTitleCase = (str) => {
-  return str.replace(
-    /\w\S*/g,
-    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-};
 
 export default class Tile extends Component {
   static propTypes = TileProps;

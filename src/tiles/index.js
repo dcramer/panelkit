@@ -1,6 +1,7 @@
 import AutomationTile from "./AutomationTile";
 import AlarmTile from "./AlarmTile";
 import CameraTile from "./CameraTile";
+import ClimateTile from "./ClimateTile";
 import DoorControlTile from "./DoorControlTile";
 import FanTile from "./FanTile";
 import LightTile from "./LightTile";
@@ -14,6 +15,7 @@ export const TILE = {
   ALARM: AlarmTile,
   AUTOMATION: AutomationTile,
   CAMERA: CameraTile,
+  CLIMATE: ClimateTile,
   DOOR_CONTROL: DoorControlTile,
   FAN: FanTile,
   LIGHT: LightTile,
