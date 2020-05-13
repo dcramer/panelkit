@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { mdiBell, mdiBellOff } from "@mdi/js";
 
 import Tile, { TileProps } from "../Tile";
 
@@ -13,8 +12,8 @@ export default class AlarmTile extends Tile {
     if (this.props.icon) return this.props.icon;
     const { state } = this.getEntity(this.props.entityId);
     return state === "armed_home" || state === "armed_away"
-      ? mdiBell
-      : mdiBellOff;
+      ? "bell"
+      : "bell-off";
   }
 
   getWatchedEntityIds() {

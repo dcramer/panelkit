@@ -11,7 +11,7 @@ Configuration currently lives in `public/config.js`. In an ideal world this woul
 There's a few things to note in config:
 
 - `TILE` defines the type of tile to render - they're all hardcoded. Each `TILE` is actually a React component.
-- Any tile which defines `tiles` becomes a group and the tile widget is ignored.
+- Any tile which defines `tiles` becomes a group and the tile is ignored.
 - `ICON` is currently a global reference to icons we're using in the example, but isn't the long term solution.
 
 ## Tiles

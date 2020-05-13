@@ -1,8 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import Icon from "@mdi/react";
-import { mdiClose } from "@mdi/js";
 
 import CameraStream from "./CameraStream";
 import ModalHeader from "./ModalHeader";
@@ -66,12 +64,10 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
       overlayClassName="Overlay"
     >
       <CameraViewerContainer>
-        <ModalHeader>
-          <TransparentButton onClick={onRequestClose}>
-            <Icon path={mdiClose} />
-          </TransparentButton>
-          <h2>{activeEntity.attributes.friendly_name}</h2>
-        </ModalHeader>
+        <ModalHeader
+          title={activeEntity.attributes.friendly_name}
+          onRequestClose={onRequestClose}
+        />
         <CameraListContainer>
           <ul>
             {cameraList.map((entityId) => {

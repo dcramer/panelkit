@@ -1,5 +1,4 @@
 import React from "react";
-import { mdiDoor } from "@mdi/js";
 
 import Tile from "../Tile";
 import DoorControlModal from "../DoorControlModal";
@@ -16,7 +15,7 @@ export default class DoorControlTile extends Tile {
 
   getIcon() {
     if (this.props.icon) return this.props.icon;
-    return mdiDoor;
+    return "door";
   }
 
   renderBody() {

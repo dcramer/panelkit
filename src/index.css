@@ -31,7 +31,7 @@ code {
     monospace;
 }
 
-.widget {
+.tile {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -47,13 +47,13 @@ code {
   padding: 6px;
 }
 
-.widget.clickable:focus,
-.widget.clickable:hover {
+.tile.clickable:focus,
+.tile.clickable:hover {
   border: 3px solid #adb8bc;
   padding: 3px;
 }
 
-.widget.clickable::after {
+.tile.clickable::after {
   content: " ";
   display: block;
   left: 5px;
@@ -66,63 +66,64 @@ code {
   position: absolute;
 }
 
-.widget.clickable:focus::after,
-.widget.clickable:hover::after {
+.tile.clickable:focus::after,
+.tile.clickable:hover::after {
   left: 2px;
   top: 2px;
   opacity: 1;
 }
 
-.widget-container {
+.tile-container {
   position: relative;
   height: 100%;
   width: 100%;
 }
 
-.widget.state-off {
+.tile.state-off {
   color: var(--switch-off-color);
 }
 
-.widget.state-off .widget-icon {
+.tile.state-off .tile-icon {
   opacity: 0.5;
 }
 
-.widget.state-on {
+.tile.state-on {
   color: var(--switch-on-color);
 }
 
-.widget.state-armed_home,
-.widget.state-armed_away {
+.tile.state-armed_home,
+.tile.state-armed_away {
   color: var(--alarm-armed-color);
 }
 
-.widget.state-disarmed {
+.tile.state-disarmed {
   color: var(--alarm-disarmed-color);
 }
 
-.widget-body {
+.tile-body {
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.widget-cover {
+.tile-cover {
   position: absolute;
   left: -6px;
   right: -6px;
   top: -6px;
   bottom: -6px;
 }
-.widget-cover img {
+.tile-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: -50% 50%;
 }
 
-.widget-label,
-.widget-status {
+.tile-label,
+.tile-status {
   font-weight: bold;
   position: absolute;
   padding: 1px 0;
@@ -134,22 +135,20 @@ code {
   max-width: 100%;
 }
 
-.widget-label {
+.tile-label {
   color: var(--text-color);
   left: 0;
   bottom: 0;
 }
 
-.widget-status {
+.tile-status {
   text-align: right;
   top: 0;
   right: 0;
   font-size: 0.9em;
 }
 
-.widget-icon {
-  height: 40%;
-  width: 100%;
+.tile-icon {
 }
 
 .Modal {

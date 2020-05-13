@@ -1,12 +1,9 @@
 import React from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import Icon from "@mdi/react";
-import { mdiClose } from "@mdi/js";
 
 import CameraStream from "./CameraStream";
 import ModalHeader from "./ModalHeader";
-import TransparentButton from "./TransparentButton";
 
 const CameraViewerContainer = styled.div`
   height: 100%;
@@ -40,12 +37,7 @@ export default ({ hass, camera, name, isOpen, onRequestClose }) => {
       overlayClassName="Overlay"
     >
       <CameraViewerContainer>
-        <ModalHeader>
-          <TransparentButton onClick={onRequestClose}>
-            <Icon path={mdiClose} />
-          </TransparentButton>
-          <h2>{name}</h2>
-        </ModalHeader>
+        <ModalHeader title={name} onRequestClose={onRequestClose} />
         <ControlsContainer></ControlsContainer>
         <CameraStreamContainer>
           <CameraStream

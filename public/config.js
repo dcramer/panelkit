@@ -17,7 +17,7 @@ window.CONFIG = {
         {
           type: TILE.SWITCH,
           entityId: "switch.pi_hole",
-          icon: ICON.PI_HOLE,
+          icon: "pi-hole",
         },
       ],
     },
@@ -29,7 +29,7 @@ window.CONFIG = {
           type: TILE.SCENE,
           entityId: "scene.lights_off",
           name: "Turn Off Lights",
-          icon: ICON.LIGHTBULB_GROUP_OFF,
+          icon: "lightbulb-group-off",
         },
         {
           type: TILE.LIGHT,

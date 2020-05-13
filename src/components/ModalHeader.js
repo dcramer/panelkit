@@ -1,6 +1,22 @@
+import React from "react";
+
 import styled from "styled-components";
 
-export default styled.div`
+import Icon from "./Icon";
+import TransparentButton from "./TransparentButton";
+
+const ModalHeader = ({ children, title, className, onRequestClose }) => {
+  return (
+    <div className={className}>
+      <TransparentButton onClick={onRequestClose}>
+        <Icon name="close" size="22pt" />
+      </TransparentButton>
+      {title && <h2>{title}</h2>}
+    </div>
+  );
+};
+
+export default styled(ModalHeader)`
   grid-area: header;
   display: flex;
   align-items: center;

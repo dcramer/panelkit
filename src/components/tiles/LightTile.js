@@ -2,8 +2,6 @@ import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "../Tile";
 
-import { mdiLightbulb, mdiLightbulbOn } from "@mdi/js";
-
 export default class LightTile extends Tile {
   static propTypes = {
     ...TileProps,
@@ -24,6 +22,6 @@ export default class LightTile extends Tile {
   getIcon() {
     if (this.props.icon) return this.props.icon;
     const { state } = this.getEntity(this.props.entityId);
-    return state === "on" ? mdiLightbulbOn : mdiLightbulb;
+    return state === "on" ? "lightbulb-on" : "lightbulb";
   }
 }

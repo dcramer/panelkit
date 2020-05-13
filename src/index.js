@@ -9,7 +9,6 @@ import "./index.css";
 
 import { TILE } from "./components/tiles";
 // TODO(dcramer): how do we define icons without importing things?
-import { mdiPiHole, mdiLightbulbGroupOff } from "@mdi/js";
 
 WebFont.load({
   google: {
@@ -35,10 +34,6 @@ const initApp = () => {
 
 const bootApp = () => {
   window.TILE = TILE;
-  window.ICON = {
-    PI_HOLE: mdiPiHole,
-    LIGHTBULB_GROUP_OFF: mdiLightbulbGroupOff,
-  };
 
   const script = document.createElement("script");
   script.type = "text/javascript";

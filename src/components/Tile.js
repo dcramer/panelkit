@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Icon from "@mdi/react";
+
+import Icon from "./Icon";
 
 export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,
@@ -47,7 +48,7 @@ export default class Tile extends Component {
   /* Defines a list of entity IDs to monitor for update.
    *
    * When an entity is updated, it will call `onStateChange`, which
-   * by default will simply force the widget to re-render.
+   * by default will simply force the tile to re-render.
    */
   getWatchedEntityIds() {
     return [];
@@ -84,17 +85,17 @@ export default class Tile extends Component {
     const cover = this.renderCover();
     return (
       <div
-        className={`widget ${this.getClassNames()} ${
+        className={`tile ${this.getClassNames()} ${
           this.onClick && "clickable"
         }`}
         onClick={this.onClick}
         style={{ cursor: this.onClick ? "pointer" : "normal" }}
       >
-        <div className="widget-container">
-          {cover && <div className="widget-cover">{cover}</div>}
-          {status && <div className="widget-status">{status}</div>}
-          <div className="widget-body">{this.renderBody()}</div>
-          {label && <div className="widget-label">{label}</div>}
+        <div className="tile-container">
+          {cover && <div className="tile-cover">{cover}</div>}
+          {status && <div className="tile-status">{status}</div>}
+          <div className="tile-body">{this.renderBody()}</div>
+          {label && <div className="tile-label">{label}</div>}
         </div>
       </div>
     );
@@ -103,7 +104,11 @@ export default class Tile extends Component {
   renderBody() {
     const icon = this.getIcon();
     if (!icon) return null;
-    return <Icon path={icon} className="widget-icon" />;
+    return (
+      <span className="tile-icon">
+        <Icon name={icon} />
+      </span>
+    );
   }
 
   renderCover() {}
