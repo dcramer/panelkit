@@ -25,7 +25,6 @@ export default class App extends Component {
       ).isRequired,
     }).isRequired,
     gridWidth: PropTypes.number.isRequired,
-    cellHeight: 150,
   };
 
   static defaultProps = {
