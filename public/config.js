@@ -37,6 +37,10 @@ window.CONFIG = {
             delay: "00:00:05",
           },
         },
+        {
+          type: TILE.SENSOR,
+          entityId: "sensor.dryer_power",
+        },
       ],
     },
     {

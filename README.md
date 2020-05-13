@@ -130,6 +130,26 @@ A tile which can be clicked to activate a scene.
 
 : The `scene` entity ID.
 
+### SensorTile
+
+A tile which displays the result of a sensor.
+
+`type`
+
+: `TILE.SENSOR`
+
+`entityId`
+
+: The `sensor` ID.
+
+`format`
+
+: A function to format the value.
+
+```javascript
+(state, attributes) => `${state} ${attributes.unit_of_measurement}`;
+```
+
 ### ScriptTile
 
 A tile which can be clicked to activate a script.
@@ -145,6 +165,12 @@ A tile which can be clicked to activate a script.
 `data`
 
 : The payload to send along with the script.
+
+```json
+{
+  "volume": 0.5
+}
+```
 
 ### SwitchTile
 
