@@ -107,6 +107,11 @@ code {
   align-items: center;
   justify-content: center;
   font-size: 32pt;
+  line-height: 32pt;
+  text-transform: uppercase;
+}
+
+.tile-icon {
 }
 
 .tile-cover {
@@ -157,9 +162,6 @@ code {
   top: 0;
   right: 0;
   font-size: 0.9em;
-}
-
-.tile-icon {
 }
 
 .Modal {
