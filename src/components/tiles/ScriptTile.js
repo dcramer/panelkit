@@ -5,16 +5,17 @@ import Tile, { TileProps } from "../Tile";
 export default class ScriptTile extends Tile {
   static propTypes = {
     ...TileProps,
-    id: PropTypes.string.isRequired,
+    entityId: PropTypes.string.isRequired,
     data: PropTypes.object,
   };
 
   onClick = async () => {
-    await this.callService("script", this.props.id, this.props.data);
+    let [domain, service] = this.props.entityId.split(".", 2);
+    await this.callService(domain, service, this.props.data);
   };
 
   renderLabel() {
-    return this.props.name || this.props.id;
+    return this.props.name || this.props.entityId;
   }
 
   renderStatus() {}

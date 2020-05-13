@@ -138,9 +138,9 @@ A tile which can be clicked to activate a script.
 
 : `TILE.SCRIPT`
 
-`id`
+`entityId`
 
-: The `script` ID. e.g. `turn_on` if your script is `script.turn_on`.
+: The `script` ID.
 
 `data`
 

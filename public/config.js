@@ -29,7 +29,7 @@ window.CONFIG = {
         },
         {
           type: TILE.SCRIPT,
-          id: "sonos_say",
+          entityId: "script.sonos_say",
           data: {
             entity_id: "media_player.office",
             volume: 0.5,
