@@ -123,9 +123,9 @@ code {
   object-position: -50% 50%;
 }
 
-.tile-label,
+.tile-title,
+.tile-subtitle,
 .tile-status {
-  font-weight: bold;
   position: absolute;
   padding: 1px 0;
   max-width: 100%;
@@ -136,13 +136,23 @@ code {
   max-width: 100%;
 }
 
-.tile-label {
+.tile-title {
+  font-weight: bold;
   color: var(--text-color);
   left: 0;
   bottom: 0;
 }
 
+.tile-subtitle {
+  font-weight: 300;
+  color: var(--text-color);
+  left: 0;
+  bottom: 20px;
+  opacity: 0.9;
+}
+
 .tile-status {
+  font-weight: bold;
   text-align: right;
   top: 0;
   right: 0;

@@ -5,7 +5,8 @@ import Icon from "./Icon";
 
 export const TileProps = Object.freeze({
   hass: PropTypes.object.isRequired,
-  name: PropTypes.string,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   entityId: PropTypes.string,
   icon: PropTypes.string,
   icons: PropTypes.objectOf(PropTypes.string),
@@ -92,7 +93,8 @@ export default class Tile extends Component {
 
   render() {
     const status = this.renderStatus();
-    const label = this.renderLabel();
+    const title = this.renderTitle();
+    const subtitle = this.renderSubtitle();
     const cover = this.renderCover();
     return (
       <div
@@ -106,7 +108,8 @@ export default class Tile extends Component {
           {cover && <div className="tile-cover">{cover}</div>}
           {status && <div className="tile-status">{status}</div>}
           <div className="tile-body">{this.renderBody()}</div>
-          {label && <div className="tile-label">{label}</div>}
+          {title && <div className="tile-title">{title}</div>}
+          {subtitle && <div className="tile-subtitle">{subtitle}</div>}
         </div>
       </div>
     );
@@ -124,12 +127,16 @@ export default class Tile extends Component {
 
   renderCover() {}
 
-  renderLabel() {
+  renderSubtitle() {
+    return this.props.subtitle;
+  }
+
+  renderTitle() {
     if (!this.props.entityId) return null;
     const {
       attributes: { friendly_name },
     } = this.getEntity(this.props.entityId);
-    return this.props.name || friendly_name;
+    return this.props.title || friendly_name;
   }
 
   renderStatus() {

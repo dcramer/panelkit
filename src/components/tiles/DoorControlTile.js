@@ -24,7 +24,7 @@ export default class DoorControlTile extends Tile {
         {super.renderBody()}
         <DoorControlModal
           hass={this.props.hass}
-          name={this.renderLabel()}
+          name={this.renderTitle()}
           camera={this.props.camera}
           isOpen={this.state.showModal}
           onRequestClose={this.closeModal}
@@ -33,7 +33,7 @@ export default class DoorControlTile extends Tile {
     );
   }
 
-  renderLabel() {
-    return this.props.name || "Door Control";
+  renderTitle() {
+    return this.props.title || "Door Control";
   }
 }

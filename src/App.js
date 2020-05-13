@@ -6,6 +6,7 @@ import styled from "styled-components";
 import HomeAssistant from "./hass";
 
 import Header from "./components/Header";
+import { TileProps } from "./components/Tile";
 
 const Container = styled.div`
   padding: 20px;
@@ -19,8 +20,8 @@ export default class App extends Component {
       tiles: PropTypes.arrayOf(
         PropTypes.shape({
           type: PropTypes.elementType,
-          name: PropTypes.string,
           tiles: PropTypes.array,
+          ...TileProps,
         })
       ).isRequired,
     }).isRequired,

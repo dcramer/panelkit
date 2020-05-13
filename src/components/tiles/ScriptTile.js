@@ -14,8 +14,8 @@ export default class ScriptTile extends Tile {
     await this.callService(domain, service, this.props.data);
   };
 
-  renderLabel() {
-    return this.props.name || this.props.entityId;
+  renderTitle() {
+    return this.props.title || this.props.entityId;
   }
 
   renderStatus() {}

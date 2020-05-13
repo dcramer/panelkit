@@ -18,9 +18,13 @@ There's a few things to note in config:
 
 Every tile is a React component. A few common attributes are shared:
 
-`name`
+`title`
 
-: The name (or label) to make visible for the tile. Inferred from the entity when available.
+: The title (or name) to make visible for the tile. Inferred from the entity when available.
+
+`subtitle`
+
+: An optional subtitle to make visible for the tile.
 
 `entityId`
 
