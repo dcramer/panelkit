@@ -31,16 +31,21 @@ export default class HomeAssistant {
     this._hasPrepared = false;
     this._shouldReconnect = true;
 
+    // requests which are in progress
     this._pendingRequests = {
       // requestId: Promise
     };
+    // changes which are pending a response, but assumed to succeed
+    this._pendingChanges = {
+      // requestId: {entityId: {state: ..., attributes: {...}}}
+    };
     this._eventSubscribers = [
-      // {id, entityId, callback(entityId, oldState, newState)}
+      // {id, entityId, callback(entityId, newState)}
     ];
     this._rootSubscriptions = {
       // ID: eventType
     };
-    this._stateCache = {};
+    this._entityCache = {};
 
     this.state = State.DISCONNECTED;
     this.phase = Phase.AUTHENTICATION;
@@ -107,15 +112,11 @@ export default class HomeAssistant {
         this._prepareApp();
         break;
       case "event":
-        const { entity_id, new_state, old_state } = payload.event.data;
+        const { entity_id, new_state } = payload.event.data;
         if (payload.event.event_type === "state_changed") {
-          this._stateCache[entity_id] = new_state;
+          this._entityCache[entity_id] = new_state;
         }
-        this._eventSubscribers.forEach(({ entityId, callback }) => {
-          if (entity_id === entityId) {
-            callback(entity_id, new_state, old_state);
-          }
-        });
+        this._notifySubscribers(entity_id, new_state);
         break;
       case "result":
         const promiseHandler = this._pendingRequests[payload.id];
@@ -124,6 +125,9 @@ export default class HomeAssistant {
         } else {
           let [resolve, reject] = promiseHandler;
           delete this._pendingRequests[payload.id];
+          setTimeout(() => {
+            delete this._pendingChanges[payload.id];
+          }, 1000);
           if (payload.success) {
             resolve(payload);
           } else {
@@ -156,15 +160,23 @@ export default class HomeAssistant {
 
   _prepareApp = async () => {
     await this.subscribeEvents("state_changed");
-    const _stateCache = this._stateCache;
+    const _entityCache = this._entityCache;
     const { result } = await this.getStates();
     result.forEach((state) => {
-      _stateCache[state.entity_id] = state;
+      _entityCache[state.entity_id] = state;
     });
 
     this._hasPrepared = true;
     this.onReady(this);
   };
+
+  _notifySubscribers(entityId, ...params) {
+    this._eventSubscribers.forEach((subscriber) => {
+      if (subscriber.entityId === entityId) {
+        subscriber.callback(entityId, ...params);
+      }
+    });
+  }
 
   isReady() {
     return (
@@ -178,17 +190,28 @@ export default class HomeAssistant {
     return `${this.url}${path}`;
   }
 
-  getState(entityId) {
-    const result = this._stateCache[entityId];
+  getEntity(entityId) {
+    const result = this._entityCache[entityId];
     if (!result)
       throw new Error(`Unable to find entity in state cache: ${entityId}`);
+
+    Object.values(this._pendingChanges).forEach((data) => {
+      Object.keys(data).forEach((eId) => {
+        if (eId === entityId) {
+          Object.keys(data[eId]).forEach((k) => {
+            if (k === "state") result[k] = data[eId][k];
+            else result[k] = { ...(result[k] || {}), ...data[eId][k] };
+          });
+        }
+      });
+    });
     return result;
   }
 
   getEntityPicture(entityId) {
     const {
       attributes: { entity_picture },
-    } = this.getState(entityId);
+    } = this.getEntity(entityId);
     return this.buildUrl(entity_picture);
   }
 
@@ -243,10 +266,29 @@ export default class HomeAssistant {
     this._messageCounter += 1;
   }
 
-  sendCommand(message) {
+  /*
+   * Send a command to Home Assistant
+   *
+   * ```
+   * sendCommand({type: "ping"}).then(response => console.log(response));
+   * ```
+   *
+   * For optimistic entity updates, pass the suggestedChanges paramter:
+   *
+   * ```
+   * sendCommand({type: "update_entity", "entityId": "foo.bar", "state": "on"}, {"foo.bar": {"state": "on"}})
+   * ```
+   */
+  sendCommand(message, suggestedChanges = null) {
     const id = this._messageCounter;
     const promise = new Promise((resolve, reject) => {
       this._pendingRequests[id] = [resolve, reject];
+      if (suggestedChanges) {
+        this._pendingChanges[id] = suggestedChanges;
+        Object.keys(suggestedChanges).forEach((entityId) => {
+          this._notifySubscribers(entityId, this.getEntity(entityId));
+        });
+      }
       this.sendMessage({
         id,
         ...message,
@@ -254,6 +296,7 @@ export default class HomeAssistant {
     });
     promise.cancel = () => {
       delete this._pendingRequests[id];
+      delete this._pendingChanges[id];
     };
     return promise;
   }
@@ -273,13 +316,16 @@ export default class HomeAssistant {
     });
   }
 
-  callService(domain, service, serviceData) {
-    return this.sendCommand({
-      type: "call_service",
-      domain,
-      service,
-      service_data: serviceData,
-    });
+  callService(domain, service, serviceData, suggestedChanges = null) {
+    return this.sendCommand(
+      {
+        type: "call_service",
+        domain,
+        service,
+        service_data: serviceData,
+      },
+      suggestedChanges
+    );
   }
 
   getStates() {

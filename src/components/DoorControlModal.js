@@ -27,7 +27,7 @@ const CameraStreamContainer = styled.div`
 `;
 
 export default ({ hass, camera, name, isOpen, onRequestClose }) => {
-  let cameraEntity = hass.getState(camera);
+  let cameraEntity = hass.getEntity(camera);
 
   return (
     <Modal

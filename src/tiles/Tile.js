@@ -98,15 +98,15 @@ export default class Tile extends Component {
     return [];
   }
 
-  getEntity(entityId) {
-    return this.props.hass.getState(entityId);
+  getEntity(...params) {
+    return this.props.hass.getEntity(...params);
   }
 
-  callService(domain, service, serviceData) {
-    return this.props.hass.callService(domain, service, serviceData);
+  callService(...params) {
+    return this.props.hass.callService(...params);
   }
 
-  onStateChange = (_entityId, _newState, _oldState) => {
+  onStateChange = (_entityId, _newState) => {
     // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
     this.forceUpdate();
   };

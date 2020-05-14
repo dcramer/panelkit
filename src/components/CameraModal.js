@@ -54,7 +54,7 @@ const CameraStreamContainer = styled.div`
 
 export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
   let [activeCamera, selectCamera] = React.useState(entityId);
-  let activeEntity = hass.getState(activeCamera);
+  let activeEntity = hass.getEntity(activeCamera);
 
   return (
     <Modal
@@ -73,7 +73,7 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
             {cameraList.map((entityId) => {
               const {
                 attributes: { friendly_name },
-              } = hass.getState(entityId);
+              } = hass.getEntity(entityId);
               return (
                 <li
                   key={entityId}

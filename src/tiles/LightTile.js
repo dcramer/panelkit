@@ -10,9 +10,16 @@ export default class LightTile extends Tile {
 
   onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
-    await this.callService("light", state === "on" ? "turn_off" : "turn_on", {
-      entity_id: this.props.entityId,
-    });
+    await this.callService(
+      "light",
+      state === "on" ? "turn_off" : "turn_on",
+      {
+        entity_id: this.props.entityId,
+      },
+      {
+        [this.props.entityId]: { state: state === "on" ? "off" : "on" },
+      }
+    );
   };
 
   getDefaultIcon() {
