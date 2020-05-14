@@ -139,6 +139,11 @@ A tile designed for a door control system, including a main camera feed as well 
 
 : The `camera` entity ID.
 
+TODO:
+
+- Add controls within panel.
+- Add event-based prompt to load DoorControlModal.
+
 ### FanTile
 
 **NOT FINISHED**
