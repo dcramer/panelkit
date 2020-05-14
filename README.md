@@ -10,15 +10,19 @@ Some scribbles about what (hopefully) still needs done.
 
 - Grid system needs work. It'd ideally automatically layout with a fixed width grid, and variable unit-sized tiles. Tiles can live in groups, which then cascades the grid. e.g. traditional CSS grid systems, but with a bit more control.
 
+- Implement mobile-specific styles and metadata. There's nothing responsive yet, and particularly the grid is going to need at least three views: desktop/altop friendly, landscape tablet, and portrait phone.
+
 - Needs thorough testing on mobile devices and tablets. Haven't done this at all yet, though some of the behavior is already implemented (for e.g. touch controls).
 
 - Revisit a number of design elements (like the Slider) to optimize for touch devices and smaller form factors. Some controls are likely going to be too small to tap easily, or need to respond faster to human interactions. A bunch of work is already done to make it _feel_ fast, but it's not complete yet.
 
-- Implement missing Tile components. Notes are generally inline in the Tile list below.
+- Implement missing Tile features. Notes are generally inline in the Tile list below. To some degree I'm modeling feature parity with Tileboard, but there may be things that simply aren't worth porting (such as the device tracker) unless someone else opts to do it.
 
-- Determine how this actually ships to prod. It's easy to develop against right now, but is the `config.js` pattern going to work well enough when we've compiled the application? The ideal scenario is that someone can just pull down a pre-built `index.html`, put that alongside a `config.js` and serve that via home assistant or their browser of choice.
+- Determine how this actually ships to "prod". It's easy to develop against right now, but is the `config.js` pattern going to work well enough when we've compiled the application? The ideal scenario is that someone can just pull down a pre-built `index.html`, put that alongside a `config.js` and serve that via home assistant or their browser of choice.
 
-- Consider migrationg to `home-assistant-js-websocket`. I didn't notice it when I started development, and its got quite a lot of functionality/complexity that migration may or may not be worth it.
+- Consider migrating to `home-assistant-js-websocket`. I didn't notice it when I started development, and its got quite a lot of functionality/complexity that migration may or may not be worth it.
+
+- Add validation for config so that it doesn't throw cryptic javascript errors when e.g. you pass an invalid `type`.
 
 ## Config
 
@@ -27,8 +31,7 @@ Configuration currently lives in `public/config.js`. In an ideal world this woul
 There's a few things to note in config:
 
 - `TILE` defines the type of tile to render - they're all hardcoded. Each `TILE` is actually a React component.
-- Any tile which defines `tiles` becomes a group and the tile is ignored.
-- `ICON` is currently a global reference to icons we're using in the example, but isn't the long term solution.
+- Any tile which defines `tiles` becomes a group and the tile component itself is ignored.
 
 ## Tiles
 
