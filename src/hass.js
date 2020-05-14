@@ -56,31 +56,6 @@ export default class HomeAssistant {
     this.onReady = onReady || function () {};
   }
 
-  _onOpen = (event) => {
-    console.log("[hass] Connection opened", event.target.url);
-    this.state = State.CONNECTED;
-    this.phase = Phase.AUTHENTICATION;
-  };
-
-  _onClose = (event) => {
-    this.state = State.DISCONNECTED;
-    this.phase = Phase.AUTHENTICATION;
-    if (this._shouldReconnect) {
-      // increment retry interval - max of 10s
-      this._timeout = Math.min(this._timeout + this._timeout, 10000);
-
-      console.log(
-        `[hass] Socket is closed. Reconnect will be attempted in ${
-          this._timeout / 1000
-        } second(s).`,
-        event.reason
-      );
-
-      // call check function after timeout
-      this._connectTimer = setTimeout(this.checkConnection, this._timeout);
-    }
-  };
-
   _onMessage = (event) => {
     const payload = JSON.parse(event.data);
     console.debug(
@@ -125,27 +100,28 @@ export default class HomeAssistant {
         } else {
           let [resolve, reject] = promiseHandler;
           delete this._pendingRequests[payload.id];
-          setTimeout(() => {
-            delete this._pendingChanges[payload.id];
-          }, 1000);
           if (payload.success) {
+            setTimeout(() => {
+              delete this._pendingChanges[payload.id];
+            }, 1000);
             resolve(payload);
           } else {
-            reject(payload);
+            const err = new Error(payload.error.message);
+            err.payload = payload;
+            const changes = this._pendingChanges[payload.id];
+            if (changes) {
+              this._pendingChanges[payload.id] = {};
+              Object.keys(changes).forEach((entityId) => {
+                this._notifySubscribers(entityId, this.getEntity(entityId));
+              });
+            }
+            reject(err);
           }
         }
         break;
       default:
         break;
     }
-  };
-
-  _onError = (event) => {
-    console.error("[hass] Socket encountered error. Closing socket");
-    this._socket.close();
-    this._socket = null;
-    this.phase = Phase.AUTHENTICATION;
-    this.state = State.DISCONNECTED;
   };
 
   /**
@@ -191,7 +167,7 @@ export default class HomeAssistant {
   }
 
   getEntity(entityId) {
-    const result = this._entityCache[entityId];
+    const result = { ...this._entityCache[entityId] };
     if (!result)
       throw new Error(`Unable to find entity in state cache: ${entityId}`);
 
@@ -205,6 +181,7 @@ export default class HomeAssistant {
         }
       });
     });
+
     return result;
   }
 
@@ -213,6 +190,21 @@ export default class HomeAssistant {
       attributes: { entity_picture },
     } = this.getEntity(entityId);
     return this.buildUrl(entity_picture);
+  }
+
+  _canRetryConnection(code) {
+    if (!this._shouldReconnect) return false;
+    switch (code) {
+      case 1002:
+      case 1003:
+      case 1007:
+      case 1008:
+      case 1010:
+      case 1015:
+        return false;
+      default:
+        return true;
+    }
   }
 
   connect() {
@@ -238,11 +230,63 @@ export default class HomeAssistant {
       `ws://${this.url.split("://", 2)[1]}/api/websocket`
     );
 
-    // websocket handlers
-    this._socket.onmessage = this._onMessage;
-    this._socket.onclose = this._onClose;
-    this._socket.onopen = this._onOpen;
-    this._socket.onerror = this._onError;
+    return new Promise((resolve, reject) => {
+      // websocket handlers
+
+      const onOpen = (event) => {
+        console.log("[hass] Connection opened", event.target.url);
+        this.state = State.CONNECTED;
+        this.phase = Phase.AUTHENTICATION;
+
+        resolve();
+      };
+
+      const onError = (event) => {
+        console.error(
+          "[hass] Error communicating with Home Assistant. Closing Socket"
+        );
+        this._socket.close();
+        this._socket = null;
+        this.phase = Phase.AUTHENTICATION;
+        this.state = State.DISCONNECTED;
+
+        if (event.target.readyState === 3) {
+          reject(new Error(`Error communicating with Home Assistant.`));
+        }
+      };
+
+      const onClose = (event) => {
+        this.state = State.DISCONNECTED;
+        this.phase = Phase.AUTHENTICATION;
+        if (this._canRetryConnection(event.code)) {
+          // increment retry interval - max of 10s
+          this._timeout = Math.min(this._timeout + this._timeout, 10000);
+
+          console.log(
+            `[hass] Socket is closed. Reconnect will be attempted in ${
+              this._timeout / 1000
+            } second(s).`,
+            event.reason
+          );
+
+          // call check function after timeout
+          this._connectTimer = setTimeout(this.checkConnection, this._timeout);
+        } else {
+          reject(
+            new Error(
+              `Error communicating with Home Assistant. Code ${event.code} - ${
+                event.reason || "unknown error"
+              }`
+            )
+          );
+        }
+      };
+
+      this._socket.onmessage = this._onMessage;
+      this._socket.onclose = onClose;
+      this._socket.onopen = onOpen;
+      this._socket.onerror = onError;
+    });
   }
 
   disconnect() {

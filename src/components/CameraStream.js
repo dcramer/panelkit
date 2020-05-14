@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Hls from "hls.js";
+import { toast } from "react-toastify";
 
 // You __must__ use key=entityId to ensure the video player updates on prop changes
 export default class CameraStream extends Component {
@@ -48,7 +49,7 @@ export default class CameraStream extends Component {
         });
       })
       .catch((err) => {
-        console.error({ err });
+        toast.error(err.message);
       });
   }
 

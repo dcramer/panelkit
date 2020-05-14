@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Grid, Cell } from "styled-css-grid";
 import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 import HomeAssistant from "./hass";
 import Header from "./components/Header";
@@ -50,7 +53,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.hass.connect();
+    this.hass.connect().catch((err) => {
+      toast.error(err.message);
+    });
   }
 
   componentWillUnmount() {
@@ -113,14 +118,30 @@ export default class App extends Component {
       </Grid>
     );
   }
-  render() {
-    if (!this.state.isReady) {
-      return <div>Connecting to Home Assistant...</div>;
-    }
+
+  renderContent() {
     return (
-      <Container>
+      <React.Fragment>
         <Header />
         {this.renderTiles(this.props.config.tiles, this.props.gridWidth)}
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    return (
+      <Container>
+        {this.state.isReady ? (
+          this.renderContent()
+        ) : (
+          <p>Connecting to Home Assistant...</p>
+        )}
+        <ToastContainer
+          position="bottom-right"
+          hideProgressBar
+          newestOnTop
+          limit="1"
+        />
       </Container>
     );
   }

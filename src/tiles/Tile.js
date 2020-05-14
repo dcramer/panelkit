@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 import "./Tile.css";
 import Icon from "../components/Icon";
@@ -102,8 +103,14 @@ export default class Tile extends Component {
     return this.props.hass.getEntity(...params);
   }
 
-  callService(...params) {
-    return this.props.hass.callService(...params);
+  callService(domain, service, ...params) {
+    return this.props.hass
+      .callService(domain, service, ...params)
+      .catch((err) => {
+        toast.error(
+          `Error occured when calling ${domain}.${service}: ${err.message}`
+        );
+      });
   }
 
   onStateChange = (_entityId, _newState) => {

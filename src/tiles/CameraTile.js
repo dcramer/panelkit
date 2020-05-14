@@ -34,6 +34,10 @@ export default class CameraTile extends Tile {
     if (this._timer) clearTimeout(this._timer);
   }
 
+  getWatchedEntityIds() {
+    return [];
+  }
+
   refreshCameraImage = () => {
     return this.props.hass
       .fetchCameraThumbnail(this.props.entityId)
