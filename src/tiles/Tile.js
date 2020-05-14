@@ -6,7 +6,7 @@ import "./Tile.css";
 import Icon from "../components/Icon";
 import { toTitleCase } from "../utils";
 
-const LONG_PRESS_TIME = 1000;
+const LONG_PRESS_TIME = 300;
 
 export const TileConfig = Object.freeze({
   title: PropTypes.string,
@@ -29,7 +29,10 @@ export default class Tile extends Component {
 
   constructor(...params) {
     super(...params);
-    this.state = this.getInitialState();
+    this.state = {
+      modalIsOpen: false,
+      ...this.getInitialState(),
+    };
     this._activeSubscriptions = [];
     this._clickTimer = null;
   }
@@ -57,10 +60,13 @@ export default class Tile extends Component {
   }
 
   handleButtonPress = (e) => {
+    // TODO(dcramer): i cant understand why onClick is firing outsie of the element scope
+    if ((e.button === 0 && e.ctrlKey) || e.button !== 0) return;
+    if (this.state.modalIsOpen) return;
     e && e.preventDefault();
     if (this.onLongTouch) {
       this._clickTimer = setTimeout(() => {
-        this.onLongPress();
+        this.onLongTouch();
         this._clickTimer = null;
       }, LONG_PRESS_TIME);
     }
@@ -149,6 +155,15 @@ export default class Tile extends Component {
     return this.onTouch || this.onLongTouch;
   }
 
+  openModal = () => {
+    if (this.state.modalIsOpen) return;
+    this.setState({ modalIsOpen: true });
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
   render() {
     const isTouchable = this.isTouchable();
     const status = this.renderStatus();
@@ -171,10 +186,20 @@ export default class Tile extends Component {
           <div className="tile-body">{this.renderBody()}</div>
           {title && <div className="tile-title">{title}</div>}
           {subtitle && <div className="tile-subtitle">{subtitle}</div>}
+          {this.state.modalIsOpen &&
+            this.renderModal({
+              hass: this.props.hass,
+              entityId: this.props.entityId,
+              isOpen: this.state.modalIsOpen,
+              onRequestClose: this.closeModal,
+              cameraList: this.props.cameraList,
+            })}
         </div>
       </div>
     );
   }
+
+  renderModal() {}
 
   renderBody() {
     const icon = this.getIcon();

@@ -1,6 +1,8 @@
+import React from "react";
 import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "./Tile";
+import LightModal from "../components/LightModal";
 
 export default class LightTile extends Tile {
   static propTypes = {
@@ -21,6 +23,14 @@ export default class LightTile extends Tile {
       }
     );
   };
+
+  onLongTouch = () => {
+    this.openModal();
+  };
+
+  renderModal({ ...props }) {
+    return <LightModal {...props} />;
+  }
 
   getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);

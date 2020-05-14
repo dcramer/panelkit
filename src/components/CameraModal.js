@@ -1,8 +1,8 @@
 import React from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
 
 import CameraStream from "./CameraStream";
+import Modal from "./Modal";
 import ModalHeader from "./ModalHeader";
 import TransparentButton from "./TransparentButton";
 
@@ -57,15 +57,10 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
   let activeEntity = hass.getEntity(activeCamera);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      className="Modal"
-      overlayClassName="Overlay"
-    >
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <CameraViewerContainer>
         <ModalHeader
-          title={activeEntity.attributes.friendly_name}
+          title={hass.getEntityName(activeEntity)}
           onRequestClose={onRequestClose}
         />
         <CameraListContainer>

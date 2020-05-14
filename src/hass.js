@@ -185,6 +185,10 @@ export default class HomeAssistant {
     return result;
   }
 
+  getEntityName(entity) {
+    return entity.attributes.friendly_name || entity.entity_id;
+  }
+
   getEntityPicture(entityId) {
     const {
       attributes: { entity_picture },

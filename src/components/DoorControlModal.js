@@ -1,8 +1,8 @@
 import React from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
 
 import CameraStream from "./CameraStream";
+import Modal from "./Modal";
 import ModalHeader from "./ModalHeader";
 
 const CameraViewerContainer = styled.div`
@@ -30,12 +30,7 @@ export default ({ hass, camera, name, isOpen, onRequestClose }) => {
   let cameraEntity = hass.getEntity(camera);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      className="Modal"
-      overlayClassName="Overlay"
-    >
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <CameraViewerContainer>
         <ModalHeader title={name} onRequestClose={onRequestClose} />
         <ControlsContainer></ControlsContainer>

@@ -9,6 +9,10 @@
 
   --alarm-disarmed-color: #8bc34a;
   --alarm-armed-color: #ffa726;
+
+  --tile-bg-color: rgba(132, 122, 116, 0.1);
+
+  --modal-bg-color: rgba(2, 40, 49, 1);
 }
 
 * {
@@ -29,25 +33,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-.Modal {
-  z-index: 100;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.Modal:focus {
-  outline: none;
-}
-
-.Overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }

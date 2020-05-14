@@ -7,27 +7,11 @@ export default class DoorControlTile extends Tile {
   static defaultIcon = "door";
 
   onTouch = () => {
-    if (this.state.showModal) return;
-    this.setState({ showModal: true });
+    this.openModal();
   };
 
-  closeModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  renderBody() {
-    return (
-      <React.Fragment>
-        {super.renderBody()}
-        <DoorControlModal
-          hass={this.props.hass}
-          name={this.renderTitle()}
-          camera={this.props.camera}
-          isOpen={this.state.showModal}
-          onRequestClose={this.closeModal}
-        />
-      </React.Fragment>
-    );
+  renderModal({ ...props }) {
+    return <DoorControlModal {...props} />;
   }
 
   renderTitle() {

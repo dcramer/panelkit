@@ -56,24 +56,11 @@ export default class CameraTile extends Tile {
   };
 
   onTouch = () => {
-    if (this.state.showModal) return;
-    this.setState({ showModal: true });
+    this.openModal();
   };
 
-  closeModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  renderBody() {
-    return (
-      <CameraModal
-        hass={this.props.hass}
-        entityId={this.props.entityId}
-        isOpen={this.state.showModal}
-        onRequestClose={this.closeModal}
-        cameraList={this.props.cameraList}
-      />
-    );
+  renderModal({ ...props }) {
+    return <CameraModal {...props} />;
   }
 
   renderStatus() {}
