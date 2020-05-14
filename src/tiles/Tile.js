@@ -5,6 +5,8 @@ import "./Tile.css";
 import Icon from "../components/Icon";
 import { toTitleCase } from "../utils";
 
+const LONG_PRESS_TIME = 1000;
+
 export const TileConfig = Object.freeze({
   title: PropTypes.string,
   subtitle: PropTypes.string,
@@ -28,6 +30,7 @@ export default class Tile extends Component {
     super(...params);
     this.state = this.getInitialState();
     this._activeSubscriptions = [];
+    this._clickTimer = null;
   }
 
   getInitialState() {
@@ -46,7 +49,44 @@ export default class Tile extends Component {
     this._activeSubscriptions.forEach((sub) => {
       this.props.hass.unsubscribe(...sub);
     });
+    if (this._clickTimer) {
+      clearTimeout(this._clickTimer);
+      this._clickTimer = null;
+    }
   }
+
+  handleButtonPress = (e) => {
+    e && e.preventDefault();
+    if (this.onLongTouch) {
+      this._clickTimer = setTimeout(() => {
+        this.onLongPress();
+        this._clickTimer = null;
+      }, LONG_PRESS_TIME);
+    }
+  };
+
+  handleButtonRelease = (e) => {
+    e && e.preventDefault();
+    if (this.onLongTouch && this._clickTimer) {
+      clearTimeout(this._clickTimer);
+      this._clickTimer = null;
+      this.onTouch && this.onTouch();
+    } else if (!this.onLongTouch) {
+      this.onTouch && this.onTouch();
+    }
+  };
+
+  handleButtonLeave = (e) => {
+    e && e.preventDefault();
+    if (this._clickTimer) {
+      clearTimeout(this._clickTimer);
+      this._clickTimer = null;
+    }
+  };
+
+  onTouch = null;
+
+  onLongTouch = null;
 
   /* Defines a list of entity IDs to monitor for update.
    *
@@ -92,26 +132,31 @@ export default class Tile extends Component {
     return this.constructor.defaultIcon;
   }
 
-  onClick = null;
-
   getClassNames() {
     if (!this.props.entityId) return "";
     const { state } = this.getEntity(this.props.entityId);
     return `state-${state}`;
   }
 
+  isTouchable() {
+    return this.onTouch || this.onLongTouch;
+  }
+
   render() {
+    const isTouchable = this.isTouchable();
     const status = this.renderStatus();
     const title = this.renderTitle();
     const subtitle = this.renderSubtitle();
     const cover = this.renderCover();
     return (
       <div
-        className={`tile ${this.getClassNames()} ${
-          this.onClick && "clickable"
-        }`}
-        onClick={this.onClick}
-        style={{ cursor: this.onClick ? "pointer" : "normal" }}
+        className={`tile ${this.getClassNames()} ${isTouchable && "touchable"}`}
+        onMouseDown={this.handleButtonPress}
+        onMouseUp={this.handleButtonRelease}
+        onMouseLeave={this.handleButtonLeave}
+        onTouchStart={this.handleButtonPress}
+        onTouchEnd={this.handleButtonRelease}
+        style={{ cursor: isTouchable ? "pointer" : "normal" }}
       >
         <div className="tile-container">
           {cover && <div className="tile-cover">{cover}</div>}

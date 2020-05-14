@@ -14,13 +14,13 @@
   padding: 6px;
 }
 
-.tile.clickable:focus,
-.tile.clickable:hover {
+.tile.touchable:focus,
+.tile.touchable:hover {
   border: 3px solid #adb8bc;
   padding: 3px;
 }
 
-.tile.clickable::after {
+.tile.touchable::after {
   content: " ";
   display: block;
   left: 5px;
@@ -33,8 +33,8 @@
   position: absolute;
 }
 
-.tile.clickable:focus::after,
-.tile.clickable:hover::after {
+.tile.touchable:focus::after,
+.tile.touchable:hover::after {
   left: 2px;
   top: 2px;
   opacity: 1;

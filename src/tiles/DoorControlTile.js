@@ -6,7 +6,7 @@ import DoorControlModal from "../components/DoorControlModal";
 export default class DoorControlTile extends Tile {
   static defaultIcon = "door";
 
-  onClick = () => {
+  onTouch = () => {
     if (this.state.showModal) return;
     this.setState({ showModal: true });
   };

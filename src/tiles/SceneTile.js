@@ -8,7 +8,7 @@ export default class SceneTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
-  onClick = async () => {
+  onTouch = async () => {
     await this.callService("scene", "turn_on", {
       entity_id: this.props.entityId,
     });

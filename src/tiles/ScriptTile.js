@@ -11,7 +11,7 @@ export default class ScriptTile extends Tile {
 
   static defaultIcon = "script";
 
-  onClick = async () => {
+  onTouch = async () => {
     let [domain, service] = this.props.entityId.split(".", 2);
     await this.callService(domain, service, this.props.data);
   };

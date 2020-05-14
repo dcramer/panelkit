@@ -16,7 +16,7 @@ export default class AutomationTile extends Tile {
 
   static defaultIcon = "home-automation";
 
-  onClick = async () => {
+  onTouch = async () => {
     await this.callService("automation", this.props.action, {
       entity_id: this.props.entityId,
     });

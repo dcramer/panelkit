@@ -8,7 +8,7 @@ export default class FanTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
-  onClick = async () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
     await this.callService("fan", state === "on" ? "turn_off" : "turn_on", {
       entity_id: this.props.entityId,

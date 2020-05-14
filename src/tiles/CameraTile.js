@@ -51,7 +51,7 @@ export default class CameraTile extends Tile {
       });
   };
 
-  onClick = () => {
+  onTouch = () => {
     if (this.state.showModal) return;
     this.setState({ showModal: true });
   };

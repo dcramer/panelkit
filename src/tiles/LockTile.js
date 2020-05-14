@@ -8,7 +8,7 @@ export default class LockTile extends Tile {
     entityId: PropTypes.string.isRequired,
   };
 
-  onClick = async () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
     await this.callService("lock", state === "locked" ? "unlock" : "lock", {
       entity_id: this.props.entityId,
