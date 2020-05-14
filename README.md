@@ -132,8 +132,6 @@ A simple fan switch. A single tap toggles the fan, a long press brings up a spee
 
 ### LightTile
 
-**NOT FINISHED**
-
 A simple light switch. A single tap toggles the light, a long press brings up a brightness control.
 
 `type`
