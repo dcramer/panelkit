@@ -16,11 +16,12 @@ const BRIGHTNESS_MAX = 255;
 
 const LightControllerContainer = styled.div`
   height: 100%;
-  padding: 6px;
+  padding: 12px;
+  background: #dd4c49;
 `;
 
 const LightControlsContainer = styled.div`
-  margin-top: 18px;
+  margin-top: 32px;
 
   h6 {
     font-size: 9pt;
@@ -47,16 +48,40 @@ const BrightnessControl = ({ entityId, brightness, hass }) => {
             brightness: value,
           });
         }}
-        trackStyle={{ backgroundColor: "rgba(245, 239, 238, 0.5)", height: 2 }}
+        trackStyle={{ backgroundColor: "transparent", height: 4 }}
         handleStyle={{
-          backgroundColor: "rgb(144, 144, 144)",
+          backgroundColor: "rgba(245, 239, 238, 0.9)",
           border: 0,
+          width: "16px",
+          height: "16px",
+          marginTop: "-6px",
           borderRadius: 0,
         }}
-        railStyle={{ backgroundColor: "rgba(245, 239, 238, 0.5)", height: 2 }}
+        railStyle={{ backgroundColor: "rgba(245, 239, 238, 0.3)", height: 4 }}
         dotStyle={{ borderRadius: 0, border: 0, width: 0 }}
         activeMarkStyle={{ color: "#fff" }}
-        marks={{ 0: "Off", 63: "25%", 127: "50%", 190: "75%", 255: "100%" }}
+        marks={{
+          0: {
+            label: "Off",
+            style: { color: "#fff" },
+          },
+          63: {
+            label: "25%",
+            style: { color: "#fff" },
+          },
+          127: {
+            label: "50%",
+            style: { color: "#fff" },
+          },
+          190: {
+            label: "75%",
+            style: { color: "#fff" },
+          },
+          255: {
+            label: "100%",
+            style: { color: "#fff" },
+          },
+        }}
       />
     </BrightnessControlContainer>
   );

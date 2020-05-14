@@ -7,14 +7,14 @@ import ModalHeader from "./ModalHeader";
 
 const CameraViewerContainer = styled.div`
   height: 100%;
-  background-color: #222;
 `;
 const ControlsContainer = styled.div`
   position: absolute;
   left: 0;
-  top: 0;
+  right: 0;
+  top: 80px;
   bottom: 0;
-  padding: 20px;
+  width: 100%;
 `;
 
 const CameraStreamContainer = styled.div`
@@ -26,13 +26,13 @@ const CameraStreamContainer = styled.div`
   }
 `;
 
-export default ({ hass, camera, name, isOpen, onRequestClose }) => {
+export default ({ hass, camera, title, isOpen, onRequestClose }) => {
   let cameraEntity = hass.getEntity(camera);
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <CameraViewerContainer>
-        <ModalHeader title={name} onRequestClose={onRequestClose} />
+        <ModalHeader title={title} onRequestClose={onRequestClose} />
         <ControlsContainer></ControlsContainer>
         <CameraStreamContainer>
           <CameraStream

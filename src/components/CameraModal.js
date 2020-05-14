@@ -14,13 +14,12 @@ const CameraViewerContainer = styled.div`
   grid-template-areas:
     "header header"
     "sidebar main";
-  background-color: #222;
 `;
 
 const CameraListContainer = styled.div`
-  background: #000;
   grid-area: sidebar;
   padding: 20px;
+  font-size: 11pt;
 
   ul {
     list-style: none;
@@ -37,7 +36,7 @@ const CameraListContainer = styled.div`
     }
 
     li.active {
-      background: #222;
+      background: var(--bg-color);
     }
   }
 `;
