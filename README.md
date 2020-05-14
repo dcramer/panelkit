@@ -271,3 +271,18 @@ Run the development server:
 ```shell
 yarn start
 ```
+
+You may also want to disable context menu when testing against mobile profiles. This can be done in your Chrome console:
+
+```javascript
+window.oncontextmenu = function () {
+  return false;
+};
+```
+
+#### Chrome Profiles
+
+Galaxy Tab A 10.5"
+
+: 1280px x 800px, 80em, 1.5 pixel ratio
+: Mozilla/5.0 (Linux; Android 9; SM-T590) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.117 Safari/537.36
