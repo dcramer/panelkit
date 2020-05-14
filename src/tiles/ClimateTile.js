@@ -34,7 +34,7 @@ export default class ClimateTile extends Tile {
     const { attributes } = this.getEntity(this.props.entityId);
     return (
       <React.Fragment>
-        {attributes.current_temperature}
+        Currently {attributes.current_temperature}
         <span className="unit">{this.getUnit(this.props.entityId)}</span>
       </React.Fragment>
     );
