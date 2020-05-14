@@ -4,6 +4,22 @@ PanelKit is a tablet-focused UI built on top of Home Assistant.
 
 It's heavily inspired by [tileboard](https://github.com/resoai/TileBoard), but built using a modern React stack.
 
+## Roadmap
+
+Some scribbles about what (hopefully) still needs done.
+
+- Grid system needs work. It'd ideally automatically layout with a fixed width grid, and variable unit-sized tiles. Tiles can live in groups, which then cascades the grid. e.g. traditional CSS grid systems, but with a bit more control.
+
+- Needs thorough testing on mobile devices and tablets. Haven't done this at all yet, though some of the behavior is already implemented (for e.g. touch controls).
+
+- Revisit a number of design elements (like the Slider) to optimize for touch devices and smaller form factors. Some controls are likely going to be too small to tap easily, or need to respond faster to human interactions. A bunch of work is already done to make it _feel_ fast, but it's not complete yet.
+
+- Implement missing Tile components. Notes are generally inline in the Tile list below.
+
+- Determine how this actually ships to prod. It's easy to develop against right now, but is the `config.js` pattern going to work well enough when we've compiled the application? The ideal scenario is that someone can just pull down a pre-built `index.html`, put that alongside a `config.js` and serve that via home assistant or their browser of choice.
+
+- Consider migrationg to `home-assistant-js-websocket`. I didn't notice it when I started development, and its got quite a lot of functionality/complexity that migration may or may not be worth it.
+
 ## Config
 
 Configuration currently lives in `public/config.js`. In an ideal world this would live in the root of the directory, and will utlimately be part of the `.gitignore` file.
@@ -92,7 +108,7 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
 
 **NOT FINISHED**
 
-A tile designed for climate control.
+A tile designed for climate control. A single press opens climate configuration.
 
 `type`
 
@@ -101,6 +117,10 @@ A tile designed for climate control.
 `entityId`
 
 : The `climate` entity ID.
+
+TODO:
+
+- Add modal for advanced climate controls
 
 ### DoorControlTile
 
@@ -130,6 +150,10 @@ A simple fan switch. A single press toggles the fan, a long press brings up a sp
 
 : The `fan` entity ID.
 
+TODO:
+
+- Add speed control
+
 ### LightTile
 
 A simple light switch. A single press toggles the light, a long press brings up a brightness control.
@@ -141,6 +165,10 @@ A simple light switch. A single press toggles the light, a long press brings up 
 `entityId`
 
 : The `light` entity ID.
+
+TODO:
+
+- Add RGB controls
 
 ### LockTile
 
