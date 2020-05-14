@@ -7,7 +7,7 @@ export default class SensorTile extends Tile {
   static propTypes = {
     ...TileProps,
     entityId: PropTypes.string.isRequired,
-    format: PropTypes.function,
+    format: PropTypes.func,
     unit: PropTypes.string,
   };
 
