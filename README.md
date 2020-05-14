@@ -74,7 +74,7 @@ A tile which to trigger an automation
 
 ### CameraTile
 
-A still capture of a camera, refreshed every few seconds. A single tap goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
+A still capture of a camera, refreshed every few seconds. A single press goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
 
 `type`
 
@@ -106,7 +106,7 @@ A tile designed for climate control.
 
 **NOT FINISHED**
 
-A tile designed for a door control system, including a main camera feed as well as various actions. A single tap opens the full screen camera feed with door controls.
+A tile designed for a door control system, including a main camera feed as well as various actions. A single press opens the full screen camera feed with door controls.
 
 `type`
 
@@ -120,7 +120,7 @@ A tile designed for a door control system, including a main camera feed as well 
 
 **NOT FINISHED**
 
-A simple fan switch. A single tap toggles the fan, a long press brings up a speed control.
+A simple fan switch. A single press toggles the fan, a long press brings up a speed control.
 
 `type`
 
@@ -132,7 +132,7 @@ A simple fan switch. A single tap toggles the fan, a long press brings up a spee
 
 ### LightTile
 
-A simple light switch. A single tap toggles the light, a long press brings up a brightness control.
+A simple light switch. A single press toggles the light, a long press brings up a brightness control.
 
 `type`
 
@@ -144,7 +144,7 @@ A simple light switch. A single tap toggles the light, a long press brings up a 
 
 ### LockTile
 
-A simple lock swtich. A single tap toggles the lock.
+A simple lock swtich. A single press toggles the lock.
 
 `type`
 
@@ -156,7 +156,7 @@ A simple lock swtich. A single tap toggles the lock.
 
 ### SceneTile
 
-A tile which can be clicked to activate a scene.
+A tile which can be pressed to activate a scene.
 
 `type`
 
@@ -188,7 +188,7 @@ A tile which displays the result of a sensor.
 
 ### ScriptTile
 
-A tile which can be clicked to activate a script.
+A tile which can be pressed to activate a script.
 
 `type`
 
@@ -210,7 +210,7 @@ A tile which can be clicked to activate a script.
 
 ### SwitchTile
 
-A simple switch. A single tap toggles the switch.
+A simple switch. A single press toggles the switch.
 
 `type`
 
