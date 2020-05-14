@@ -40,9 +40,7 @@ Every tile is a React component. A few common attributes are shared:
 
 ### AlarmTile
 
-**NOT FINISHED**
-
-A basic alarm control, showing the current state of the alarm and allowing disarm, armed_home, and armed_away state changes.
+A basic alarm control, showing the current state of the alarm and allowing disarm, armed_home, armed_away, and armed_night state changes.
 
 `type`
 

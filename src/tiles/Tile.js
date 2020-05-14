@@ -73,6 +73,7 @@ export default class Tile extends Component {
   };
 
   handleButtonRelease = (e) => {
+    if (this.state.modalIsOpen) return;
     e && e.preventDefault();
     if (this.onLongTouch && this._clickTimer) {
       clearTimeout(this._clickTimer);

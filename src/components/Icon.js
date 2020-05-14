@@ -9,6 +9,6 @@ export const loadIcons = (data) => {
   });
 };
 
-export default ({ name, size = 4, ...props }) => {
+export default ({ name, size, ...props }) => {
   return <MdiIcon path={ICONS[name]} size={size} {...props} />;
 };
