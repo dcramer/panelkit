@@ -159,20 +159,11 @@ export class Modal extends Component {
   }
 
   componentDidMount() {
-    ReactDOM.render(
-      <Overlay
-        onClick={this.onClickOverlay}
-        ref={this.overlayRef}
-        style={{
-          display: this.props.isOpen ? "block" : "none",
-        }}
-      >
-        <ModalDialog onClick={this.onClickModal} small={this.props.small}>
-          {this.props.children}
-        </ModalDialog>
-      </Overlay>,
-      this.context.ref.current
-    );
+    ReactDOM.render(this.renderContents(), this.context.ref.current);
+  }
+
+  componentDidUpdate() {
+    ReactDOM.render(this.renderContents(), this.context.ref.current);
   }
 
   componentWillUnmount() {
@@ -183,6 +174,25 @@ export class Modal extends Component {
     if (e.target !== this.overlayRef.current) return;
     this.props.onRequestClose && this.props.onRequestClose();
   };
+
+  renderContents() {
+    return (
+      <React.StrictMode>
+        <Overlay
+          onClick={this.onClickOverlay}
+          ref={this.overlayRef}
+          id="overlay"
+          style={{
+            display: this.props.isOpen ? "block" : "none",
+          }}
+        >
+          <ModalDialog small={this.props.small}>
+            {this.props.children}
+          </ModalDialog>
+        </Overlay>
+      </React.StrictMode>
+    );
+  }
 
   render() {
     return null;
