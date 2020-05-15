@@ -81,11 +81,15 @@ An example basic tile configuration:
   title: "Christmas Lights",
   subtitle: "Front Yard",
   icons: {
-    "on": "string-lights"
+    "on": "string-lights",
     "off": "string-lights-off"
   }
 }
 ```
+
+And with that, you'll get a basic light tile control with custom icons:
+
+![Light on](/screenshots/light-on.png) ![Light off](/screenshots/light-off.png)
 
 ### AlarmTile
 
