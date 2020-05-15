@@ -5,6 +5,9 @@ import CameraStream from "./CameraStream";
 import Modal, { ModalHeader } from "./Modal";
 import TransparentButton from "./TransparentButton";
 
+// TODO(dcramer): when modal is opened we should force landscape on small screens
+// https://stackoverflow.com/questions/27146742/foundation-force-landscape-mode-on-mobile-devices
+
 const CameraViewerContainer = styled.div`
   display: grid;
   height: 100%;
