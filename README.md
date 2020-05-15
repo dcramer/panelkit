@@ -272,14 +272,6 @@ REACT_APP_HASS_ACCESS_TOKEN=
 
 In development we're currently reading config from `public/config.js`, which is version controlled and not ideal.
 
-You may also want to disable context menu when testing against mobile profiles. This can be done in your Chrome console:
-
-```javascript
-window.oncontextmenu = function () {
-  return false;
-};
-```
-
 ### Chrome Profiles
 
 You can use [mydevice.info](https://mydevice.info) to determine device specs, which is useful for mobile device testing.
@@ -288,3 +280,11 @@ You can use [mydevice.info](https://mydevice.info) to determine device specs, wh
   <dt>Galaxy Tab A 10.5"</dt>
   <dd>1280px x 800px, 80em, 1.5 pixel ratio</dd>
 </dl>
+
+You may also want to disable context menu when testing against mobile profiles. This can be done in your Chrome console:
+
+```javascript
+window.oncontextmenu = function () {
+  return false;
+};
+```
