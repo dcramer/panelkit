@@ -21,6 +21,7 @@ export const ConfigProps = Object.freeze({
       ...TileConfig,
     })
   ).isRequired,
+  sentryDsn: PropTypes.string,
 });
 
 const ConfigContainer = styled.div`
@@ -81,8 +82,11 @@ class PanelKit extends Component {
   constructor(props) {
     super(props);
 
-    if (this.props.config.sentryDsn) {
-      Sentry.init({ dsn: this.props.config.sentryDsn });
+    const sentryDsn =
+      process.env.REACT_APP_SENTRY_DSN || this.props.config.sentryDsn;
+    if (sentryDsn) {
+      console.log(`[sentry] Initialized with DSN: ${sentryDsn}`);
+      Sentry.init({ dsn: sentryDsn });
     }
 
     const url =
