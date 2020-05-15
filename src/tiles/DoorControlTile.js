@@ -17,7 +17,6 @@ export default class DoorControlTile extends Tile {
   };
 
   renderModal({ ...props }) {
-    console.log(this.props);
     return (
       <DoorControlModal
         title={this.props.title}
