@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Header = styled.div`
-  height: 110px;
+  height: 90px;
   padding: 20px 20px 0;
   font-size: 20pt;
   margin-bottom: 0;
