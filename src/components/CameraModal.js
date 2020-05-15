@@ -18,10 +18,17 @@ const CameraViewerContainer = styled.div`
 const CameraListContainer = styled.div`
   grid-area: sidebar;
   font-size: 11pt;
+
+  h3 {
+    margin: 0;
+    padding: 20px;
+  }
+
   ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
 
     li {
       cursor: pointer;
@@ -60,6 +67,7 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
           onRequestClose={onRequestClose}
         />
         <CameraListContainer>
+          <h3>Cameras Available</h3>
           <ul>
             {cameraList.map((entityId) => {
               const {
