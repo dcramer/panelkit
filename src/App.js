@@ -202,7 +202,6 @@ export default class App extends Component {
 
   render() {
     const { configError } = this.props;
-    console.log({ configError });
     if (configError) {
       return (
         <ConfigContainer>
