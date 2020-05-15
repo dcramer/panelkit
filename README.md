@@ -50,9 +50,12 @@ There's a few things to note in config:
 
 ## Tiles
 
-Every tile is a React component. A few common attributes are shared:
+Every tile is a React component. A few common attributes are shared within configuration:
 
 <dl>
+  <dt><code>type</code></dt>
+  <dd>The type attribute is the component that will be rendered. The <code>TILE</code> constant is a registry of default components.</dd>
+
   <dt><code>title</code></dt>
   <dd>The title (or name) to make visible for the tile. Inferred from the entity when available.</dd>
 
@@ -68,6 +71,21 @@ Every tile is a React component. A few common attributes are shared:
   <dt><code>icon</code></dt>
   <dd>Optional icon component to override the default (and the fallback when no other icon is available).</dd>
 </dl>
+
+An example basic tile configuration:
+
+```javascript
+{
+  type: TILE.LIGHT,
+  entityId: "light.string_lights_front",
+  title: "Christmas Lights",
+  subtitle: "Front Yard",
+  icons: {
+    "on": "string-lights"
+    "off": "string-lights-off"
+  }
+}
+```
 
 ### AlarmTile
 
