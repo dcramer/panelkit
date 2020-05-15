@@ -59,11 +59,33 @@ export default class Tile extends Component {
     }
   }
 
+  handleMouseDown = (e) => {
+    e.preventDefault();
+    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
+    return this.handleButtonPress();
+  };
+
+  handleTouchStart = (e) => {
+    e.preventDefault();
+    if (e.touches.length > 1) return;
+    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
+    return this.handleButtonPress();
+  };
+
+  handleTouchMove = (e) => {
+    // We handle the touch move event to avoid a "long press" event from being
+    // fired after someone touchhes and attempts to scroll
+    if (this._clickTimer) {
+      clearTimeout(this._clickTimer);
+      this._clickTimer = null;
+    }
+  };
+
   handleButtonPress = (e) => {
     // TODO(dcramer): i cant understand why onClick is firing outsie of the element scope
-    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
     if (this.state.modalIsOpen) return;
-    e && e.preventDefault();
+    // if we've got a long press handler define, start our countdown, which will get
+    // interrupted on press/mouse release
     if (this.onLongTouch) {
       this._clickTimer = setTimeout(() => {
         this.onLongTouch();
@@ -174,11 +196,12 @@ export default class Tile extends Component {
     return (
       <div
         className={`tile ${this.getClassNames()} ${isTouchable && "touchable"}`}
-        onMouseDown={this.handleButtonPress}
+        onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleButtonRelease}
         onMouseLeave={this.handleButtonLeave}
-        onTouchStart={this.handleButtonPress}
+        onTouchStart={this.handleTouchStart}
         onTouchEnd={this.handleButtonRelease}
+        onTouchMove={this.handleTouchMove}
         style={{ cursor: isTouchable ? "pointer" : "normal" }}
       >
         <div className="tile-container">
