@@ -1,0 +1,32 @@
+name: "Build"
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  release:
+    name: Release Latest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout tags
+        run: |
+          git fetch --prune --unshallow
+      - name: Build
+        run: |
+          yarn install
+          yarn build
+      - name: Test
+        run: |
+          yarn test
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            index.html
+            LICENSE

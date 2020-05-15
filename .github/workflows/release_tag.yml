@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    name: Prepare release
+    name: Release Tag
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -14,7 +14,7 @@ jobs:
       # Build
       - name: Build the file
         run: |
-          cd /home/runner/work/panelkit/panelkit
+          cd ${{ github.workspace }}/panelkit
           yarn install
           yarn build
 
@@ -24,7 +24,7 @@ jobs:
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/panelkit/panelkit/build/index.html
+          file: ${{ github.workspace }}/panelkit/build/index.html
           asset_name: index.html
           tag: ${{ github.ref }}
           overwrite: true
