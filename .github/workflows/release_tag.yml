@@ -14,7 +14,6 @@ jobs:
       # Build
       - name: Build the file
         run: |
-          cd ${{ github.workspace }}/panelkit
           yarn install
           yarn build
 
@@ -24,7 +23,7 @@ jobs:
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}/panelkit/build/index.html
+          file: ${{ github.workspace }}/build/index.html
           asset_name: index.html
           tag: ${{ github.ref }}
           overwrite: true
