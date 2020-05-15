@@ -16,6 +16,17 @@ export const Overlay = styled.div`
   right: 0;
   bottom: 0;
   z-index: 99;
+
+  ${(props) =>
+    props.landscapeOnly &&
+    css`
+      @media only screen and (max-device-width: 480px) {
+        transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        -webkit-transition: all 1s ease-in-out;
+      }
+    `}
 `;
 
 export class ModalProvider extends Component {
@@ -118,7 +129,6 @@ export const ModalDialog = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-
   background: var(--modal-bg-color);
 
   ${(props) =>
@@ -147,6 +157,7 @@ export class Modal extends Component {
     onRequestClose: PropTypes.func.isRequired,
     small: PropTypes.bool,
     light: PropTypes.bool,
+    landscapeOnly: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -185,6 +196,7 @@ export class Modal extends Component {
           style={{
             display: this.props.isOpen ? "block" : "none",
           }}
+          landscapeOnly={this.props.landscapeOnly}
         >
           <ModalDialog small={this.props.small}>
             {this.props.children}

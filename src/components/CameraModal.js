@@ -63,7 +63,7 @@ export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
   let activeEntity = hass.getEntity(activeCamera);
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose} landscapeOnly>
       <CameraViewerContainer>
         <ModalHeader
           title={hass.getEntityName(activeEntity)}
