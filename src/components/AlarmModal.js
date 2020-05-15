@@ -48,7 +48,7 @@ const Action = styled.div`
   }
 `;
 
-const setAlarm = (hass, entityId, service) => {
+const setAlarm = (hass, onRequestClose, entityId, service) => {
   let state;
   switch (service) {
     case "alarm_arm_home":
@@ -74,26 +74,45 @@ const setAlarm = (hass, entityId, service) => {
       },
     }
   );
+  onRequestClose();
 };
 
-const AlarmStateControl = ({ entityId, state, supportedFeatures, hass }) => {
+const AlarmStateControl = ({
+  onRequestClose,
+  entityId,
+  state,
+  supportedFeatures,
+  hass,
+}) => {
   return (
     <ControlContainer>
       {!!(supportedFeatures & FEAT_HOME) && (
-        <Action onClick={() => setAlarm(hass, entityId, "alarm_arm_home")}>
+        <Action
+          onClick={() =>
+            setAlarm(hass, onRequestClose, entityId, "alarm_arm_home")
+          }
+        >
           <Icon name="bell" />
           <h6>Arm Home</h6>
         </Action>
       )}
       {!!(supportedFeatures & FEAT_AWAY) && (
-        <Action onClick={() => setAlarm(hass, entityId, "alarm_arm_away")}>
+        <Action
+          onClick={() =>
+            setAlarm(hass, onRequestClose, entityId, "alarm_arm_away")
+          }
+        >
           <Icon name="bell" />
           <h6>Arm Away</h6>
         </Action>
       )}
 
       {!!(supportedFeatures & FEAT_NIGHT) && (
-        <Action onClick={() => setAlarm(hass, entityId, "alarm_arm_night")}>
+        <Action
+          onClick={() =>
+            setAlarm(hass, onRequestClose, entityId, "alarm_arm_night")
+          }
+        >
           <Icon name="bell" />
           <h6>Arm Night</h6>
         </Action>
@@ -123,6 +142,7 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
             entityId={entityId}
             supportedFeatures={supported_features}
             brightness={brightness}
+            onRequestClose={onRequestClose}
           />
         </AlarmControlsContainer>
       </AlarmControllerContainer>
