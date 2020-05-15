@@ -14,9 +14,9 @@ const Container = styled.div``;
 
 export default class App extends Component {
   static propTypes = {
-    url: PropTypes.string,
-    accessToken: PropTypes.string,
     config: PropTypes.shape({
+      url: PropTypes.string,
+      accessToken: PropTypes.string,
       tiles: PropTypes.arrayOf(
         PropTypes.shape({
           type: PropTypes.elementType,
@@ -29,8 +29,6 @@ export default class App extends Component {
   };
 
   static defaultProps = {
-    url: process.env.REACT_APP_HASS_URL || "http://localhost:8123",
-    accessToken: process.env.REACT_APP_HASS_ACCESS_TOKEN,
     gridWidth: 8,
   };
 
@@ -38,8 +36,14 @@ export default class App extends Component {
     super(props);
 
     this.hass = new HomeAssistant({
-      url: this.props.url,
-      accessToken: this.props.accessToken,
+      // we prioritize the environment variables to ease development
+      url:
+        process.env.REACT_APP_HASS_URL ||
+        this.props.config.url ||
+        "http://localhost:8123",
+      accessToken:
+        process.env.REACT_APP_HASS_ACCESS_TOKEN ||
+        this.props.config.accessToken,
       onReady: this.onReady,
     });
 

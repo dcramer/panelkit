@@ -28,8 +28,19 @@ Some scribbles about what (hopefully) still needs done.
 
 Configuration currently lives in `public/config.js`. In an ideal world this would live in the root of the directory, and will utlimately be part of the `.gitignore` file.
 
+The `config.js` file must export `CONFIG` with the following baseline values:
+
+```javascript
+window.CONFIG = {
+  url: "http://localhost:8123",
+  accessToken: "your.long-lived.access-token",
+  tiles: [],
+};
+```
+
 There's a few things to note in config:
 
+- It's just JavaScript. Which means it has to be valid, but you can execute whatever you need.
 - `TILE` defines the type of tile to render - they're all hardcoded. Each `TILE` is actually a React component.
 - Any tile which defines `tiles` becomes a group and the tile component itself is ignored.
 
@@ -270,6 +281,16 @@ Run the development server:
 
 ```shell
 yarn start
+```
+
+Create `.env` to hold your credentials:
+
+```bash
+# .env
+# see `.env.example` for more information
+
+REACT_APP_HASS_URL=http://localhost:8123
+REACT_APP_HASS_ACCESS_TOKEN=
 ```
 
 You may also want to disable context menu when testing against mobile profiles. This can be done in your Chrome console:

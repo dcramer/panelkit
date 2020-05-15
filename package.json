@@ -29,7 +29,7 @@
     "start": "react-scripts start",
     "prebuild": "bin/build-mdi",
     "build": "npm run build:react && npm run build:bundle",
-    "build:react": "react-scripts build",
+    "build:react": "PUBLIC_URL=. react-scripts build",
     "build:bundle": "INLINE_RUNTIME_CHUNK=false GENERATE_SOURCEMAP=false SKIP_PREFLIGHT_CHECK=true gulp",
     "serve": "serve -s build",
     "test": "react-scripts test",

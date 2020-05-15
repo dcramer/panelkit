@@ -1,6 +1,8 @@
 /* global TILE, ICON */
 
 window.CONFIG = {
+  url: "http://localhost:8123",
+  accessToken: "",
   tiles: [
     {
       width: 2,
