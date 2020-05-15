@@ -143,8 +143,14 @@ export class Modal extends Component {
   static contextType = ModalContext;
 
   static propTypes = {
+    isOpen: PropTypes.bool,
+    onRequestClose: PropTypes.func.isRequired,
     small: PropTypes.bool,
     light: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isOpen: false,
   };
 
   constructor(props) {
