@@ -61,7 +61,7 @@ export default class Tile extends Component {
 
   handleButtonPress = (e) => {
     // TODO(dcramer): i cant understand why onClick is firing outsie of the element scope
-    if ((e.button === 0 && e.ctrlKey) || e.button !== 0) return;
+    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
     if (this.state.modalIsOpen) return;
     e && e.preventDefault();
     if (this.onLongTouch) {
