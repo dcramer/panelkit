@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import { Flex, Box } from "reflexbox/styled-components";
+import * as Sentry from "@sentry/browser";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -80,12 +81,20 @@ class PanelKit extends Component {
   constructor(props) {
     super(props);
 
+    if (this.props.config.sentryDsn) {
+      Sentry.init({ dsn: this.props.config.sentryDsn });
+    }
+
+    const url =
+      process.env.REACT_APP_HASS_URL ||
+      this.props.config.url ||
+      "http://localhost:8123";
+
+    Sentry.setTag("hass.url", url);
+
     this.hass = new HomeAssistant({
       // we prioritize the environment variables to ease development
-      url:
-        process.env.REACT_APP_HASS_URL ||
-        this.props.config.url ||
-        "http://localhost:8123",
+      url,
       accessToken:
         process.env.REACT_APP_HASS_ACCESS_TOKEN ||
         this.props.config.accessToken,
@@ -93,14 +102,13 @@ class PanelKit extends Component {
     });
 
     this.state = {
-      state: null,
-      phase: null,
       isReady: false,
     };
   }
 
   componentDidMount() {
     this.hass.connect().catch((err) => {
+      Sentry.captureException(err);
       toast.error(err.message);
     });
   }

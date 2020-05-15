@@ -235,8 +235,6 @@ export default class HomeAssistant {
     );
 
     return new Promise((resolve, reject) => {
-      // websocket handlers
-
       const onOpen = (event) => {
         console.log("[hass] Connection opened", event.target.url);
         this.state = State.CONNECTED;

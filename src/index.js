@@ -4,12 +4,18 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import WebFont from "webfontloader";
 import Modal from "react-modal";
+import * as Sentry from "@sentry/browser";
 
 import "./index.css";
 
 import { loadIcons } from "./components/Icon";
 import { TILE } from "./tiles";
-// TODO(dcramer): how do we define icons without importing things?
+
+const sentryDsn = process.env.SENTRY_DSN || window.SENTRY_DSN;
+
+if (sentryDsn) {
+  Sentry.init({ dsn: sentryDsn });
+}
 
 WebFont.load({
   google: {
