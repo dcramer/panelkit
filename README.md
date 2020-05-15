@@ -35,6 +35,8 @@ Configuration is read from `./config.js` - relative to your `index.html` file.
 The `config.js` file must export `CONFIG` with the following baseline values:
 
 ```javascript
+/* global TILE, React */
+
 window.CONFIG = {
   url: "http://localhost:8123",
   accessToken: "your.long-lived.access-token",
