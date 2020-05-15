@@ -10,7 +10,7 @@ Some scribbles about what (hopefully) still needs done.
 
 - Grid system needs work. It'd ideally automatically layout with a fixed width grid, and variable unit-sized tiles. Tiles can live in groups, which then cascades the grid. e.g. traditional CSS grid systems, but with a bit more control.
 
-- Implement mobile-specific styles and metadata. There's nothing responsive yet, and particularly the grid is going to need at least three views: desktop/altop friendly, landscape tablet, and portrait phone.
+- Implement mobile-specific styles and metadata. A bit of work is done here, but we may still want to rethink the grid. Also need to finish up support for a standard portrait display (e.g. iPhone).
 
 - Needs thorough testing on mobile devices and tablets. Haven't done this at all yet, though some of the behavior is already implemented (for e.g. touch controls).
 
@@ -23,6 +23,10 @@ Some scribbles about what (hopefully) still needs done.
 - Consider migrating to `home-assistant-js-websocket`. I didn't notice it when I started development, and its got quite a lot of functionality/complexity that migration may or may not be worth it.
 
 - Add validation for config so that it doesn't throw cryptic javascript errors when e.g. you pass an invalid `type`.
+
+- Touch controls are not yet well implemented. Certain behaviors are incorrect (scrolling -> creates a click-style touch event when it shouldn't).
+
+- Websockets are having some problems when the URL is pinned to home screen on iOS.
 
 ## Config
 
@@ -276,9 +280,9 @@ window.oncontextmenu = function () {
 };
 ```
 
-#### Chrome Profiles
+### Chrome Profiles
 
-You can use [mydevice.info](https://mydevice.info) to determine device specs.
+You can use [mydevice.info](https://mydevice.info) to determine device specs, which is useful for mobile device testing.
 
 <dl>
   <dt>Galaxy Tab A 10.5"</dt>
