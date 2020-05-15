@@ -44,11 +44,41 @@ window.CONFIG = {
 };
 ```
 
-There's a few things to note in config:
+Tiles are defined either as a nested tree of additional tiles (grouped together):
 
-- It's just JavaScript. Which means it has to be valid, but you can execute whatever you need.
-- `TILE` defines the type of tile to render - they're all hardcoded. Each `TILE` is actually a React component.
-- Any tile which defines `tiles` becomes a group and the tile component itself is ignored.
+```javascript
+{
+  // ...
+  tiles: [
+    {
+      tiles: [
+        {
+          type: TILE.LIGHT,
+          entityID: "light.cool_light",
+        },
+        // ...
+      ],
+    },
+  ];
+}
+```
+
+Oo individual tiles themselves (see docs below for more details):
+
+```javascript
+{
+  // ...
+  tiles: [
+    {
+      type: TILE.LIGHT,
+      entityID: "light.cool_light",
+    },
+    // ...
+  ];
+}
+```
+
+Groups and individual tiles can be meshed together as needed to create your perfect layout.
 
 ## Tiles
 
