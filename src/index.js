@@ -44,6 +44,9 @@ const bootApp = () => {
   script.onload = initApp;
   script.src = process.env.PUBLIC_URL + "/config.js";
   document.getElementsByTagName("head")[0].appendChild(script);
+  console.log(
+    `[panelkit] Loading config from ${process.env.PUBLIC_URL}/config.js`
+  );
 };
 
 bootApp();
