@@ -10,13 +10,24 @@ import { ModalProvider } from "./components/Modal";
 import { loadIcons } from "./components/Icon";
 import { TILE } from "./tiles";
 
+declare global {
+  interface Window {
+    CONFIG: any;
+    CONFIG_FILE: string;
+    TILE: any;
+    ICONS: any;
+  }
+}
+
+window.CONFIG = window.CONFIG || {};
+
 WebFont.load({
   google: {
     families: ["Rubik:300,400,500"],
   },
 });
 
-const initApp = (configError = null) => {
+const initApp = (configError: Error | null = null) => {
   ReactDOM.render(
     <React.StrictMode>
       <ModalProvider>
@@ -33,7 +44,7 @@ const initApp = (configError = null) => {
 };
 
 const bootApp = () => {
-  let configError;
+  let configError: Error;
   const configFile =
     window.CONFIG_FILE || process.env.PUBLIC_URL + "/config.js";
 
@@ -42,7 +53,7 @@ const bootApp = () => {
 
   loadIcons(window.ICONS);
 
-  const handleParseError = (err) => {
+  const handleParseError = (err: any) => {
     if (err.filename && err.filename.indexOf(configFile) !== -1) {
       configError = err;
       console.error("[panelkit] Unable to load configuration", err);
