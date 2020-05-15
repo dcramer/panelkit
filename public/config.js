@@ -1,4 +1,4 @@
-/* global TILE, ICON */
+/* global TILE, React */
 
 window.CONFIG = {
   url: "http://localhost:8123",
@@ -52,6 +52,13 @@ window.CONFIG = {
           type: TILE.CLIMATE,
           entityId: "climate.master_bedroom",
           unit: "F",
+        },
+        {
+          type: function (props) {
+            var e = React.createElement;
+
+            return e("div", null, "Test");
+          },
         },
       ],
     },

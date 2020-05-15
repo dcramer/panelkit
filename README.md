@@ -266,6 +266,26 @@ A simple switch. A single press toggles the switch.
 }
 ```
 
+## Custom Tiles
+
+YMMV. Enter at your own risk.
+
+A tile is just a component. So you can use React's APIs if you want to build your own:
+
+```javascript
+{
+  type: function (props) {
+    var e = React.createElement;
+
+    return e("div", null, "Example style-less widget");
+  },
+},
+```
+
+Realistically if you go down this route, you're going to want to just spin up a simple application that can generate a CSS bundle with React components in it. You might want to look at create-react-app for this. From there you'll want to import PanelKit's `Tile` component and use it as defined in our built-ins.
+
+Note: The above is likely not possible today, but if this project gets use, we could easily abstract the tile components into their own module so folks could achieve this.
+
 ## Development
 
 PanelKit is built using [`create-react-app`](https://github.com/facebook/create-react-app), and you'll find your standard helper scripts available.

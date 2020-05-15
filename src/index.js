@@ -39,6 +39,7 @@ const bootApp = () => {
     window.CONFIG_FILE || process.env.PUBLIC_URL + "/config.js";
 
   window.TILE = TILE;
+  window.React = React;
 
   loadIcons(window.ICONS);
 
