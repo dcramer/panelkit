@@ -7,6 +7,7 @@
     "@mdi/svg": "^5.2.45",
     "@mdi/util": "^0.3.2",
     "@sentry/browser": "^5.15.5",
+    "@sentry/integrations": "^5.15.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
