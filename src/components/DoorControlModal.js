@@ -5,13 +5,19 @@ import CameraStream from "./CameraStream";
 import Modal, { ModalHeader } from "./Modal";
 
 const CameraViewerContainer = styled.div`
+  display: grid;
   height: 100%;
+  grid-template-columns: 100%;
+  grid-template-rows: 60px auto;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
 `;
 const ControlsContainer = styled.div`
   position: absolute;
   left: 0;
   right: 0;
-  top: 80px;
+  top: 60px;
   bottom: 0;
   width: 100%;
 `;

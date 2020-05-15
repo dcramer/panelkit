@@ -1,11 +1,40 @@
-import React from "react";
-import Modal from "react-modal";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import Icon from "./Icon";
 import TransparentButton from "./TransparentButton";
 
-import "./Modal.css";
+const ModalContext = React.createContext(null);
+
+export const Overlay = styled.div`
+  position: fixed;
+  background: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+`;
+
+export class ModalProvider extends Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <div ref={this.ref} />
+        <ModalContext.Provider value={{ ref: this.ref }}>
+          {this.props.children}
+        </ModalContext.Provider>
+      </React.Fragment>
+    );
+  }
+}
 
 export const UnstyledModalHeader = ({
   children,
@@ -82,12 +111,76 @@ export const ModalHeader = styled(UnstyledModalHeader)`
   }
 `;
 
-export default ({ small, ...props }) => {
-  return (
-    <Modal
-      className={`modal ${small ? "modal-small" : ""}`}
-      overlayClassName="overlay"
-      {...props}
-    />
-  );
-};
+export const ModalDialog = styled.div`
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: var(--modal-bg-color);
+
+  ${(props) =>
+    props.small &&
+    css`
+      width: 400px;
+      left: 0;
+      right: 0;
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+      margin-left: auto;
+      margin-right: auto;
+    `}
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export class Modal extends Component {
+  static contextType = ModalContext;
+
+  static propTypes = {
+    small: PropTypes.bool,
+    light: PropTypes.bool,
+  };
+
+  constructor(props) {
+    super(props);
+    this.overlayRef = React.createRef();
+  }
+
+  componentDidMount() {
+    ReactDOM.render(
+      <Overlay
+        onClick={this.onClickOverlay}
+        ref={this.overlayRef}
+        style={{
+          display: this.props.isOpen ? "block" : "none",
+        }}
+      >
+        <ModalDialog onClick={this.onClickModal} small={this.props.small}>
+          {this.props.children}
+        </ModalDialog>
+      </Overlay>,
+      this.context.ref.current
+    );
+  }
+
+  componentWillUnmount() {
+    ReactDOM.unmountComponentAtNode(this.context.ref.current);
+  }
+
+  onClickOverlay = (e) => {
+    if (e.target !== this.overlayRef.current) return;
+    this.props.onRequestClose && this.props.onRequestClose();
+  };
+
+  render() {
+    return null;
+  }
+}
+
+export default Modal;

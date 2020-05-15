@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import WebFont from "webfontloader";
-import Modal from "react-modal";
 
 import "./index.css";
 
+import { ModalProvider } from "./components/Modal";
 import { loadIcons } from "./components/Icon";
 import { TILE } from "./tiles";
 
@@ -16,12 +16,12 @@ WebFont.load({
   },
 });
 
-Modal.setAppElement("#root");
-
 const initApp = (configError = null) => {
   ReactDOM.render(
     <React.StrictMode>
-      <App config={window.CONFIG} configError={configError} />
+      <ModalProvider>
+        <App config={window.CONFIG} configError={configError} />
+      </ModalProvider>
     </React.StrictMode>,
     document.getElementById("root")
   );

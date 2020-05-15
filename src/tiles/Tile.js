@@ -6,7 +6,7 @@ import "./Tile.css";
 import Icon from "../components/Icon";
 import { toTitleCase } from "../utils";
 
-const LONG_PRESS_TIME = 300;
+const LONG_PRESS_TIME = 1000;
 
 export const TileConfig = Object.freeze({
   title: PropTypes.string,
@@ -34,7 +34,7 @@ export default class Tile extends Component {
       ...this.getInitialState(),
     };
     this._activeSubscriptions = [];
-    this._clickTimer = null;
+    this._longPressTimer = null;
   }
 
   getInitialState() {
@@ -53,50 +53,50 @@ export default class Tile extends Component {
     this._activeSubscriptions.forEach((sub) => {
       this.props.hass.unsubscribe(...sub);
     });
-    if (this._clickTimer) {
-      clearTimeout(this._clickTimer);
-      this._clickTimer = null;
+    if (this._longPressTimer) {
+      clearTimeout(this._longPressTimer);
+      this._longPressTimer = null;
     }
   }
 
   handleMouseDown = (e) => {
     if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
-    return this.handleButtonPress();
+    return this.handleButtonPress(e);
   };
 
   handleTouchStart = (e) => {
     if (e.touches.length > 1) return;
-    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
-    return this.handleButtonPress();
+    return this.handleButtonPress(e);
   };
 
   handleTouchMove = (e) => {
     // We handle the touch move event to avoid a "long press" event from being
     // fired after someone touchhes and attempts to scroll
-    if (this._clickTimer) {
-      clearTimeout(this._clickTimer);
-      this._clickTimer = null;
+    if (this._longPressTimer) {
+      clearTimeout(this._longPressTimer);
+      this._longPressTimer = null;
     }
+    this._wasScrolling = true;
   };
 
   handleButtonPress = (e) => {
-    // TODO(dcramer): i cant understand why onClick is firing outsie of the element scope
-    if (this.state.modalIsOpen) return;
-    // if we've got a long press handler define, start our countdown, which will get
-    // interrupted on press/mouse release
     if (this.onLongTouch) {
-      this._clickTimer = setTimeout(() => {
+      this._longPressTimer = setTimeout(() => {
         this.onLongTouch();
-        this._clickTimer = null;
+        this._longPressTimer = null;
       }, LONG_PRESS_TIME);
     }
   };
 
   handleButtonRelease = (e) => {
-    if (this.state.modalIsOpen) return;
-    if (this.onLongTouch && this._clickTimer) {
-      clearTimeout(this._clickTimer);
-      this._clickTimer = null;
+    e.cancelable && e.preventDefault();
+    if (this._wasScrolling) {
+      this._wasScrolling = false;
+      return;
+    }
+    if (this.onLongTouch && this._longPressTimer) {
+      clearTimeout(this._longPressTimer);
+      this._longPressTimer = null;
       this.onTouch && this.onTouch();
     } else if (!this.onLongTouch) {
       this.onTouch && this.onTouch();
@@ -104,9 +104,9 @@ export default class Tile extends Component {
   };
 
   handleButtonLeave = (e) => {
-    if (this._clickTimer) {
-      clearTimeout(this._clickTimer);
-      this._clickTimer = null;
+    if (this._longPressTimer) {
+      clearTimeout(this._longPressTimer);
+      this._longPressTimer = null;
     }
   };
 
