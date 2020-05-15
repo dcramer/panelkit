@@ -30,7 +30,18 @@ body {
   color: var(--text-color);
 }
 
-code {
+pre {
+  font-size: 13px;
+}
+
+a {
+  color: var(--alarm-disarmed-color);
+}
+
+code,
+pre {
+  font-size: 0.9em;
+  color: var(--alarm-armed-color);
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }

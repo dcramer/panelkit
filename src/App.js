@@ -10,21 +10,64 @@ import HomeAssistant from "./hass";
 import Header from "./components/Header";
 import { TileConfig } from "./tiles/Tile";
 
+export const ConfigProps = Object.freeze({
+  url: PropTypes.string,
+  accessToken: PropTypes.string,
+  tiles: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.elementType,
+      tiles: PropTypes.array,
+      ...TileConfig,
+    })
+  ).isRequired,
+});
+
+const ConfigContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+`;
+
+const ConfigError = styled.div`
+  color: white;
+  padding: 30px 30px 0;
+  font-size: 14pt;
+  width: 700px;
+  background: rgba(255, 255, 255, 0.1);
+
+  p,
+  h2,
+  dl {
+    margin: 0;
+    padding: 0 0 30px;
+  }
+
+  dl {
+    position: relative;
+    line-height: 1.5em;
+  }
+  dl dt {
+    position: absolute;
+    left: 0;
+    width: 100px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  dl dd {
+    margin-left: 100px;
+  }
+`;
+
 const Container = styled.div``;
 
-export default class App extends Component {
+class PanelKit extends Component {
   static propTypes = {
-    config: PropTypes.shape({
-      url: PropTypes.string,
-      accessToken: PropTypes.string,
-      tiles: PropTypes.arrayOf(
-        PropTypes.shape({
-          type: PropTypes.elementType,
-          tiles: PropTypes.array,
-          ...TileConfig,
-        })
-      ).isRequired,
-    }).isRequired,
+    config: PropTypes.shape(ConfigProps).isRequired,
     gridWidth: PropTypes.number.isRequired,
   };
 
@@ -147,5 +190,41 @@ export default class App extends Component {
         />
       </Container>
     );
+  }
+}
+
+export default class App extends Component {
+  static propTypes = {
+    config: PropTypes.shape(ConfigProps).isRequired,
+    configError: PropTypes.shape({
+      message: PropTypes.string,
+    }),
+  };
+
+  render() {
+    const { configError } = this.props;
+    console.log({ configError });
+    if (configError) {
+      return (
+        <ConfigContainer>
+          <ConfigError>
+            <h2>Configuration Error</h2>
+            <p>
+              We hit an unexpected error while loading your{" "}
+              <code>config.js</code>.
+            </p>
+            <dl>
+              <dt>File:</dt>
+              <dd>
+                <a href={configError.filename}>{configError.filename}</a>
+              </dd>
+              <dt>Error:</dt>
+              <dd>{configError.message}</dd>
+            </dl>
+          </ConfigError>
+        </ConfigContainer>
+      );
+    }
+    return <PanelKit config={this.props.config} />;
   }
 }
