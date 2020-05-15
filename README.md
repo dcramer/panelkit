@@ -7,6 +7,30 @@ It's heavily inspired by [tileboard](https://github.com/resoai/TileBoard), but b
 ## Table of Contents
 
 <!--ts-->
+
+- [panelkit](#panelkit)
+  - [Table of Contents](#table-of-contents)
+  - [Roadmap](#roadmap)
+  - [Config](#config)
+  - [Tiles](#tiles)
+    - [AlarmTile](#alarmtile)
+    - [AutomationTile](#automationtile)
+    - [CameraTile](#cameratile)
+    - [ClimateTile](#climatetile)
+    - [DoorControlTile](#doorcontroltile)
+    - [FanTile](#fantile)
+    - [LightTile](#lighttile)
+    - [LockTile](#locktile)
+    - [SceneTile](#scenetile)
+    - [SensorTile](#sensortile)
+    - [ScriptTile](#scripttile)
+    - [SwitchTile](#switchtile)
+  - [Custom Tiles](#custom-tiles)
+  - [Development](#development)
+    - [Chrome Profiles](#chrome-profiles)
+
+<!-- Added by: dcramer, at: Fri May 15 10:00:40 PDT 2020 -->
+
 <!--te-->
 
 ## Roadmap
