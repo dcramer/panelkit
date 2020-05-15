@@ -55,6 +55,8 @@ Some scribbles about what (hopefully) still needs done.
 
 - Touch controls are not yet well implemented. Certain behaviors are incorrect (scrolling -> creates a click-style touch event when it shouldn't).
 
+- Camera modal/door modal will need portrait-focused improvements.
+
 - Websockets are having some problems when the URL is pinned to home screen on iOS.
 
 ## Config
