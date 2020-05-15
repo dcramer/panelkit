@@ -16,17 +16,6 @@ export const Overlay = styled.div`
   right: 0;
   bottom: 0;
   z-index: 99;
-
-  ${(props) =>
-    props.landscapeOnly &&
-    css`
-      @media only screen and (max-device-width: 480px) {
-        transform: rotate(-90deg);
-        -ms-transform: rotate(-90deg);
-        -webkit-transform: rotate(-90deg);
-        -webkit-transition: all 1s ease-in-out;
-      }
-    `}
 `;
 
 export class ModalProvider extends Component {
@@ -170,6 +159,8 @@ export class Modal extends Component {
   }
 
   componentDidMount() {
+    if (this.props.landscapeOnly) {
+    }
     ReactDOM.render(this.renderContents(), this.context.ref.current);
   }
 
@@ -179,6 +170,8 @@ export class Modal extends Component {
 
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.context.ref.current);
+
+    window.screen.orientation && window.screen.orientation.lock("natural");
   }
 
   onClickOverlay = (e) => {
@@ -196,7 +189,6 @@ export class Modal extends Component {
           style={{
             display: this.props.isOpen ? "block" : "none",
           }}
-          landscapeOnly={this.props.landscapeOnly}
         >
           <ModalDialog small={this.props.small}>
             {this.props.children}
