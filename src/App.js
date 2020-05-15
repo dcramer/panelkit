@@ -69,10 +69,12 @@ class PanelKit extends Component {
   static propTypes = {
     config: PropTypes.shape(ConfigProps).isRequired,
     gridWidth: PropTypes.number.isRequired,
+    tileSize: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
     gridWidth: 8,
+    tileSize: 167,
   };
 
   constructor(props) {
@@ -126,35 +128,32 @@ class PanelKit extends Component {
     return results;
   }
 
-  renderTiles(tiles, colWidth, isChild = false) {
+  renderTiles(tiles, colWidth = 1, depth = 0) {
     const hass = this.hass;
     const cameraList = this.getCameraList();
+    const { tileSize } = this.props;
     return (
-      <Flex
-        flexWrap="wrap"
-        px={isChild ? "10px" : 0}
-        alignContent="space-around"
-      >
+      <Flex flexWrap="wrap" alignContent="space-evenly" p={depth ? "10px" : 0}>
         {tiles.map((tile, index) => {
+          let { width, height } = tile;
+          if (!width) width = 1;
+          if (!height) height = 1;
+
+          width = Math.min(width, colWidth);
+
           if (tile.tiles) {
             return (
-              <Box
-                key={index}
-                width={(tile.width || 1) / colWidth}
-                height={140 * (tile.height || 1)}
-                style={{ minWidth: 140 * tile.width }}
-              >
-                {this.renderTiles(tile.tiles, tile.width || 1, true)}
+              <Box key={index} width={[1, 1 / 2, width / colWidth]}>
+                {this.renderTiles(tile.tiles, width, depth + 1)}
               </Box>
             );
           } else {
             return (
               <Box
                 key={index}
-                width={(tile.width || 1) / colWidth}
+                width={[1 / 2, width / colWidth]}
                 p="4px"
-                height={140 * (tile.height || 1)}
-                style={{ minWidth: 140 * tile.width }}
+                style={{ minHeight: tileSize * height }}
               >
                 <tile.type hass={hass} {...tile} cameraList={cameraList} />
               </Box>

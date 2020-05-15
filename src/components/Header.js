@@ -5,7 +5,7 @@ const Header = styled.div`
   height: 110px;
   padding: 20px 20px 0;
   font-size: 20pt;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: var(--white);
   display: flex;
   align-items: flex-end;
