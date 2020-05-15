@@ -22,7 +22,13 @@ const makeSubscribeId = () => {
 
 // TODO(dcramer): move to home-assistant-js-websocket
 export default class HomeAssistant {
-  constructor({ url, accessToken, onReady = null }) {
+  constructor({
+    url,
+    accessToken,
+    onReady = null,
+    onError = null,
+    onOpen = null,
+  }) {
     this._socket = null;
     this._timeout = 250;
     this._connectTimer = null;
@@ -54,7 +60,53 @@ export default class HomeAssistant {
     this.url = url;
     this.accessToken = accessToken;
     this.onReady = onReady || function () {};
+    this.onError = onError || function () {};
+    this.onOpen = onOpen || function () {};
   }
+
+  _onOpen = (event) => {
+    console.log("[hass] Connection opened", event.target.url);
+    this.state = State.CONNECTED;
+    this.phase = Phase.AUTHENTICATION;
+
+    this.onOpen();
+  };
+
+  _onError = (_event) => {
+    const err = new Error(
+      "[hass] Error communicating with Home Assistant. Closing Socket"
+    );
+    this._socket.close();
+    this._socket = null;
+    this.phase = Phase.AUTHENTICATION;
+    this.state = State.DISCONNECTED;
+
+    console.error(err);
+    this.onError(err);
+  };
+
+  _onClose = (event) => {
+    const willRetry = this._canRetryConnection(event.code);
+    const err = new Error(
+      `Error communicating with Home Assistant. Code ${event.code} - ${
+        event.reason || "unknown error"
+      }` +
+        (willRetry
+          ? ` Reconnect will be attempted in ${this._timeout / 1000} second(s).`
+          : "")
+    );
+    this.state = State.DISCONNECTED;
+    this.phase = Phase.AUTHENTICATION;
+    if (willRetry) {
+      // increment retry interval - max of 10s
+      this._timeout = Math.min(this._timeout + this._timeout, 10000);
+      // call check function after timeout
+      this._connectTimer = setTimeout(this.checkConnection, this._timeout);
+    }
+
+    console.log(err.message, event.reason);
+    this.onError(err);
+  };
 
   _onMessage = (event) => {
     const payload = JSON.parse(event.data);
@@ -234,61 +286,10 @@ export default class HomeAssistant {
       `ws://${this.url.split("://", 2)[1]}/api/websocket`
     );
 
-    return new Promise((resolve, reject) => {
-      const onOpen = (event) => {
-        console.log("[hass] Connection opened", event.target.url);
-        this.state = State.CONNECTED;
-        this.phase = Phase.AUTHENTICATION;
-
-        resolve();
-      };
-
-      const onError = (event) => {
-        console.error(
-          "[hass] Error communicating with Home Assistant. Closing Socket"
-        );
-        this._socket.close();
-        this._socket = null;
-        this.phase = Phase.AUTHENTICATION;
-        this.state = State.DISCONNECTED;
-
-        if (event.target.readyState === 3) {
-          reject(new Error(`Error communicating with Home Assistant.`));
-        }
-      };
-
-      const onClose = (event) => {
-        this.state = State.DISCONNECTED;
-        this.phase = Phase.AUTHENTICATION;
-        if (this._canRetryConnection(event.code)) {
-          // increment retry interval - max of 10s
-          this._timeout = Math.min(this._timeout + this._timeout, 10000);
-
-          console.log(
-            `[hass] Socket is closed. Reconnect will be attempted in ${
-              this._timeout / 1000
-            } second(s).`,
-            event.reason
-          );
-
-          // call check function after timeout
-          this._connectTimer = setTimeout(this.checkConnection, this._timeout);
-        } else {
-          reject(
-            new Error(
-              `Error communicating with Home Assistant. Code ${event.code} - ${
-                event.reason || "unknown error"
-              }`
-            )
-          );
-        }
-      };
-
-      this._socket.onmessage = this._onMessage;
-      this._socket.onclose = onClose;
-      this._socket.onopen = onOpen;
-      this._socket.onerror = onError;
-    });
+    this._socket.onmessage = this._onMessage;
+    this._socket.onclose = this._onClose;
+    this._socket.onopen = this._onOpen;
+    this._socket.onerror = this._onError;
   }
 
   disconnect() {

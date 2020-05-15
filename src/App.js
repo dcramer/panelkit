@@ -111,6 +111,13 @@ class PanelKit extends Component {
         process.env.REACT_APP_HASS_ACCESS_TOKEN ||
         this.props.config.accessToken,
       onReady: this.onReady,
+      onError: (err) => {
+        Sentry.captureException(err);
+        toast.error(err.message);
+      },
+      onConnect: () => {
+        toast.success("Connected to Home Assistant.");
+      },
     });
 
     this.state = {
@@ -119,10 +126,7 @@ class PanelKit extends Component {
   }
 
   componentDidMount() {
-    this.hass.connect().catch((err) => {
-      Sentry.captureException(err);
-      toast.error(err.message);
-    });
+    this.hass.connect();
   }
 
   componentWillUnmount() {
