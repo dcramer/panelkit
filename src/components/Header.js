@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Header = styled.div`
   height: 110px;
-  padding: 0;
+  padding: 20px 20px 0;
   font-size: 20pt;
   margin-bottom: 20px;
   color: var(--white);

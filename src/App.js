@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Grid, Cell } from "styled-css-grid";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
+import { Flex, Box } from "reflexbox/styled-components";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,9 +10,7 @@ import HomeAssistant from "./hass";
 import Header from "./components/Header";
 import { TileConfig } from "./tiles/Tile";
 
-const Container = styled.div`
-  padding: 20px;
-`;
+const Container = styled.div``;
 
 export default class App extends Component {
   static propTypes = {
@@ -85,37 +83,38 @@ export default class App extends Component {
     const hass = this.hass;
     const cameraList = this.getCameraList();
     return (
-      <Grid
-        columns={
-          colWidth ? `repeat(${colWidth}, 1fr)` : "repeat(auto-fit, 1fr)"
-        }
-        columnGap={!isChild ? "40px" : null}
-        rows="repeat(auto-fit, 1fr)"
+      <Flex
+        flexWrap="wrap"
+        px={isChild ? "10px" : 0}
+        alignContent="space-around"
       >
         {tiles.map((tile, index) => {
           if (tile.tiles) {
             return (
-              <Cell
+              <Box
                 key={index}
-                width={tile.width || 1}
-                height={tile.height || 1}
+                width={(tile.width || 1) / colWidth}
+                height={140 * (tile.height || 1)}
+                style={{ minWidth: 140 * tile.width }}
               >
                 {this.renderTiles(tile.tiles, tile.width || 1, true)}
-              </Cell>
+              </Box>
             );
           } else {
             return (
-              <Cell
+              <Box
                 key={index}
-                width={tile.width || 1}
-                height={tile.height || 1}
+                width={(tile.width || 1) / colWidth}
+                p="4px"
+                height={140 * (tile.height || 1)}
+                style={{ minWidth: 140 * tile.width }}
               >
                 <tile.type hass={hass} {...tile} cameraList={cameraList} />
-              </Cell>
+              </Box>
             );
           }
         })}
-      </Grid>
+      </Flex>
     );
   }
 

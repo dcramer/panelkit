@@ -9,7 +9,7 @@ import ModalHeader from "./ModalHeader";
 
 // maps to constants in light component
 const FEAT_BRIGHTNESS = 1;
-const FEAT_COLOR = 2;
+// const FEAT_COLOR = 2;
 
 const BRIGHTNESS_MIN = 0;
 const BRIGHTNESS_MAX = 255;
@@ -91,7 +91,7 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
   const entity = hass.getEntity(entityId);
   const { supported_features, brightness } = entity.attributes;
   const supportsBrightness = !!(supported_features & FEAT_BRIGHTNESS);
-  const supportsColor = !!(supported_features & FEAT_COLOR);
+  // const supportsColor = !!(supported_features & FEAT_COLOR);
 
   const brightnessPercent = parseInt(
     ((brightness || 0) / BRIGHTNESS_MAX) * 100
