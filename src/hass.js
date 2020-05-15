@@ -251,13 +251,13 @@ export default class HomeAssistant {
   _canRetryConnection(code) {
     if (!this._shouldReconnect) return false;
     switch (code) {
-      case 1002:
-      case 1003:
-      case 1007:
-      case 1008:
-      case 1010:
-      case 1015:
-        return false;
+      // case 1002:
+      // case 1003:
+      // case 1007:
+      // case 1008:
+      // case 1010:
+      // case 1015:
+      //   return false;
       default:
         return true;
     }
