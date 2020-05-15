@@ -15,7 +15,6 @@
   padding: 6px;
 }
 
-.tile.touchable:focus,
 .tile.touchable:hover {
   border: 3px solid #adb8bc;
   padding: 3px;
@@ -34,7 +33,6 @@
   position: absolute;
 }
 
-.tile.touchable:focus::after,
 .tile.touchable:hover::after {
   left: 2px;
   top: 2px;
