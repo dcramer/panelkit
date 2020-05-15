@@ -48,64 +48,75 @@ There's a few things to note in config:
 
 Every tile is a React component. A few common attributes are shared:
 
-<dl>
-  <dt>`title`</dt>
-  <dd>The title (or name) to make visible for the tile. Inferred from the entity when available.</dd>
+`title`
 
-  <dt>`subtitle`</dt>
-  <dd>An optional subtitle to make visible for the tile.</dd>
+: The title (or name) to make visible for the tile. Inferred from the entity when available.
 
-  <dt>`entityId`</dt>
-  <dd>Required by some tiles, this will couple the state of the tile to the given entity.</dd>
+`subtitle`
 
-  <dt>`icons`</dt>
-  <dd>Optional mapping of icons to react to state changes.</dd>
+: An optional subtitle to make visible for the tile.
 
-  <dt>`icon`</dt>
-  <dt>Optional icon component to override the default (and the fallback when no other icon is available).</dd>
-</dl>
+`entityId`
+
+: Required by some tiles, this will couple the state of the tile to the given entity.
+
+`icons`
+
+: Optional mapping of icons to react to state changes.
+
+`icon`
+
+: Optional icon component to override the default (and the fallback when no other icon is available).
 
 ### AlarmTile
 
 A basic alarm control, showing the current state of the alarm and allowing disarm, armed_home, armed_away, and armed_night state changes.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.ALARM`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `alarm_control_panel` entity ID.</dd>
-</dl>
+: `TILE.ALARM`
+
+`entityId`
+
+: The `alarm_control_panel` entity ID.
 
 ### AutomationTile
 
 A tile which to trigger an automation
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.AUTOMATION`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `automation` ID.</dd>
+: `TILE.AUTOMATION`
 
-  <dt>`action`</dt>
-  <dd>The action to perform: `toggle` (default), `trigger`, `turn_on`, `turn_off`.</dd>
-</dl>
+`entityId`
+
+: The `automation` ID.
+
+`action`
+
+: The action to perform: `toggle` (default), `trigger`, `turn_on`, `turn_off`.
+
+```json
+{
+  "volume": 0.5
+}
+```
 
 ### CameraTile
 
 A still capture of a camera, refreshed every few seconds. A single press goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.CAMERA`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `camera` entity ID.</dd>
+: `TILE.CAMERA`
 
-  <dt>`refreshInterval`</dt>
-  <dd>The refresh interval for the camera still in milliseconds. Defaults to `3000` (3s).</dd>
-</dl>
+`entityId`
+
+: The `camera` entity ID.
+
+`refreshInterval`
+
+: The refresh interval for the camera still in milliseconds. Defaults to `3000` (3s).
 
 ### ClimateTile
 
@@ -113,13 +124,13 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
 
 A tile designed for climate control. A single press opens climate configuration.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.CLIMATE`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `climate` entity ID.</dd>
-</dl>
+: `TILE.CLIMATE`
+
+`entityId`
+
+: The `climate` entity ID.
 
 TODO:
 
@@ -131,13 +142,13 @@ TODO:
 
 A tile designed for a door control system, including a main camera feed as well as various actions. A single press opens the full screen camera feed with door controls.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.DOOR_CONTROL`</dd>
+`type`
 
-  <dt>`camera`</dt>
-  <dd>The `camera` entity ID.</dd>
-</dl>
+: `TILE.DOOR_CONTROL`
+
+`camera`
+
+: The `camera` entity ID.
 
 TODO:
 
@@ -150,13 +161,13 @@ TODO:
 
 A simple fan switch. A single press toggles the fan, a long press brings up a speed control.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.FAN`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `fan` entity ID.</dd>
-</dl>
+: `TILE.FAN`
+
+`entityId`
+
+: The `fan` entity ID.
 
 TODO:
 
@@ -166,13 +177,13 @@ TODO:
 
 A simple light switch. A single press toggles the light, a long press brings up a brightness control.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.LIGHT`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `light` entity ID.</dd>
-</dl>
+: `TILE.LIGHT`
+
+`entityId`
+
+: The `light` entity ID.
 
 TODO:
 
@@ -182,84 +193,79 @@ TODO:
 
 A simple lock swtich. A single press toggles the lock.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.LOCK`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `lock` entity ID.</dd>
-</dl>
+: `TILE.LOCK`
+
+`entityId`
+
+: The `lock` entity ID.
 
 ### SceneTile
 
 A tile which can be pressed to activate a scene.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.SCENE`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `scene` entity ID.</dd>
-</dl>
+: `TILE.SCENE`
+
+`entityId`
+
+: The `scene` entity ID.
 
 ### SensorTile
 
 A tile which displays the result of a sensor.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.SENSOR`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `sensor` ID.</dd>
+: `TILE.SENSOR`
 
-  <dt>`format`</dt>
-  <dd>
-    A function to format the value.
+`entityId`
 
-    ```javascript
-    (state, attributes, unitOfMeasurement) => `${state} ${unitOfMeasurement}`;
-    ```
+: The `sensor` ID.
 
-  </dd>
-</dl>
+`format`
+
+: A function to format the value.
+
+```javascript
+(state, attributes, unitOfMeasurement) => `${state} ${unitOfMeasurement}`;
+```
 
 ### ScriptTile
 
 A tile which can be pressed to activate a script.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.SCRIPT`</dd>
-  
-  <dt>`entityId`</dt>
-  <dd>The `script` ID.</dd>
+`type`
 
-  <dt>`data`</dt>
-  <dd>
-    The payload to send along with the script.
+: `TILE.SCRIPT`
 
-    ```json
-    {
-      "volume": 0.5
-    }
-    ```
+`entityId`
 
-    </dd>
+: The `script` ID.
 
-</dl>
+`data`
+
+: The payload to send along with the script.
+
+```json
+{
+  "volume": 0.5
+}
+```
 
 ### SwitchTile
 
 A simple switch. A single press toggles the switch.
 
-<dl>
-  <dt>`type`</dt>
-  <dd>`TILE.SCENE`</dd>
+`type`
 
-  <dt>`entityId`</dt>
-  <dd>The `switch` entity ID.</dd>
-</dl>
+: `TILE.SCENE`
+
+`entityId`
+
+: The `switch` entity ID.
 
 ## Development
 
@@ -299,9 +305,7 @@ window.oncontextmenu = function () {
 
 #### Chrome Profiles
 
-https://mydevice.io
+Galaxy Tab A 10.5"
 
-<dl>
-  <dt>Galaxy Tab A 10.5"</dt>
-  <dd>1280px x 800px, 80em, 1.5 pixel ratio</dd>
-</dl>
+: 1280px x 800px, 80em, 1.5 pixel ratio
+: Mozilla/5.0 (Linux; Android 9; SM-T590) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.117 Safari/537.36
