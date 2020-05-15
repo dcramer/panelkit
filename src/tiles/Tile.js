@@ -60,13 +60,11 @@ export default class Tile extends Component {
   }
 
   handleMouseDown = (e) => {
-    e.preventDefault();
     if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
     return this.handleButtonPress();
   };
 
   handleTouchStart = (e) => {
-    e.preventDefault();
     if (e.touches.length > 1) return;
     if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
     return this.handleButtonPress();
@@ -96,7 +94,6 @@ export default class Tile extends Component {
 
   handleButtonRelease = (e) => {
     if (this.state.modalIsOpen) return;
-    e && e.preventDefault();
     if (this.onLongTouch && this._clickTimer) {
       clearTimeout(this._clickTimer);
       this._clickTimer = null;
@@ -107,7 +104,6 @@ export default class Tile extends Component {
   };
 
   handleButtonLeave = (e) => {
-    e && e.preventDefault();
     if (this._clickTimer) {
       clearTimeout(this._clickTimer);
       this._clickTimer = null;
