@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      # Build
+      - name: Build the file
+        run: |
+          cd /home/runner/work/panelkit/panelkit
+          yarn install
+          yarn build
+
+      # Upload build file to the release as an asset.
+      - name: Upload zip to release
+        uses: svenstaro/upload-release-action@v1-release
+
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: /home/runner/work/panelkit/panelkit/build/index.html
+          asset_name: index.html
+          tag: ${{ github.ref }}
+          overwrite: true

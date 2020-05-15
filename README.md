@@ -26,7 +26,7 @@ Some scribbles about what (hopefully) still needs done.
 
 ## Config
 
-Configuration currently lives in `public/config.js`. In an ideal world this would live in the root of the directory, and will utlimately be part of the `.gitignore` file.
+Configuration is read from `./config.js` - relative to your `index.html` file.
 
 The `config.js` file must export `CONFIG` with the following baseline values:
 
@@ -292,6 +292,8 @@ Create `.env` to hold your credentials:
 REACT_APP_HASS_URL=http://localhost:8123
 REACT_APP_HASS_ACCESS_TOKEN=
 ```
+
+In development we're currently reading config from `public/config.js`, which is version controlled and not ideal.
 
 You may also want to disable context menu when testing against mobile profiles. This can be done in your Chrome console:
 
