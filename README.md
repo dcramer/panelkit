@@ -262,6 +262,7 @@ A simple light switch. A single press toggles the light, a long press brings up 
 TODO:
 
 - Add RGB controls
+- Change portrait/small device display to be vertical sliders
 
 ### LockTile
 
