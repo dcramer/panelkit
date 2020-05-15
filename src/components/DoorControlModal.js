@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import CameraStream from "./CameraStream";
-import Modal from "./Modal";
-import ModalHeader from "./ModalHeader";
+import Modal, { ModalHeader } from "./Modal";
 
 const CameraViewerContainer = styled.div`
   height: 100%;

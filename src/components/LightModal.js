@@ -4,8 +4,7 @@ import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
 
-import Modal from "./Modal";
-import ModalHeader from "./ModalHeader";
+import Modal, { ModalHeader } from "./Modal";
 
 // maps to constants in light component
 const FEAT_BRIGHTNESS = 1;
@@ -21,7 +20,7 @@ const LightControllerContainer = styled.div`
 `;
 
 const LightControlsContainer = styled.div`
-  margin-top: 32px;
+  margin-top: 20px;
 
   h6 {
     font-size: 9pt;
@@ -32,7 +31,7 @@ const LightControlsContainer = styled.div`
 `;
 
 const BrightnessControlContainer = styled.div`
-  padding: 10px 20px 30px;
+  padding: 10px 20px 35px;
 `;
 
 const BrightnessControl = ({ entityId, brightness, hass }) => {
@@ -59,27 +58,26 @@ const BrightnessControl = ({ entityId, brightness, hass }) => {
         }}
         railStyle={{ backgroundColor: "rgba(245, 239, 238, 0.3)", height: 4 }}
         dotStyle={{ borderRadius: 0, border: 0, width: 0 }}
-        activeMarkStyle={{ color: "#fff" }}
         marks={{
           0: {
             label: "Off",
-            style: { color: "#fff" },
+            style: { color: "#fff", marginTop: 5 },
           },
           63: {
             label: "25%",
-            style: { color: "#fff" },
+            style: { color: "#fff", marginTop: 5 },
           },
           127: {
             label: "50%",
-            style: { color: "#fff" },
+            style: { color: "#fff", marginTop: 5 },
           },
           190: {
             label: "75%",
-            style: { color: "#fff" },
+            style: { color: "#fff", marginTop: 5 },
           },
           255: {
             label: "100%",
-            style: { color: "#fff" },
+            style: { color: "#fff", marginTop: 5 },
           },
         }}
       />
@@ -104,6 +102,7 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
           title={hass.getEntityName(entity)}
           onRequestClose={onRequestClose}
           small
+          light
         />
 
         <LightControlsContainer>

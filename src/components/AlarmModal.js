@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import Icon from "./Icon";
-import Modal from "./Modal";
-import ModalHeader from "./ModalHeader";
+import Modal, { ModalHeader } from "./Modal";
 import { toTitleCase } from "../utils";
 
 // maps to constants in alarm_control_panel component
@@ -18,13 +17,13 @@ const AlarmControllerContainer = styled.div`
 `;
 
 const AlarmControlsContainer = styled.div`
-  margin-top: 32px;
+  margin-top: 10px;
 `;
 
 const ControlContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0 0 10px;
 `;
 
@@ -115,6 +114,7 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
           title={toTitleCase(entity.state)}
           onRequestClose={onRequestClose}
           small
+          light
         />
 
         <AlarmControlsContainer>

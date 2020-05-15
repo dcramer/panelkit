@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import CameraStream from "./CameraStream";
-import Modal from "./Modal";
-import ModalHeader from "./ModalHeader";
+import Modal, { ModalHeader } from "./Modal";
 import TransparentButton from "./TransparentButton";
 
 const CameraViewerContainer = styled.div`
@@ -18,9 +17,7 @@ const CameraViewerContainer = styled.div`
 
 const CameraListContainer = styled.div`
   grid-area: sidebar;
-  padding: 20px;
   font-size: 11pt;
-
   ul {
     list-style: none;
     padding: 0;
@@ -31,7 +28,7 @@ const CameraListContainer = styled.div`
     }
 
     li button {
-      padding: 10px 10px;
+      padding: 20px;
       display: block;
     }
 
