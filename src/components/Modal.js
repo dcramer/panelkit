@@ -173,7 +173,7 @@ export class Modal extends Component {
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.context.ref.current);
 
-    orientation.lock("natural").catch((e) => {});
+    orientation.unlock();
   }
 
   onClickOverlay = (e) => {
