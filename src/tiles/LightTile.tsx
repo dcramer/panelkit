@@ -1,18 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "./Tile";
-import LightModal from "../components/LightModal";
+import LightModal, { LightModalProps } from "../components/LightModal";
 
-export default class LightTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type LightTileProps = TileProps & {
+  entityId: string;
+};
 
-  onTouch = async () => {
+export default class LightTile extends Tile<LightTileProps> {
+  onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
-    await this.callService(
+    this.callService(
       "light",
       state === "on" ? "turn_off" : "turn_on",
       {
@@ -28,8 +26,8 @@ export default class LightTile extends Tile {
     this.openModal();
   };
 
-  renderModal({ ...props }) {
-    return <LightModal {...props} />;
+  renderModal(params: LightModalProps) {
+    return <LightModal {...params} />;
   }
 
   getDefaultIcon() {

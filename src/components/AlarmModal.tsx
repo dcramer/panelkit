@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import Icon from "./Icon";
 import Modal, { ModalHeader } from "./Modal";
+import { ModalParams } from "../tiles/Tile";
+import HomeAssistant from "../hass";
 import { toTitleCase } from "../utils";
 
 // maps to constants in alarm_control_panel component
@@ -48,8 +50,13 @@ const Action = styled.div`
   }
 `;
 
-const setAlarm = (hass, onRequestClose, entityId, service) => {
-  let state;
+const setAlarm = (
+  hass: HomeAssistant,
+  onRequestClose: () => void,
+  entityId: string,
+  service: string
+) => {
+  let state: string = "";
   switch (service) {
     case "alarm_arm_home":
       state = "armed_home";
@@ -62,6 +69,7 @@ const setAlarm = (hass, onRequestClose, entityId, service) => {
       break;
     default:
   }
+
   hass.callService(
     "alarm_control_panel",
     service,
@@ -77,13 +85,19 @@ const setAlarm = (hass, onRequestClose, entityId, service) => {
   onRequestClose();
 };
 
+type AlarmStateControlProps = {
+  onRequestClose: () => void;
+  entityId: string;
+  supportedFeatures: number;
+  hass: HomeAssistant;
+};
+
 const AlarmStateControl = ({
   onRequestClose,
   entityId,
-  state,
   supportedFeatures,
   hass,
-}) => {
+}: AlarmStateControlProps) => {
   return (
     <ControlContainer>
       {!!(supportedFeatures & FEAT_HOME) && (
@@ -122,9 +136,18 @@ const AlarmStateControl = ({
 };
 //
 
-export default ({ hass, entityId, isOpen, onRequestClose }) => {
+export type AlarmModalProps = {
+  entityId: string;
+} & ModalParams;
+
+export default ({
+  hass,
+  entityId,
+  isOpen,
+  onRequestClose,
+}: AlarmModalProps) => {
   const entity = hass.getEntity(entityId);
-  const { brightness, supported_features } = entity.attributes;
+  const { supported_features } = entity.attributes;
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} small>
@@ -141,7 +164,6 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
             hass={hass}
             entityId={entityId}
             supportedFeatures={supported_features}
-            brightness={brightness}
             onRequestClose={onRequestClose}
           />
         </AlarmControlsContainer>

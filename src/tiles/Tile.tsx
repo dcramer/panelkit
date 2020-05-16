@@ -1,44 +1,54 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 
 import "./Tile.css";
 import Icon from "../components/Icon";
 import { toTitleCase } from "../utils";
 
+import HomeAssistant from "../hass";
+import { Entity, TileComponentConfig } from "../types";
+
 const LONG_PRESS_TIME = 1000;
 
-export const TileConfig = Object.freeze({
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  entityId: PropTypes.string,
-  icon: PropTypes.string,
-  icons: PropTypes.objectOf(PropTypes.string),
-});
+export interface TileProps extends TileComponentConfig {
+  hass: HomeAssistant;
+  cameraList: string[];
+}
 
-export const TileProps = Object.freeze({
-  ...TileConfig,
-  hass: PropTypes.object.isRequired,
-  cameraList: PropTypes.array.isRequired,
-});
+export interface TileState {
+  modalIsOpen: boolean;
+}
 
-export default class Tile extends Component {
-  static propTypes = TileProps;
+export type ModalParams = {
+  entityId?: string;
+  hass: HomeAssistant;
+  cameraList: string[];
+  isOpen: boolean;
+  onRequestClose: () => void;
+};
 
-  static defaultIcon;
+export default class Tile<
+  T extends TileProps = TileProps,
+  S extends TileState = TileState
+> extends Component<T, S> {
+  public static defaultIcon: string;
 
-  constructor(...params) {
-    super(...params);
-    this.state = {
-      modalIsOpen: false,
-      ...this.getInitialState(),
-    };
+  private _activeSubscriptions: string[];
+  private _longPressTimer: number | null;
+  private _wasScrolling: boolean;
+
+  state: S;
+
+  constructor(props: T, context?: any) {
+    super(props, context);
     this._activeSubscriptions = [];
     this._longPressTimer = null;
+    this._wasScrolling = false;
+    this.state = this.getInitialState();
   }
 
-  getInitialState() {
-    return {};
+  getInitialState(): any {
+    return { modalIsOpen: false };
   }
 
   componentDidMount() {
@@ -51,7 +61,7 @@ export default class Tile extends Component {
 
   componentWillUnmount() {
     this._activeSubscriptions.forEach((sub) => {
-      this.props.hass.unsubscribe(...sub);
+      this.props.hass.unsubscribe(sub);
     });
     if (this._longPressTimer) {
       clearTimeout(this._longPressTimer);
@@ -59,17 +69,17 @@ export default class Tile extends Component {
     }
   }
 
-  handleMouseDown = (e) => {
+  handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
     if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
     return this.handleButtonPress(e);
   };
 
-  handleTouchStart = (e) => {
+  handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
     if (e.touches.length > 1) return;
     return this.handleButtonPress(e);
   };
 
-  handleTouchMove = (e) => {
+  handleTouchMove = (e: any) => {
     // We handle the touch move event to avoid a "long press" event from being
     // fired after someone touchhes and attempts to scroll
     if (this._longPressTimer) {
@@ -79,16 +89,18 @@ export default class Tile extends Component {
     this._wasScrolling = true;
   };
 
-  handleButtonPress = (e) => {
+  handleButtonPress = (e: any) => {
     if (this.onLongTouch) {
       this._longPressTimer = setTimeout(() => {
-        this.onLongTouch();
+        this.onLongTouch && this.onLongTouch();
         this._longPressTimer = null;
       }, LONG_PRESS_TIME);
     }
   };
 
-  handleButtonRelease = (e) => {
+  handleButtonRelease = (
+    e: React.TouchEvent<HTMLElement> | React.MouseEvent<HTMLElement>
+  ) => {
     e.cancelable && e.preventDefault();
     if (this._wasScrolling) {
       this._wasScrolling = false;
@@ -103,54 +115,62 @@ export default class Tile extends Component {
     }
   };
 
-  handleButtonLeave = (e) => {
+  handleButtonLeave = (
+    e: React.TouchEvent<HTMLElement> | React.MouseEvent<HTMLElement>
+  ) => {
     if (this._longPressTimer) {
       clearTimeout(this._longPressTimer);
       this._longPressTimer = null;
     }
   };
 
-  onTouch = null;
+  onTouch: (() => void) | null = null;
 
-  onLongTouch = null;
+  onLongTouch: (() => void) | null = null;
 
   /* Defines a list of entity IDs to monitor for update.
    *
    * When an entity is updated, it will call `onStateChange`, which
    * by default will simply force the tile to re-render.
    */
-  getWatchedEntityIds() {
-    if (this.props.entityId) return [this.props.entityId];
+  getWatchedEntityIds(): string[] {
+    const { entityId } = this.props;
+    if (entityId) return [entityId as string];
     return [];
   }
 
-  getEntity(...params) {
-    return this.props.hass.getEntity(...params);
+  getEntity(entityId: string) {
+    return this.props.hass.getEntity(entityId);
   }
 
-  callService(domain, service, ...params) {
+  callService(
+    domain: string,
+    service: string,
+    serviceData: any,
+    suggestedChanges?: any
+  ) {
     return this.props.hass
-      .callService(domain, service, ...params)
-      .catch((err) => {
+      .callService(domain, service, serviceData, suggestedChanges)
+      .catch((err: Error) => {
         toast.error(
           `Error occured when calling ${domain}.${service}: ${err.message}`
         );
       });
   }
 
-  onStateChange = (_entityId, _newState) => {
+  onStateChange = (entityId: string, newState: Entity) => {
     // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
     this.forceUpdate();
   };
 
   getIcon() {
-    if (this.props.entityId) {
-      return this.getIconForEntity(this.props.entityId);
-    }
-    return this.props.icon || this.getDefaultIcon();
+    const { entityId, icon } = this.props;
+    if (entityId) return this.getIconForEntity(entityId as string);
+    if (icon) return icon as string;
+    return this.getDefaultIcon();
   }
 
-  getIconForEntity(entityId) {
+  getIconForEntity(entityId: string) {
     const { state } = this.getEntity(entityId);
     if (this.props.icons && this.props.icons[state])
       return this.props.icons[state];
@@ -160,18 +180,19 @@ export default class Tile extends Component {
   /*
    * Return the default icon when no overrides are present.
    */
-  getDefaultIcon() {
-    return this.constructor.defaultIcon;
+  getDefaultIcon(): string {
+    return (this.constructor as typeof Tile).defaultIcon;
   }
 
-  getClassNames() {
-    if (!this.props.entityId) return "";
-    const { state } = this.getEntity(this.props.entityId);
+  getClassNames(): string {
+    const { entityId } = this.props;
+    if (!entityId) return "";
+    const { state } = this.getEntity(entityId as string);
     return `state-${state}`;
   }
 
-  isTouchable() {
-    return this.onTouch || this.onLongTouch;
+  isTouchable(): boolean {
+    return !!(this.onTouch || this.onLongTouch);
   }
 
   openModal = () => {
@@ -219,35 +240,39 @@ export default class Tile extends Component {
     );
   }
 
-  renderModal() {}
+  renderModal(params: ModalParams) {}
 
   renderBody() {
     const icon = this.getIcon();
     if (!icon) return null;
     return (
       <span className="tile-icon">
-        <Icon name={icon} />
+        <Icon name={icon as string} />
       </span>
     );
   }
 
-  renderCover() {}
+  renderCover(): any | null {}
 
-  renderSubtitle() {
-    return this.props.subtitle;
+  renderSubtitle(): string | null {
+    const { subtitle } = this.props;
+    if (!subtitle) return null;
+    return subtitle as string;
   }
 
-  renderTitle() {
-    if (!this.props.entityId) return null;
+  renderTitle(): any | null {
+    const { entityId } = this.props;
+    if (!entityId) return null;
     const {
       attributes: { friendly_name },
-    } = this.getEntity(this.props.entityId);
-    return this.props.title || friendly_name;
+    } = this.getEntity(entityId as string);
+    return this.props.title || friendly_name || "";
   }
 
-  renderStatus() {
-    if (!this.props.entityId) return null;
-    const { state } = this.getEntity(this.props.entityId);
+  renderStatus(): any | null {
+    const { entityId } = this.props;
+    if (!entityId) return null;
+    const { state } = this.getEntity(entityId as string);
     return toTitleCase(state);
   }
 }

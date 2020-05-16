@@ -1,17 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "./Tile";
-import AlarmModal from "../components/AlarmModal";
+import AlarmModal, { AlarmModalProps } from "../components/AlarmModal";
 
 const ARMED_STATES = new Set(["armed_home", "armed_away", "armed_night"]);
 
-export default class AlarmTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type AlarmTileProps = TileProps & {
+  entityId: string;
+};
 
+export default class AlarmTile extends Tile<AlarmTileProps> {
   onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
     if (ARMED_STATES.has(state)) {
@@ -32,8 +30,8 @@ export default class AlarmTile extends Tile {
     }
   };
 
-  renderModal({ ...props }) {
-    return <AlarmModal {...props} />;
+  renderModal(params: AlarmModalProps) {
+    return <AlarmModal {...params} />;
   }
   getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);

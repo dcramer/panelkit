@@ -1,18 +1,35 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Hls from "hls.js";
 import { toast } from "react-toastify";
 
-// You __must__ use key=entityId to ensure the video player updates on prop changes
-export default class CameraStream extends Component {
-  static propTypes = {
-    hass: PropTypes.object.isRequired,
-    entityId: PropTypes.string.isRequired,
-    accessToken: PropTypes.string.isRequired,
-  };
+import HomeAssistant from "../hass";
 
-  constructor(...params) {
-    super(...params);
+type CameraStreamProps = {
+  hass: HomeAssistant;
+  entityId: string;
+  accessToken: string;
+};
+
+type CameraStreamState = {
+  videoLoaded: boolean;
+};
+
+type CameraStreamCommandResult = {
+  result: {
+    url: string;
+  };
+};
+
+// You __must__ use key=entityId to ensure the video player updates on prop changes
+export default class CameraStream extends Component<
+  CameraStreamProps,
+  CameraStreamState
+> {
+  private playerRef: any;
+  private hls?: Hls;
+
+  constructor(props: CameraStreamProps) {
+    super(props);
     this.state = {
       videoLoaded: false,
     };
@@ -27,13 +44,13 @@ export default class CameraStream extends Component {
     this.hls && this.hls.destroy();
   }
 
-  loadVideoStream({ hass, entityId }) {
+  loadVideoStream({ hass, entityId }: CameraStreamProps) {
     hass
       .sendCommand({
         type: "camera/stream",
         entity_id: entityId,
       })
-      .then(({ result: { url } }) => {
+      .then(({ result: { url } }: CameraStreamCommandResult) => {
         if (this.hls) this.hls.destroy();
         this.hls = new Hls({
           maxBufferLength: 5,
@@ -41,14 +58,14 @@ export default class CameraStream extends Component {
         });
         this.hls.attachMedia(this.playerRef.current);
         this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-          this.hls.loadSource(hass.buildUrl(url));
+          this.hls && this.hls.loadSource(hass.buildUrl(url));
         });
         this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
           this.playerRef.current.play();
           this.setState({ videoLoaded: true });
         });
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         toast.error(err.message);
       });
   }

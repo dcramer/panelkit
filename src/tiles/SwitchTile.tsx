@@ -1,13 +1,10 @@
-import PropTypes from "prop-types";
-
 import Tile, { TileProps } from "./Tile";
 
-export default class SwitchTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type SwitchTileProps = TileProps & {
+  entityId: string;
+};
 
+export default class SwitchTile extends Tile<SwitchTileProps> {
   getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);
     switch (state) {
@@ -20,9 +17,9 @@ export default class SwitchTile extends Tile {
     }
   }
 
-  onTouch = async () => {
+  onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
-    await this.callService(
+    this.callService(
       "switch",
       state === "on" ? "turn_off" : "turn_on",
       {

@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 import CameraStream from "./CameraStream";
-import Modal, { ModalHeader } from "./Modal";
+import Modal, { ModalHeader, ModalProps } from "./Modal";
+import HomeAssistant from "../hass";
 
 const CameraViewerContainer = styled.div`
   display: grid;
@@ -31,7 +32,19 @@ const CameraStreamContainer = styled.div`
   }
 `;
 
-export default ({ hass, camera, title, isOpen, onRequestClose }) => {
+export type DoorControlModalProps = {
+  hass: HomeAssistant;
+  camera: string;
+  title: string;
+} & ModalProps;
+
+export default ({
+  hass,
+  camera,
+  title,
+  isOpen,
+  onRequestClose,
+}: DoorControlModalProps) => {
   let cameraEntity = hass.getEntity(camera);
 
   return (

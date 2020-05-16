@@ -1,16 +1,13 @@
-import PropTypes from "prop-types";
-
 import Tile, { TileProps } from "./Tile";
 
-export default class FanTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type FanTileProps = TileProps & {
+  entityId: string;
+};
 
-  onTouch = async () => {
+export default class FanTile extends Tile<FanTileProps> {
+  onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
-    await this.callService("fan", state === "on" ? "turn_off" : "turn_on", {
+    this.callService("fan", state === "on" ? "turn_off" : "turn_on", {
       entity_id: this.props.entityId,
     });
   };

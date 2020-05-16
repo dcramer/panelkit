@@ -1,18 +1,25 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "./Tile";
+import { EntityAttributes } from "../types";
 
-export default class SensorTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-    format: PropTypes.func,
-    unit: PropTypes.string,
-  };
+type SensorTileProps = TileProps & {
+  entityId: string;
+  format: Function;
+  unit?: string;
+};
 
+type SensorAttributes = EntityAttributes & {
+  unit_of_measurement?: string;
+};
+
+export default class SensorTile extends Tile<SensorTileProps> {
   static defaultProps = {
-    format: (state, _attributes, unitOfMeasurement = null) => (
+    format: (
+      state: string,
+      attributes: EntityAttributes,
+      unitOfMeasurement: string | null = null
+    ) => (
       <React.Fragment>
         {state}
         <span className="unit">{unitOfMeasurement}</span>
@@ -20,7 +27,7 @@ export default class SensorTile extends Tile {
     ),
   };
 
-  getUnit(entityId) {
+  getUnit(entityId: string) {
     if (this.props.unit) return this.props.unit;
     const {
       attributes: { unit_of_measurement },
