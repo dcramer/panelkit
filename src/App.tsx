@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import { Flex, Box } from "reflexbox/styled-components";
@@ -8,22 +7,9 @@ import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integration
 
 import "react-toastify/dist/ReactToastify.css";
 
+import { Config, TileConfig } from "./types";
 import HomeAssistant from "./hass";
 import Header from "./components/Header";
-import { TileConfig } from "./tiles/Tile";
-
-export const ConfigProps = Object.freeze({
-  url: PropTypes.string,
-  accessToken: PropTypes.string,
-  tiles: PropTypes.arrayOf(
-    PropTypes.shape({
-      type: PropTypes.elementType,
-      tiles: PropTypes.array,
-      ...TileConfig,
-    })
-  ).isRequired,
-  sentryDsn: PropTypes.string,
-});
 
 const ConfigContainer = styled.div`
   position: absolute;
@@ -37,7 +23,7 @@ const ConfigContainer = styled.div`
   padding: 30px;
 `;
 
-const ConfigError = styled.div`
+const ConfigErrorContainer = styled.div`
   color: white;
   padding: 30px 30px 0;
   font-size: 14pt;
@@ -68,19 +54,25 @@ const ConfigError = styled.div`
 
 const Container = styled.div``;
 
-class PanelKit extends Component {
-  static propTypes = {
-    config: PropTypes.shape(ConfigProps).isRequired,
-    gridWidth: PropTypes.number.isRequired,
-    tileSize: PropTypes.number.isRequired,
-  };
+interface PanelKitProps {
+  config: Config;
+  gridWidth: number;
+  tileSize: number;
+}
 
+interface PanelKitState {
+  isReady: boolean;
+}
+
+class PanelKit extends Component<PanelKitProps, PanelKitState> {
   static defaultProps = {
     gridWidth: 8,
     tileSize: 167,
   };
 
-  constructor(props) {
+  hass: HomeAssistant;
+
+  constructor(props: PanelKitProps) {
     super(props);
 
     const sentryDsn =
@@ -109,13 +101,14 @@ class PanelKit extends Component {
       url,
       accessToken:
         process.env.REACT_APP_HASS_ACCESS_TOKEN ||
-        this.props.config.accessToken,
+        this.props.config.accessToken ||
+        "",
       onReady: this.onReady,
-      onError: (err) => {
-        Sentry.captureException(err);
-        toast.error(err.message);
+      onError: (error: Error) => {
+        Sentry.captureException(error);
+        toast.error(error.message);
       },
-      onConnect: () => {
+      onOpen: () => {
         toast.success("Connected to Home Assistant.");
       },
     });
@@ -139,9 +132,9 @@ class PanelKit extends Component {
   };
 
   // TODO: should cache this somewhere
-  getCameraList() {
-    const results = [];
-    function recurse(tiles) {
+  getCameraList(): string[] {
+    const results: string[] = [];
+    function recurse(tiles: TileConfig[]) {
       tiles.forEach((tile) => {
         if (tile.tiles) recurse(tile.tiles);
         else if (tile.entityId && tile.entityId.indexOf("camera.") === 0)
@@ -152,7 +145,7 @@ class PanelKit extends Component {
     return results;
   }
 
-  renderTiles(tiles, colWidth = 1, depth = 0) {
+  renderTiles(tiles: TileConfig[], colWidth = 1, depth = 0) {
     const hass = this.hass;
     const cameraList = this.getCameraList();
     const { tileSize } = this.props;
@@ -209,27 +202,25 @@ class PanelKit extends Component {
           position="bottom-right"
           hideProgressBar
           newestOnTop
-          limit="1"
+          limit={1}
         />
       </Container>
     );
   }
 }
 
-export default class App extends Component {
-  static propTypes = {
-    config: PropTypes.shape(ConfigProps).isRequired,
-    configError: PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  };
+interface AppProps {
+  config: Config;
+  configError: ErrorEvent | null;
+}
 
+export default class App extends Component<AppProps> {
   render() {
     const { configError } = this.props;
     if (configError) {
       return (
         <ConfigContainer>
-          <ConfigError>
+          <ConfigErrorContainer>
             <h2>Configuration Error</h2>
             <p>
               We hit an unexpected error while loading your{" "}
@@ -243,7 +234,7 @@ export default class App extends Component {
               <dt>Error:</dt>
               <dd>{configError.message}</dd>
             </dl>
-          </ConfigError>
+          </ConfigErrorContainer>
         </ConfigContainer>
       );
     }

@@ -1117,7 +1117,7 @@
     "@emotion/serialize" "^0.11.15"
     "@emotion/utils" "0.11.3"
 
-"@emotion/styled@^10.0.0":
+"@emotion/styled@*", "@emotion/styled@^10.0.0":
   version "10.0.27"
   resolved "https://registry.yarnpkg.com/@emotion/styled/-/styled-10.0.27.tgz#12cb67e91f7ad7431e1875b1d83a94b814133eaf"
   integrity sha512-iK/8Sh7+NLJzyp9a5+vIQIXTYxfT4yB/OJbjzQanB2RZpvmzBQOHZWhpAMZWYEKRNNbsD6WfBw5sVWkb6WzS/Q==
@@ -1730,6 +1730,14 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/hoist-non-react-statics@*":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
+  integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
+  dependencies:
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
@@ -1807,6 +1815,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-native@*":
+  version "0.62.10"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.62.10.tgz#82c481df21db4e7460755dc3fc7091e333a1d2bd"
+  integrity sha512-QR4PGrzZ3IvRIHlScyIPuv2GV8tD/BMICZz514KGvn3KHbh0mLphHHemtHZC1o8u4xM5LxwVpMpMYHQ+ncSfag==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*":
   version "16.9.34"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.34.tgz#f7d5e331c468f53affed17a8a4d488cd44ea9349"
@@ -1823,10 +1838,36 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/reflexbox@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/reflexbox/-/reflexbox-4.0.1.tgz#dfe91aace3c931766507cfd1cce65498a4d052a0"
+  integrity sha512-Ucw4Fh13EYJdWS8zsyP6HJz8ooDL3LFwGT63J9Pu9hMqNRTO21yFaXH6BDUtNjD1zNyOxpv6Oe1+7Z90iiLFtQ==
+  dependencies:
+    "@emotion/styled" "*"
+    "@types/react" "*"
+    "@types/styled-system" "*"
+
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
+
+"@types/styled-components@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.0.tgz#24d3412ba5395aa06e14fbc93c52f9454cebd0d6"
+  integrity sha512-ZFlLCuwF5r+4Vb7JUmd+Yr2S0UBdBGmI7ctFTgJMypIp3xOHI4LCFVn2dKMvpk6xDB2hLRykrEWMBwJEpUAUIQ==
+  dependencies:
+    "@types/hoist-non-react-statics" "*"
+    "@types/react" "*"
+    "@types/react-native" "*"
+    csstype "^2.2.0"
+
+"@types/styled-system@*":
+  version "5.1.9"
+  resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.9.tgz#8baac8f6eca9e0bd5768c175ca5ce1f2d6f61ade"
+  integrity sha512-QlWv6tmQV8dqk8s+LSLb9QAtmuQEnfv4f8lKKZkMgDqRFVmxJDBwEw0u4zhpxp56u0hdR+TCIk9dGfOw3TkCoQ==
+  dependencies:
+    csstype "^2.6.9"
 
 "@types/testing-library__dom@*":
   version "7.0.2"
@@ -3999,7 +4040,7 @@ cssstyle@^1.0.0, cssstyle@^1.1.1:
   dependencies:
     cssom "0.3.x"
 
-csstype@^2.2.0, csstype@^2.5.7, csstype@^2.6.7:
+csstype@^2.2.0, csstype@^2.5.7, csstype@^2.6.7, csstype@^2.6.9:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.10.tgz#e63af50e66d7c266edb6b32909cfd0aabe03928b"
   integrity sha512-D34BqZU4cIlMCY93rZHbrq9pjTAQJ3U8S8rfBqjwHxkGPThWFjzZDQpgMJY0QViLxth6ZKYiwFBo14RdN44U/w==
@@ -5790,7 +5831,7 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^3.0.0:
+hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==

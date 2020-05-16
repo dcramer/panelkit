@@ -1,13 +1,15 @@
-export const State = Object.freeze({
-  DISCONNECTED: "DISCONNECTED",
-  CONNECTED: "CONNECTED",
-  CONNECTING: "CONNECTING",
-});
+import { Entity } from "./types";
 
-export const Phase = Object.freeze({
-  AUTHENTICATION: "AUTHENTICATION",
-  COMMAND: "COMMAND",
-});
+enum State {
+  DISCONNECTED = "DISCONNECTED",
+  CONNECTED = "CONNECTED",
+  CONNECTING = "CONNECTING",
+}
+
+enum Phase {
+  AUTHENTICATION = "AUTHENTICATION",
+  COMMAND = "COMMAND",
+}
 
 const DEFAULT_TIMEOUT = 250; // ms
 
@@ -20,15 +22,72 @@ const makeSubscribeId = () => {
   return `${s4()}${s4()}`;
 };
 
+interface EventSubscriber {
+  id: string;
+  entityId: string;
+  callback: Function;
+}
+
+interface HomeAssistantOptions {
+  url: string;
+  accessToken: string;
+  onReady: Function | null;
+  onError: Function | null;
+  onOpen: Function | null;
+  // TODO:
+  // onReady: () => void | null;
+  // onError: (error: Error) => void | null;
+  // onOpen: () => void | null;
+}
+
+type WebSocketOpenEventTarget = EventTarget & {
+  url: string;
+};
+
+type WebSocketOpenEvent = Event & {
+  target: WebSocketOpenEventTarget;
+};
+
+interface Message {
+  id?: number;
+  type: string;
+  [key: string]: any;
+}
+
 // TODO(dcramer): move to home-assistant-js-websocket
 export default class HomeAssistant {
+  private _socket: WebSocket | null = null;
+  private _timeout: number = 250;
+  private _connectTimer: number | null;
+  private _messageCounter: number = 1;
+  private _hasPrepared: boolean = false;
+  private _shouldReconnect: boolean = false;
+  private _pendingRequests: Map<number, [Function, Function]>;
+  private _pendingChanges: Map<number, any>;
+  private _eventSubscribers: EventSubscriber[];
+  private _rootSubscriptions: Map<string, string>;
+  private _entityCache: Map<string, any>;
+
+  public state: State;
+  public phase: Phase;
+
+  public url: string;
+  private accessToken: string;
+  // TODO:
+  private onReady?: any;
+  private onError?: any;
+  private onOpen?: any;
+  // private onReady?: (() => void) | null = null;
+  // private onError?: ((error: Error) => void) | null = null;
+  // private onOpen?: (() => void) | null = null;
+
   constructor({
     url,
     accessToken,
     onReady = null,
     onError = null,
     onOpen = null,
-  }) {
+  }: HomeAssistantOptions) {
     this._socket = null;
     this._timeout = 250;
     this._connectTimer = null;
@@ -38,20 +97,17 @@ export default class HomeAssistant {
     this._shouldReconnect = true;
 
     // requests which are in progress
-    this._pendingRequests = {
-      // requestId: Promise
-    };
+    // requestId: Promise
+    this._pendingRequests = new Map();
     // changes which are pending a response, but assumed to succeed
-    this._pendingChanges = {
-      // requestId: {entityId: {state: ..., attributes: {...}}}
-    };
+    // requestId: {entityId: {state: ..., attributes: {...}}}
+    this._pendingChanges = new Map();
     this._eventSubscribers = [
       // {id, entityId, callback(entityId, newState)}
     ];
-    this._rootSubscriptions = {
-      // ID: eventType
-    };
-    this._entityCache = {};
+    // ID: eventType
+    this._rootSubscriptions = new Map();
+    this._entityCache = new Map();
 
     this.state = State.DISCONNECTED;
     this.phase = Phase.AUTHENTICATION;
@@ -64,32 +120,35 @@ export default class HomeAssistant {
     this.onOpen = onOpen || function () {};
   }
 
-  _onOpen = (event) => {
-    console.log("[hass] Connection opened", event.target.url);
+  // TODO: WebSocketOpenEvent
+  _onOpen = (ev: any) => {
+    console.log("[hass] Connection opened", ev.target.url);
     this.state = State.CONNECTED;
     this.phase = Phase.AUTHENTICATION;
 
     this.onOpen();
   };
 
-  _onError = (_event) => {
-    const err = new Error(
+  // TODO: WebSocketErrorEvent
+  _onError = (ev: any) => {
+    const error = new Error(
       "[hass] Error communicating with Home Assistant. Closing Socket"
     );
-    this._socket.close();
-    this._socket = null;
+    if (this._socket) {
+      this._socket.close();
+      this._socket = null;
+    }
     this.phase = Phase.AUTHENTICATION;
     this.state = State.DISCONNECTED;
 
-    console.error(err);
-    this.onError(err);
+    this.onError(error);
   };
 
-  _onClose = (event) => {
-    const willRetry = this._canRetryConnection(event.code);
-    const err = new Error(
-      `Error communicating with Home Assistant. Code ${event.code} - ${
-        event.reason || "unknown error"
+  _onClose = (ev: WebSocketCloseEvent) => {
+    const willRetry = this._canRetryConnection(ev.code);
+    const error = new Error(
+      `Error communicating with Home Assistant. Code ${ev.code} - ${
+        ev.reason || "unknown error"
       }` +
         (willRetry
           ? ` Reconnect will be attempted in ${this._timeout / 1000} second(s).`
@@ -101,14 +160,14 @@ export default class HomeAssistant {
       // increment retry interval - max of 10s
       this._timeout = Math.min(this._timeout + this._timeout, 10000);
       // call check function after timeout
-      this._connectTimer = setTimeout(this.checkConnection, this._timeout);
+      this._connectTimer = setTimeout(this._checkConnection, this._timeout);
     }
 
-    console.log(err.message, event.reason);
-    this.onError(err);
+    console.log(error.message, ev.reason);
+    this.onError(error);
   };
 
-  _onMessage = (event) => {
+  _onMessage = (event: WebSocketMessageEvent) => {
     const payload = JSON.parse(event.data);
     console.debug(
       "[hass] Received message of type",
@@ -141,33 +200,33 @@ export default class HomeAssistant {
       case "event":
         const { entity_id, new_state } = payload.event.data;
         if (payload.event.event_type === "state_changed") {
-          this._entityCache[entity_id] = new_state;
+          this._entityCache.set(entity_id, new_state);
         }
         this._notifySubscribers(entity_id, new_state);
         break;
       case "result":
-        const promiseHandler = this._pendingRequests[payload.id];
+        const promiseHandler = this._pendingRequests.get(payload.id);
         if (!promiseHandler) {
           console.warn("[hass] No pending request found for event", payload.id);
         } else {
           let [resolve, reject] = promiseHandler;
-          delete this._pendingRequests[payload.id];
+          this._pendingRequests.delete(payload.id);
           if (payload.success) {
             setTimeout(() => {
-              delete this._pendingChanges[payload.id];
+              this._pendingChanges.delete(payload.id);
             }, 1000);
             resolve(payload);
           } else {
-            const err = new Error(payload.error.message);
-            err.payload = payload;
-            const changes = this._pendingChanges[payload.id];
+            const error = new Error(payload.error.message);
+            (error as any).payload = payload;
+            const changes = this._pendingChanges.get(payload.id);
             if (changes) {
-              this._pendingChanges[payload.id] = {};
+              this._pendingChanges.set(payload.id, {});
               Object.keys(changes).forEach((entityId) => {
                 this._notifySubscribers(entityId, this.getEntity(entityId));
               });
             }
-            reject(err);
+            reject(error);
           }
         }
         break;
@@ -190,15 +249,15 @@ export default class HomeAssistant {
     await this.subscribeEvents("state_changed");
     const _entityCache = this._entityCache;
     const { result } = await this.getStates();
-    result.forEach((state) => {
-      _entityCache[state.entity_id] = state;
+    result.forEach((entity: Entity) => {
+      _entityCache.set(entity.entity_id, entity);
     });
 
     this._hasPrepared = true;
-    this.onReady(this);
+    this.onReady && this.onReady(this);
   };
 
-  _notifySubscribers(entityId, ...params) {
+  _notifySubscribers(entityId: string, ...params: any[]) {
     this._eventSubscribers.forEach((subscriber) => {
       if (subscriber.entityId === entityId) {
         subscriber.callback(entityId, ...params);
@@ -206,7 +265,7 @@ export default class HomeAssistant {
     });
   }
 
-  isReady() {
+  isReady(): boolean {
     return (
       this._hasPrepared &&
       this.state === State.CONNECTED &&
@@ -214,12 +273,12 @@ export default class HomeAssistant {
     );
   }
 
-  buildUrl(path) {
+  buildUrl(path: string): string {
     return `${this.url}${path}`;
   }
 
-  getEntity(entityId) {
-    const result = { ...this._entityCache[entityId] };
+  getEntity(entityId: string): Entity {
+    const result: Entity = { ...this._entityCache.get(entityId) };
     if (!result)
       throw new Error(`Unable to find entity in state cache: ${entityId}`);
 
@@ -237,18 +296,19 @@ export default class HomeAssistant {
     return result;
   }
 
-  getEntityName(entity) {
+  getEntityName(entity: Entity): string {
     return entity.attributes.friendly_name || entity.entity_id;
   }
 
-  getEntityPicture(entityId) {
+  getEntityPicture(entityId: string): string | null {
     const {
       attributes: { entity_picture },
     } = this.getEntity(entityId);
+    if (entity_picture) return null;
     return this.buildUrl(entity_picture);
   }
 
-  _canRetryConnection(code) {
+  _canRetryConnection(code?: number): boolean {
     if (!this._shouldReconnect) return false;
     switch (code) {
       // case 1002:
@@ -302,13 +362,15 @@ export default class HomeAssistant {
     console.log("[hass] Disconnected");
   }
 
-  sendMessage(message) {
+  sendMessage(message: Message) {
     console.debug(
       "[hass] Sending message of type",
       message.type,
       "and id",
       message.id || "null"
     );
+    if (!this._socket)
+      throw new Error("Connection to Home Assistant is not available.");
     this._socket.send(JSON.stringify(message));
     this._messageCounter += 1;
   }
@@ -326,12 +388,12 @@ export default class HomeAssistant {
    * sendCommand({type: "update_entity", "entityId": "foo.bar", "state": "on"}, {"foo.bar": {"state": "on"}})
    * ```
    */
-  sendCommand(message, suggestedChanges = null) {
+  sendCommand(message: Message, suggestedChanges: any = null): any {
     const id = this._messageCounter;
     const promise = new Promise((resolve, reject) => {
-      this._pendingRequests[id] = [resolve, reject];
+      this._pendingRequests.set(id, [resolve, reject]);
       if (suggestedChanges) {
-        this._pendingChanges[id] = suggestedChanges;
+        this._pendingChanges.set(id, suggestedChanges);
         Object.keys(suggestedChanges).forEach((entityId) => {
           this._notifySubscribers(entityId, this.getEntity(entityId));
         });
@@ -341,29 +403,34 @@ export default class HomeAssistant {
         ...message,
       });
     });
-    promise.cancel = () => {
-      delete this._pendingRequests[id];
-      delete this._pendingChanges[id];
+    (promise as any).cancel = () => {
+      this._pendingRequests.delete(id);
+      this._pendingChanges.delete(id);
     };
     return promise;
   }
 
   // TODO(dcramer): > The websocket command 'camera_thumbnail' has been deprecated.
-  fetchCameraThumbnail(entityId) {
+  fetchCameraThumbnail(entityId: string) {
     return this.sendCommand({
       type: "camera_thumbnail",
       entity_id: entityId,
     });
   }
 
-  fetchMediaPlayerThumbnail(entityId) {
+  fetchMediaPlayerThumbnail(entityId: string) {
     return this.sendCommand({
       type: "media_player_thumbnail",
       entity_id: entityId,
     });
   }
 
-  callService(domain, service, serviceData, suggestedChanges = null) {
+  callService(
+    domain: string,
+    service: string,
+    serviceData: any,
+    suggestedChanges: any = null
+  ) {
     return this.sendCommand(
       {
         type: "call_service",
@@ -381,7 +448,7 @@ export default class HomeAssistant {
     });
   }
 
-  subscribe(entityId, callback) {
+  subscribe(entityId: string, callback: Function) {
     const id = makeSubscribeId();
     this._eventSubscribers.push({
       entityId,
@@ -391,7 +458,7 @@ export default class HomeAssistant {
     return id;
   }
 
-  unsubscribe(id) {
+  unsubscribe(id: string) {
     this._eventSubscribers = this._eventSubscribers.filter((c) => c.id !== id);
   }
 
@@ -404,16 +471,16 @@ export default class HomeAssistant {
     return response;
   }
 
-  async subscribeEvents(eventType) {
+  async subscribeEvents(eventType: string) {
     const response = await this.sendCommand({
       type: "subscribe_events",
       event_type: eventType,
     });
-    this._rootSubscriptions[response.id] = eventType;
+    this._rootSubscriptions.set(response.id, eventType);
     return response;
   }
 
-  unsubscribeEvents(subscription) {
+  unsubscribeEvents(subscription: number) {
     // subscription is the 'id'
     return this.sendCommand({
       type: "unsubscribe_events",
