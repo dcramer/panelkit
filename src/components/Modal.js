@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import { orientation } from "o9n";
 
 import Icon from "./Icon";
 import TransparentButton from "./TransparentButton";
@@ -159,9 +160,10 @@ export class Modal extends Component {
   }
 
   componentDidMount() {
-    if (this.props.landscapeOnly) {
-    }
     ReactDOM.render(this.renderContents(), this.context.ref.current);
+    if (this.props.landscapeOnly) {
+      orientation.lock("landscape-primary");
+    }
   }
 
   componentDidUpdate() {
@@ -171,7 +173,7 @@ export class Modal extends Component {
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.context.ref.current);
 
-    window.screen.orientation && window.screen.orientation.lock("natural");
+    orientation.lock("natural");
   }
 
   onClickOverlay = (e) => {

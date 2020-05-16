@@ -16,6 +16,12 @@ const CameraViewerContainer = styled.div`
   grid-template-areas:
     "header header"
     "sidebar main";
+
+  @media only screen and (max-width: 500px) {
+    grid-template-areas:
+      "header header"
+      "main main";
+  }
 `;
 
 const CameraListContainer = styled.div`
@@ -45,6 +51,10 @@ const CameraListContainer = styled.div`
     li.active {
       background: var(--bg-color);
     }
+  }
+
+  @media only screen and (max-width: 500px) {
+    display: none;
   }
 `;
 
