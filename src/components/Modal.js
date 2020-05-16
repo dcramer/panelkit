@@ -162,7 +162,7 @@ export class Modal extends Component {
   componentDidMount() {
     ReactDOM.render(this.renderContents(), this.context.ref.current);
     if (this.props.landscapeOnly) {
-      orientation.lock("landscape-primary");
+      orientation.lock("landscape-primary").catch((e) => {});
     }
   }
 
@@ -173,7 +173,7 @@ export class Modal extends Component {
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.context.ref.current);
 
-    orientation.lock("natural");
+    orientation.lock("natural").catch((e) => {});
   }
 
   onClickOverlay = (e) => {
