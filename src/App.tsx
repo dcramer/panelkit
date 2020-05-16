@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/browser";
 import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 
 import "react-toastify/dist/ReactToastify.css";
+import "./Toast.css";
 
 import { Config, TileConfig } from "./types";
 import HomeAssistant from "./hass";
