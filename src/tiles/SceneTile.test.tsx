@@ -1,26 +1,28 @@
 import { waitFor } from "@testing-library/react";
 
 import { renderTile, simulateTouch } from "../testutils";
-import AutomationTile from "./AutomationTile";
+import SceneTile from "./SceneTile";
 
 test("renders", async () => {
-  const { container, getByText } = renderTile(AutomationTile, {
-    entity_id: "automation.test",
+  const { container, getByText } = renderTile(SceneTile, {
+    entity_id: "scene.test",
     state: "off",
     attributes: {
-      friendly_name: "Test Automation",
+      friendly_name: "Test Scene",
     },
   });
 
-  expect(getByText(/Test Automation/i)).toBeInTheDocument();
+  expect(getByText(/Test Scene/i)).toBeInTheDocument();
   expect(container).toMatchSnapshot();
 });
 
 test("activates on touch event", async () => {
-  const { container, hass } = renderTile(AutomationTile, {
-    entity_id: "automation.test",
+  const { container, hass } = renderTile(SceneTile, {
+    entity_id: "scene.test",
     state: "off",
-    attributes: {},
+    attributes: {
+      friendly_name: "Test Scene",
+    },
   });
 
   simulateTouch(container);
@@ -28,10 +30,10 @@ test("activates on touch event", async () => {
   await waitFor(() => {
     expect(hass.callService).toHaveBeenCalledTimes(1);
     expect(hass.callService).toHaveBeenCalledWith(
-      "automation",
-      "toggle",
+      "scene",
+      "turn_on",
       {
-        entity_id: "automation.test",
+        entity_id: "scene.test",
       },
       undefined
     );

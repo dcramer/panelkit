@@ -7,9 +7,16 @@ type FanTileProps = TileProps & {
 export default class FanTile extends Tile<FanTileProps> {
   onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
-    this.callService("fan", state === "on" ? "turn_off" : "turn_on", {
-      entity_id: this.props.entityId,
-    });
+    this.callService(
+      "fan",
+      state === "on" ? "turn_off" : "turn_on",
+      {
+        entity_id: this.props.entityId,
+      },
+      {
+        [this.props.entityId]: { state: state === "on" ? "off" : "on" },
+      }
+    );
   };
 
   getDefaultIcon() {

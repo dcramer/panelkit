@@ -20,9 +20,7 @@ test("disarms on touch event", async () => {
   const { container, hass } = renderTile(AlarmTile, {
     entity_id: "alarm_control_panel.test",
     state: "armed_home",
-    attributes: {
-      friendly_name: "Test Alarm",
-    },
+    attributes: {},
   });
 
   simulateTouch(container);

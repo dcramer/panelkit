@@ -20,9 +20,7 @@ test("unlocks on touch event", async () => {
   const { container, hass } = renderTile(LockTile, {
     entity_id: "lock.test",
     state: "locked",
-    attributes: {
-      friendly_name: "Test Lock",
-    },
+    attributes: {},
   });
 
   simulateTouch(container);
@@ -46,9 +44,7 @@ test("locks on touch event", async () => {
   const { container, hass } = renderTile(LockTile, {
     entity_id: "lock.test",
     state: "unlocked",
-    attributes: {
-      friendly_name: "Test Lock",
-    },
+    attributes: {},
   });
 
   simulateTouch(container);

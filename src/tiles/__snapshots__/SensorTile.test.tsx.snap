@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<div
+  class="tile state-73 false"
+  style="cursor: normal;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-body"
+    >
+      <div
+        class="tile-sensor"
+      >
+        73
+        <span
+          class="unit"
+        >
+          F
+        </span>
+      </div>
+    </div>
+    <div
+      class="tile-title"
+    >
+      Test Sensor
+    </div>
+  </div>
+</div>
+`;

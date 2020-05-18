@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<div
+  class="tile state-cool false"
+  style="cursor: normal;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Currently 
+      75
+      <span
+        class="unit"
+      >
+        F
+      </span>
+    </div>
+    <div
+      class="tile-body"
+    >
+      <div
+        class="tile-climate"
+      >
+        70
+        <span
+          class="unit"
+        >
+          F
+        </span>
+      </div>
+    </div>
+    <div
+      class="tile-title"
+    >
+      Test Climate
+    </div>
+    <div
+      class="tile-subtitle"
+    >
+      Cooling
+    </div>
+  </div>
+</div>
+`;

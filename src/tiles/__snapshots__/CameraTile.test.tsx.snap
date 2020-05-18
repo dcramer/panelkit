@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<div
+  class="tile state-idle touchable"
+  style="cursor: pointer;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-cover"
+    >
+      <div>
+        loading camera
+      </div>
+    </div>
+    <div
+      class="tile-body"
+    />
+    <div
+      class="tile-title"
+    >
+      Test Camera
+    </div>
+  </div>
+</div>
+`;

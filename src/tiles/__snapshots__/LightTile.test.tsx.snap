@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<div
+  class="tile state-off touchable"
+  style="cursor: pointer;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Off
+    </div>
+    <div
+      class="tile-body"
+    >
+      <span
+        class="tile-icon"
+      >
+        <svg />
+      </span>
+    </div>
+    <div
+      class="tile-title"
+    >
+      Test Light
+    </div>
+  </div>
+</div>
+`;
