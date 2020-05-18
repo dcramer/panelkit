@@ -11,6 +11,10 @@ import { Entity, TileComponentConfig } from "../types";
 
 const LONG_PRESS_TIME = 1000;
 
+// maximum time to wait for a state change
+// after a service call (controls isLoading indicator)
+const SERVICE_CALL_TIMEOUT = 30000;
+
 export interface TileProps extends TileComponentConfig {
   hass: HomeAssistant;
   cameraList: string[];
@@ -38,6 +42,7 @@ export default class Tile<
 
   private _activeSubscriptions: string[];
   private _longPressTimer: number | null;
+  private _loadingTimer: number | null;
   private _wasScrolling: boolean;
 
   state: S;
@@ -46,6 +51,7 @@ export default class Tile<
     super(props, context);
     this._activeSubscriptions = [];
     this._longPressTimer = null;
+    this._loadingTimer = null;
     this._wasScrolling = false;
 
     this.callService = this.callService.bind(this);
@@ -73,6 +79,7 @@ export default class Tile<
       clearTimeout(this._longPressTimer);
       this._longPressTimer = null;
     }
+    if (this._loadingTimer) clearTimeout(this._loadingTimer);
   }
 
   handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
@@ -159,7 +166,19 @@ export default class Tile<
     serviceData: any,
     suggestedChanges?: any
   ) {
-    this.setState({ isLoading: true });
+    if (
+      this.serviceCallShouldWaitOnState(
+        domain,
+        service,
+        serviceData,
+        suggestedChanges
+      )
+    ) {
+      this.setState({ isLoading: true });
+      this._loadingTimer = setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, SERVICE_CALL_TIMEOUT);
+    }
 
     return this.props.hass
       .callService(domain, service, serviceData, suggestedChanges)
@@ -169,6 +188,20 @@ export default class Tile<
         );
         this.setState({ isLoading: false });
       });
+  }
+
+  serviceCallShouldWaitOnState(
+    domain: string,
+    service: string,
+    serviceData: any,
+    suggestedChanges?: any
+  ) {
+    switch (domain) {
+      case "scene":
+        return false;
+      default:
+        return true;
+    }
   }
 
   onStateChange = (entityId: string, newState: Entity) => {
