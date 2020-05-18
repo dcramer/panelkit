@@ -39,7 +39,7 @@ const checkVersion = () => {
     const versionRe = /<meta\s+name="ui-version"\s+content="([^"]+)"\s*\/>/g;
     resp.text().then((text) => {
       const match = versionRe.exec(text);
-      if (!match) return;
+      if (!match || !match[1]) return;
       if (match[1] !== currentVersion) {
         console.log(
           `[panelkit] New version detected (${match[1]}). Reloading application.`
@@ -65,7 +65,7 @@ const initApp = (configError: ErrorEvent | null = null) => {
   // Learn more about service workers: https://bit.ly/CRA-PWA
   serviceWorker.unregister();
 
-  setInterval(checkVersion, 10000);
+  if (currentVersion !== "dev") setInterval(checkVersion, 10000);
 };
 
 const bootApp = () => {
