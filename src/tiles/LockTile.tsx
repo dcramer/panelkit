@@ -1,16 +1,13 @@
-import PropTypes from "prop-types";
-
 import Tile, { TileProps } from "./Tile";
 
-export default class LockTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type LockTileProps = TileProps & {
+  entityId: string;
+};
 
-  onTouch = async () => {
+export default class LockTile extends Tile<LockTileProps> {
+  onTouch = () => {
     const { state } = this.getEntity(this.props.entityId);
-    await this.callService("lock", state === "locked" ? "unlock" : "lock", {
+    this.callService("lock", state === "locked" ? "unlock" : "lock", {
       entity_id: this.props.entityId,
     });
   };

@@ -1,18 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Tile, { TileProps } from "./Tile";
 import { toTitleCase } from "../utils";
 
-export default class ClimateTile extends Tile {
-  static propTypes = {
-    ...TileProps,
-    entityId: PropTypes.string.isRequired,
-  };
+type ClimateTileProps = TileProps & {
+  entityId: string;
+  unit?: string;
+};
 
+export default class ClimateTile extends Tile<ClimateTileProps> {
   static defaultIcon = "thermomoter";
 
-  getUnit(entityId) {
+  getUnit(entityId: string): string {
     if (this.props.unit) return this.props.unit;
     const {
       attributes: { unit_of_measurement },

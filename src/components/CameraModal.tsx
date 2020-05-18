@@ -4,6 +4,7 @@ import styled from "styled-components";
 import CameraStream from "./CameraStream";
 import Modal, { ModalHeader } from "./Modal";
 import TransparentButton from "./TransparentButton";
+import { ModalParams } from "../tiles/Tile";
 
 // TODO(dcramer): when modal is opened we should force landscape on small screens
 // https://stackoverflow.com/questions/27146742/foundation-force-landscape-mode-on-mobile-devices
@@ -68,7 +69,18 @@ const CameraStreamContainer = styled.div`
   }
 `;
 
-export default ({ hass, entityId, cameraList, isOpen, onRequestClose }) => {
+export type CameraModalProps = {
+  entityId: string;
+  cameraList: string[];
+} & ModalParams;
+
+export default ({
+  hass,
+  entityId,
+  cameraList,
+  isOpen,
+  onRequestClose,
+}: CameraModalProps) => {
   let [activeCamera, selectCamera] = React.useState(entityId);
   let activeEntity = hass.getEntity(activeCamera);
 

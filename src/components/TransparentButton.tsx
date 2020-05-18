@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export type TransparentButtonProps = {
+  onClick?: Function;
+};
+
 export default styled.button`
   background: inherit;
   color: inherit;

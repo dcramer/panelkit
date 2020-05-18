@@ -5,6 +5,9 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 import Modal, { ModalHeader } from "./Modal";
+import HomeAssistant from "../hass";
+import { EntityAttributes } from "../types";
+import { ModalParams } from "../tiles/Tile";
 
 // maps to constants in light component
 const FEAT_BRIGHTNESS = 1;
@@ -34,7 +37,17 @@ const BrightnessControlContainer = styled.div`
   padding: 10px 20px 35px;
 `;
 
-const BrightnessControl = ({ entityId, brightness, hass }) => {
+type BrightnessControlProps = {
+  entityId: string;
+  brightness: number;
+  hass: HomeAssistant;
+};
+
+const BrightnessControl = ({
+  entityId,
+  brightness,
+  hass,
+}: BrightnessControlProps) => {
   return (
     <BrightnessControlContainer>
       <Slider
@@ -85,13 +98,30 @@ const BrightnessControl = ({ entityId, brightness, hass }) => {
   );
 };
 
-export default ({ hass, entityId, isOpen, onRequestClose }) => {
+export type LightModalProps = {
+  entityId: string;
+} & ModalParams;
+
+type LightAttributes = {
+  supported_features: number;
+  brightness?: number;
+} & EntityAttributes;
+
+export default ({
+  hass,
+  entityId,
+  isOpen,
+  onRequestClose,
+}: LightModalProps) => {
   const entity = hass.getEntity(entityId);
-  const { supported_features, brightness } = entity.attributes;
+  const {
+    supported_features,
+    brightness,
+  } = entity.attributes as LightAttributes;
   const supportsBrightness = !!(supported_features & FEAT_BRIGHTNESS);
   // const supportsColor = !!(supported_features & FEAT_COLOR);
 
-  const brightnessPercent = parseInt(
+  const brightnessPercent = Math.floor(
     ((brightness || 0) / BRIGHTNESS_MAX) * 100
   );
 
@@ -114,7 +144,7 @@ export default ({ hass, entityId, isOpen, onRequestClose }) => {
               <BrightnessControl
                 hass={hass}
                 entityId={entityId}
-                brightness={brightness}
+                brightness={brightness || 0}
               />
             </React.Fragment>
           )}

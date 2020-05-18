@@ -1,17 +1,23 @@
 // import React from "react";
 
-type _TileConfig<T> = {
-  entityId: string;
-  // TODO:
+export interface TileComponentConfig {
+  entityId?: string;
   type: any;
   width?: number;
   height?: number;
   title?: string;
   subtitle?: string;
   icon?: string;
-  icons?: Map<string, string>;
+  icons?: {
+    [state: string]: string;
+  };
+}
+
+type _TileConfig<T> = {
+  // TODO:
+  type: any;
   tiles: T[];
-};
+} & TileComponentConfig;
 
 export interface TileConfig extends _TileConfig<TileConfig> {}
 

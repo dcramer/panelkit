@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { orientation } from "o9n";
 
 import Icon from "./Icon";
 import TransparentButton from "./TransparentButton";
 
-const ModalContext = React.createContext(null);
+interface ModalContextInterface {
+  ref: any;
+}
+
+const ModalContext = React.createContext<ModalContextInterface | null>(null);
 
 export const Overlay = styled.div`
   position: fixed;
@@ -20,7 +23,9 @@ export const Overlay = styled.div`
 `;
 
 export class ModalProvider extends Component {
-  constructor(props) {
+  private ref: any;
+
+  constructor(props: any) {
     super(props);
     this.ref = React.createRef();
   }
@@ -37,16 +42,25 @@ export class ModalProvider extends Component {
   }
 }
 
+export type ModalHeaderProps = {
+  title: string;
+  onRequestClose: () => void;
+  small?: boolean;
+  light?: boolean;
+  children?: JSX.Element | JSX.Element[];
+  className?: string;
+};
+
 export const UnstyledModalHeader = ({
   children,
   title,
   className,
   onRequestClose,
-}) => {
+}: ModalHeaderProps) => {
   return (
     <div className={`${className} modal-header`}>
-      <TransparentButton onClick={onRequestClose}>
-        <Icon name="close" size="42" />
+      <TransparentButton onClick={() => onRequestClose()}>
+        <Icon name="close" size={42} />
       </TransparentButton>
       {title && <h2>{title}</h2>}
       {children}
@@ -59,14 +73,15 @@ export const ModalHeader = styled(UnstyledModalHeader)`
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--bg-color);
+  height: 40px;
 
-  ${(props) =>
+  ${(props: ModalHeaderProps) =>
     props.light &&
     css`
       border: 0;
     `}
 
-  ${(props) =>
+  ${(props: ModalHeaderProps) =>
     props.small &&
     css`
       padding: 6px;
@@ -80,14 +95,14 @@ export const ModalHeader = styled(UnstyledModalHeader)`
     height: 100%;
     background: var(--bg-color);
 
-    ${(props) =>
+    ${(props: ModalHeaderProps) =>
       props.small &&
       css`
         width: 40px;
         padding: 6px;
       `}
 
-    ${(props) =>
+    ${(props: ModalHeaderProps) =>
       props.light &&
       css`
         background: inherit;
@@ -104,13 +119,18 @@ export const ModalHeader = styled(UnstyledModalHeader)`
     margin: 0;
     padding: 20px;
 
-    ${(props) =>
+    ${(props: ModalHeaderProps) =>
       props.small &&
       css`
         padding: 6px;
       `}
   }
 `;
+
+type ModalDialogProps = {
+  small?: boolean;
+  light?: boolean;
+};
 
 export const ModalDialog = styled.div`
   z-index: 100;
@@ -121,7 +141,7 @@ export const ModalDialog = styled.div`
   bottom: 0;
   background: var(--modal-bg-color);
 
-  ${(props) =>
+  ${(props: ModalDialogProps) =>
     props.small &&
     css`
       width: 400px;
@@ -139,22 +159,26 @@ export const ModalDialog = styled.div`
   }
 `;
 
-export class Modal extends Component {
-  static contextType = ModalContext;
+export type ModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  small?: boolean;
+  light?: boolean;
+  landscapeOnly?: boolean;
+};
 
-  static propTypes = {
-    isOpen: PropTypes.bool,
-    onRequestClose: PropTypes.func.isRequired,
-    small: PropTypes.bool,
-    light: PropTypes.bool,
-    landscapeOnly: PropTypes.bool,
-  };
+type ModalState = {};
+
+export class Modal extends Component<ModalProps, ModalState> {
+  static contextType = ModalContext;
 
   static defaultProps = {
     isOpen: false,
   };
 
-  constructor(props) {
+  private overlayRef: any;
+
+  constructor(props: ModalProps) {
     super(props);
     this.overlayRef = React.createRef();
   }
@@ -162,7 +186,7 @@ export class Modal extends Component {
   componentDidMount() {
     ReactDOM.render(this.renderContents(), this.context.ref.current);
     if (this.props.landscapeOnly) {
-      orientation.lock("landscape-primary").catch((e) => {});
+      orientation.lock("landscape-primary").catch(() => {});
     }
   }
 
@@ -176,8 +200,8 @@ export class Modal extends Component {
     orientation.unlock();
   }
 
-  onClickOverlay = (e) => {
-    if (e.target !== this.overlayRef.current) return;
+  onClickOverlay = (ev: any) => {
+    if (ev.target !== this.overlayRef.current) return;
     this.props.onRequestClose && this.props.onRequestClose();
   };
 

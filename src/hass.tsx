@@ -13,7 +13,7 @@ enum Phase {
 
 const DEFAULT_TIMEOUT = 250; // ms
 
-const makeSubscribeId = () => {
+const makeSubscriberId = (): string => {
   const s4 = () => {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
@@ -22,10 +22,12 @@ const makeSubscribeId = () => {
   return `${s4()}${s4()}`;
 };
 
+type SubscriberCallback = (entityId: string, newState: Entity) => void;
+
 interface EventSubscriber {
   id: string;
   entityId: string;
-  callback: Function;
+  callback: SubscriberCallback;
 }
 
 interface HomeAssistantOptions {
@@ -48,10 +50,35 @@ type WebSocketOpenEvent = Event & {
   target: WebSocketOpenEventTarget;
 };
 
-interface Message {
-  id?: number;
+export interface Message {
   type: string;
   [key: string]: any;
+}
+
+export interface Command extends Message {
+  id: number;
+}
+
+export interface MessageResult {
+  result: any;
+  error: {
+    message: string;
+  } | null;
+  success: boolean;
+  [key: string]: any;
+}
+
+export interface CommandResult extends MessageResult {
+  id: number;
+}
+
+export interface SuggestedChanges {
+  [entityId: string]: {
+    state?: any;
+    attributes?: {
+      [key: string]: any;
+    };
+  };
 }
 
 // TODO(dcramer): move to home-assistant-js-websocket
@@ -63,7 +90,7 @@ export default class HomeAssistant {
   private _hasPrepared: boolean = false;
   private _shouldReconnect: boolean = false;
   private _pendingRequests: Map<number, [Function, Function]>;
-  private _pendingChanges: Map<number, any>;
+  private _pendingChanges: Map<number, SuggestedChanges>;
   private _eventSubscribers: EventSubscriber[];
   private _rootSubscriptions: Map<string, string>;
   private _entityCache: Map<string, any>;
@@ -120,17 +147,18 @@ export default class HomeAssistant {
     this.onOpen = onOpen || function () {};
   }
 
-  // TODO: WebSocketOpenEvent
-  _onOpen = (ev: any) => {
-    console.log("[hass] Connection opened", ev.target.url);
+  _onOpen = (ev: Event) => {
+    console.log(
+      "[hass] Connection opened",
+      (ev as WebSocketOpenEvent).target.url
+    );
     this.state = State.CONNECTED;
     this.phase = Phase.AUTHENTICATION;
 
     this.onOpen();
   };
 
-  // TODO: WebSocketErrorEvent
-  _onError = (ev: any) => {
+  _onError = (ev: Event) => {
     const error = new Error(
       "[hass] Error communicating with Home Assistant. Closing Socket"
     );
@@ -144,11 +172,12 @@ export default class HomeAssistant {
     this.onError(error);
   };
 
-  _onClose = (ev: WebSocketCloseEvent) => {
-    const willRetry = this._canRetryConnection(ev.code);
+  _onClose = (ev: Event) => {
+    const { code, reason } = ev as WebSocketCloseEvent;
+    const willRetry = this._canRetryConnection(code);
     const error = new Error(
-      `Error communicating with Home Assistant. Code ${ev.code} - ${
-        ev.reason || "unknown error"
+      `Error communicating with Home Assistant. Code ${code} - ${
+        reason || "unknown error"
       }` +
         (willRetry
           ? ` Reconnect will be attempted in ${this._timeout / 1000} second(s).`
@@ -163,12 +192,12 @@ export default class HomeAssistant {
       this._connectTimer = setTimeout(this._checkConnection, this._timeout);
     }
 
-    console.log(error.message, ev.reason);
+    console.log(error.message, reason);
     this.onError(error);
   };
 
   _onMessage = (event: WebSocketMessageEvent) => {
-    const payload = JSON.parse(event.data);
+    const payload: MessageResult | CommandResult = JSON.parse(event.data);
     console.debug(
       "[hass] Received message of type",
       payload.type,
@@ -216,7 +245,7 @@ export default class HomeAssistant {
               this._pendingChanges.delete(payload.id);
             }, 1000);
             resolve(payload);
-          } else {
+          } else if (payload.error) {
             const error = new Error(payload.error.message);
             (error as any).payload = payload;
             const changes = this._pendingChanges.get(payload.id);
@@ -257,10 +286,10 @@ export default class HomeAssistant {
     this.onReady && this.onReady(this);
   };
 
-  _notifySubscribers(entityId: string, ...params: any[]) {
+  _notifySubscribers(entityId: string, newState: Entity) {
     this._eventSubscribers.forEach((subscriber) => {
       if (subscriber.entityId === entityId) {
-        subscriber.callback(entityId, ...params);
+        subscriber.callback(entityId, newState);
       }
     });
   }
@@ -297,7 +326,7 @@ export default class HomeAssistant {
   }
 
   getEntityName(entity: Entity): string {
-    return entity.attributes.friendly_name || entity.entity_id;
+    return entity.attributes.friendly_name || entity.entity_id || "";
   }
 
   getEntityPicture(entityId: string): string | null {
@@ -362,7 +391,7 @@ export default class HomeAssistant {
     console.log("[hass] Disconnected");
   }
 
-  sendMessage(message: Message) {
+  sendMessage(message: Message | Command) {
     console.debug(
       "[hass] Sending message of type",
       message.type,
@@ -388,7 +417,10 @@ export default class HomeAssistant {
    * sendCommand({type: "update_entity", "entityId": "foo.bar", "state": "on"}, {"foo.bar": {"state": "on"}})
    * ```
    */
-  sendCommand(message: Message, suggestedChanges: any = null): any {
+  sendCommand(
+    message: Message,
+    suggestedChanges: SuggestedChanges | null = null
+  ): any {
     const id = this._messageCounter;
     const promise = new Promise((resolve, reject) => {
       this._pendingRequests.set(id, [resolve, reject]);
@@ -401,7 +433,7 @@ export default class HomeAssistant {
       this.sendMessage({
         id,
         ...message,
-      });
+      } as Command);
     });
     (promise as any).cancel = () => {
       this._pendingRequests.delete(id);
@@ -429,7 +461,7 @@ export default class HomeAssistant {
     domain: string,
     service: string,
     serviceData: any,
-    suggestedChanges: any = null
+    suggestedChanges: SuggestedChanges | null = null
   ) {
     return this.sendCommand(
       {
@@ -448,8 +480,8 @@ export default class HomeAssistant {
     });
   }
 
-  subscribe(entityId: string, callback: Function) {
-    const id = makeSubscribeId();
+  subscribe(entityId: string, callback: SubscriberCallback) {
+    const id = makeSubscriberId();
     this._eventSubscribers.push({
       entityId,
       callback,

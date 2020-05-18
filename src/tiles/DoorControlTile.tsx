@@ -1,27 +1,26 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-import Tile, { TileProps } from "./Tile";
+import Tile, { TileProps, ModalParams } from "./Tile";
 import DoorControlModal from "../components/DoorControlModal";
 
-export default class DoorControlTile extends Tile {
-  static defaultIcon = "door";
+type DoorControlTileProps = TileProps & {
+  camera: string;
+  title: string;
+};
 
-  static PropTypes = {
-    ...TileProps,
-    camera: PropTypes.string.isRequired,
-  };
+export default class DoorControlTile extends Tile<DoorControlTileProps> {
+  static defaultIcon = "door";
 
   onTouch = () => {
     this.openModal();
   };
 
-  renderModal({ ...props }) {
+  renderModal(params: ModalParams) {
     return (
       <DoorControlModal
         title={this.props.title}
         camera={this.props.camera}
-        {...props}
+        {...params}
       />
     );
   }
