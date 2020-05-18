@@ -6,6 +6,8 @@ import Modal, { ModalHeader } from "./Modal";
 import TransparentButton from "./TransparentButton";
 import { ModalParams } from "../tiles/Tile";
 
+import { DeviceMedia } from "../ui";
+
 // TODO(dcramer): when modal is opened we should force landscape on small screens
 // https://stackoverflow.com/questions/27146742/foundation-force-landscape-mode-on-mobile-devices
 
@@ -18,7 +20,7 @@ const CameraViewerContainer = styled.div`
     "header header"
     "sidebar main";
 
-  @media only screen and (max-width: 500px) {
+  @media ${DeviceMedia.MOBILE} {
     grid-template-areas:
       "header header"
       "main main";
@@ -54,7 +56,7 @@ const CameraListContainer = styled.div`
     }
   }
 
-  @media only screen and (max-width: 500px) {
+  @media ${DeviceMedia.MOBILE} {
     display: none;
   }
 `;
