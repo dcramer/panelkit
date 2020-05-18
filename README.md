@@ -47,17 +47,11 @@ Some scribbles about what (hopefully) still needs done.
 
 - Implement missing Tile features. Notes are generally inline in the Tile list below. To some degree I'm modeling feature parity with Tileboard, but there may be things that simply aren't worth porting (such as the device tracker) unless someone else opts to do it.
 
-- Determine how this actually ships to "prod". It's easy to develop against right now, but is the `config.js` pattern going to work well enough when we've compiled the application? The ideal scenario is that someone can just pull down a pre-built `index.html`, put that alongside a `config.js` and serve that via home assistant or their browser of choice.
-
 - Consider migrating to `home-assistant-js-websocket`. I didn't notice it when I started development, and its got quite a lot of functionality/complexity that migration may or may not be worth it.
 
 - Add validation for config so that it doesn't throw cryptic javascript errors when e.g. you pass an invalid `type`.
 
-- Touch controls are not yet well implemented. Certain behaviors are incorrect (scrolling -> creates a click-style touch event when it shouldn't).
-
 - Camera modal/door modal will need portrait-focused improvements.
-
-- Websockets are having some problems when the URL is pinned to home screen on iOS.
 
 ## Config
 
