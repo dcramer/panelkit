@@ -15,5 +15,9 @@ export type IconProps = {
 };
 
 export default ({ name, size = 3, ...props }: IconProps) => {
-  return <MdiIcon path={ICONS.get(name)} size={size} {...props} />;
+  const iconPath = ICONS.get(name);
+  if (!iconPath) {
+    throw new Error(`Unable to find icon: ${name}`);
+  }
+  return <MdiIcon path={iconPath} size={size} {...props} />;
 };

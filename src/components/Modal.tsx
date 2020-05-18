@@ -170,6 +170,7 @@ export type ModalProps = {
 type ModalState = {};
 
 export class Modal extends Component<ModalProps, ModalState> {
+  // XXX: context may not exist in tests
   static contextType = ModalContext;
 
   static defaultProps = {
@@ -178,24 +179,30 @@ export class Modal extends Component<ModalProps, ModalState> {
 
   private overlayRef: any;
 
-  constructor(props: ModalProps) {
-    super(props);
+  constructor(props: ModalProps, context: any) {
+    super(props, context);
     this.overlayRef = React.createRef();
   }
 
   componentDidMount() {
-    ReactDOM.render(this.renderContents(), this.context.ref.current);
+    if (this.context) {
+      ReactDOM.render(this.renderContents(), this.context.ref.current);
+    }
     if (this.props.landscapeOnly) {
       orientation.lock("landscape-primary").catch(() => {});
     }
   }
 
   componentDidUpdate() {
-    ReactDOM.render(this.renderContents(), this.context.ref.current);
+    if (this.context) {
+      ReactDOM.render(this.renderContents(), this.context.ref.current);
+    }
   }
 
   componentWillUnmount() {
-    ReactDOM.unmountComponentAtNode(this.context.ref.current);
+    if (this.context) {
+      ReactDOM.unmountComponentAtNode(this.context.ref.current);
+    }
 
     orientation.unlock();
   }

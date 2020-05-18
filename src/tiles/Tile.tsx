@@ -70,7 +70,10 @@ export default class Tile<
   }
 
   handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
-    if ((e.button === 0 && e.ctrlKey) || e.button > 0) return;
+    if ((e.button === 0 && e.ctrlKey) || e.button > 0) {
+      console.debug("[panelkit] Ignoring click due to mouse button(s)");
+      return;
+    }
     return this.handleButtonPress(e);
   };
 
@@ -103,6 +106,7 @@ export default class Tile<
   ) => {
     e.cancelable && e.preventDefault();
     if (this._wasScrolling) {
+      console.debug("[panelkit] Ignoring click due to scrolling");
       this._wasScrolling = false;
       return;
     }
@@ -110,8 +114,8 @@ export default class Tile<
       clearTimeout(this._longPressTimer);
       this._longPressTimer = null;
       this.onTouch && this.onTouch();
-    } else if (!this.onLongTouch) {
-      this.onTouch && this.onTouch();
+    } else if (!this.onLongTouch && this.onTouch) {
+      this.onTouch();
     }
   };
 
@@ -139,7 +143,7 @@ export default class Tile<
     return [];
   }
 
-  getEntity(entityId: string) {
+  getEntity(entityId: string): Entity {
     return this.props.hass.getEntity(entityId);
   }
 
@@ -163,18 +167,19 @@ export default class Tile<
     this.forceUpdate();
   };
 
-  getIcon() {
+  getIcon(): string {
     const { entityId, icon } = this.props;
     if (entityId) return this.getIconForEntity(entityId as string);
     if (icon) return icon as string;
     return this.getDefaultIcon();
   }
 
-  getIconForEntity(entityId: string) {
+  getIconForEntity(entityId: string): string {
     const { state } = this.getEntity(entityId);
     if (this.props.icons && this.props.icons[state])
-      return this.props.icons[state];
-    return this.props.icon || this.getDefaultIcon();
+      return this.props.icons[state] as string;
+    if (this.props.icon) return this.props.icon as string;
+    return this.getDefaultIcon();
   }
 
   /*

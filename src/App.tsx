@@ -105,7 +105,7 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
         this.props.config.accessToken ||
         "",
       onReady: this.onReady,
-      onError: (error: Error) => {
+      onError: (error: Error | ErrorEvent) => {
         Sentry.captureException(error);
         toast.error(error.message);
       },
@@ -212,7 +212,7 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
 
 interface AppProps {
   config: Config;
-  configError: ErrorEvent | null;
+  configError?: ErrorEvent | null;
 }
 
 export default class App extends Component<AppProps> {

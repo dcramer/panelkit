@@ -33,13 +33,9 @@ interface EventSubscriber {
 interface HomeAssistantOptions {
   url: string;
   accessToken: string;
-  onReady: Function | null;
-  onError: Function | null;
-  onOpen: Function | null;
-  // TODO:
-  // onReady: () => void | null;
-  // onError: (error: Error) => void | null;
-  // onOpen: () => void | null;
+  onReady?: (() => void) | null;
+  onError?: ((error: Error | ErrorEvent) => void) | null;
+  onOpen?: (() => void) | null;
 }
 
 type WebSocketOpenEventTarget = EventTarget & {
@@ -147,7 +143,7 @@ export default class HomeAssistant {
     this.onOpen = onOpen || function () {};
   }
 
-  _onOpen = (ev: Event) => {
+  private _onOpen = (ev: Event) => {
     console.log(
       "[hass] Connection opened",
       (ev as WebSocketOpenEvent).target.url
@@ -158,7 +154,7 @@ export default class HomeAssistant {
     this.onOpen();
   };
 
-  _onError = (ev: Event) => {
+  private _onError = (ev: Event) => {
     const error = new Error(
       "[hass] Error communicating with Home Assistant. Closing Socket"
     );
@@ -172,7 +168,7 @@ export default class HomeAssistant {
     this.onError(error);
   };
 
-  _onClose = (ev: Event) => {
+  private _onClose = (ev: Event) => {
     const { code, reason } = ev as WebSocketCloseEvent;
     const willRetry = this._canRetryConnection(code);
     const error = new Error(
@@ -267,30 +263,34 @@ export default class HomeAssistant {
   /**
    * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
    */
-  _checkConnection = () => {
+  private _checkConnection = () => {
     // check if websocket instance is closed, if so call `connect` function.
     if (!this._socket || this._socket.readyState === WebSocket.CLOSED) {
       this.connect();
     }
   };
 
-  _prepareApp = async () => {
+  private _prepareApp = async () => {
     await this.subscribeEvents("state_changed");
-    const _entityCache = this._entityCache;
     const { result } = await this.getStates();
-    result.forEach((entity: Entity) => {
-      _entityCache.set(entity.entity_id, entity);
-    });
+    this.populateEntityCache(result);
 
     this._hasPrepared = true;
     this.onReady && this.onReady(this);
   };
 
-  _notifySubscribers(entityId: string, newState: Entity) {
+  private _notifySubscribers(entityId: string, newState: Entity) {
     this._eventSubscribers.forEach((subscriber) => {
       if (subscriber.entityId === entityId) {
         subscriber.callback(entityId, newState);
       }
+    });
+  }
+
+  populateEntityCache(entityList: Entity[]) {
+    const _entityCache = this._entityCache;
+    entityList.forEach((entity: Entity) => {
+      _entityCache.set(entity.entity_id, entity);
     });
   }
 

@@ -33,6 +33,7 @@ export default class AlarmTile extends Tile<AlarmTileProps> {
   renderModal(params: AlarmModalProps) {
     return <AlarmModal {...params} />;
   }
+
   getDefaultIcon() {
     const { state } = this.getEntity(this.props.entityId);
     switch (state) {

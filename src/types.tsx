@@ -2,7 +2,6 @@
 
 export interface TileComponentConfig {
   entityId?: string;
-  type: any;
   width?: number;
   height?: number;
   title?: string;
