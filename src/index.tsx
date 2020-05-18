@@ -29,6 +29,27 @@ WebFont.load({
   },
 });
 
+const currentVersion: string = process.env.REACT_APP_GIT_SHA || "";
+
+const checkVersion = () => {
+  fetch(document.location.href, {
+    redirect: "error",
+    cache: "no-cache",
+  }).then((resp) => {
+    const versionRe = /<meta\s+name="ui-version"\s+content="([^"]+)"\s*\/>/g;
+    resp.text().then((text) => {
+      const match = versionRe.exec(text);
+      if (!match) return;
+      if (match[1] !== currentVersion) {
+        console.log(
+          `[panelkit] New version detected (${match[1]}). Reloading application.`
+        );
+        window.location.reload(true);
+      }
+    });
+  });
+};
+
 const initApp = (configError: ErrorEvent | null = null) => {
   ReactDOM.render(
     <React.StrictMode>
@@ -43,6 +64,8 @@ const initApp = (configError: ErrorEvent | null = null) => {
   // unregister() to register() below. Note this comes with some pitfalls.
   // Learn more about service workers: https://bit.ly/CRA-PWA
   serviceWorker.unregister();
+
+  setInterval(checkVersion, 10000);
 };
 
 const bootApp = () => {

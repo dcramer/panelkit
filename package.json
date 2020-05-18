@@ -38,10 +38,10 @@
   "scripts": {
     "build-mdi": "bin/build-mdi",
     "prestart": "bin/build-mdi",
-    "start": "react-scripts start",
+    "start": "REACT_APP_GIT_SHA=dev react-scripts start",
     "prebuild": "bin/build-mdi",
     "build": "npm run build:react && npm run build:bundle",
-    "build:react": "PUBLIC_URL=. react-scripts build",
+    "build:react": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` && PUBLIC_URL=. react-scripts build",
     "build:bundle": "INLINE_RUNTIME_CHUNK=false GENERATE_SOURCEMAP=false SKIP_PREFLIGHT_CHECK=true gulp",
     "serve": "serve -s build",
     "test": "react-scripts test",
