@@ -20,7 +20,7 @@ const CameraViewerContainer = styled.div`
     "header header"
     "sidebar main";
 
-  @media ${DeviceMedia.MOBILE} {
+  @media ${DeviceMedia.MOBILE}, ${DeviceMedia.PORTRAIT} {
     grid-template-areas:
       "header header"
       "main main";
@@ -56,7 +56,7 @@ const CameraListContainer = styled.div`
     }
   }
 
-  @media ${DeviceMedia.MOBILE} {
+  @media ${DeviceMedia.MOBILE}, ${DeviceMedia.PORTRAIT} {
     display: none;
   }
 `;
