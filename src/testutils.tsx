@@ -19,11 +19,7 @@ export const simulateTouch = (container: any) => {
   userEvent.click(container);
 };
 
-export const renderTile = (
-  Component: any,
-  entity: Entity,
-  props: { [key: string]: any } = {}
-) => {
+export const getTileProps = (entity: Entity) => {
   const hass = new HomeAssistant(DEFAULT_CONFIG);
 
   hass.callService = jest
@@ -44,18 +40,28 @@ export const renderTile = (
 
   hass.populateEntityCache([entity]);
 
-  const result = render(
-    <Component
-      hass={hass}
-      entityId={entity.entity_id}
-      cameraList={[]}
-      {...props}
-    />
-  );
+  return {
+    entityId: entity.entity_id,
+    hass,
+    cameraList: [],
+  };
+};
+
+export const renderTile = (
+  Component: any,
+  entity: Entity,
+  props: { [key: string]: any } = {}
+) => {
+  const tileProps = {
+    ...getTileProps(entity),
+    ...props,
+  };
+
+  const result = render(<Component {...tileProps} />);
 
   return {
     ...result,
-    hass,
+    hass: tileProps.hass,
     container: result.container.firstChild,
   };
 };

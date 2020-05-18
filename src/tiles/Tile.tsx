@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { toast } from "react-toastify";
 
 import "./Tile.css";
+import LoadingIndicator from "../components/LoadingIndicator";
 import Icon from "../components/Icon";
 import { toTitleCase } from "../utils";
 
@@ -17,11 +18,13 @@ export interface TileProps extends TileComponentConfig {
 
 export interface TileState {
   modalIsOpen: boolean;
+  isLoading: boolean;
 }
 
 export type ModalParams = {
   entityId?: string;
   hass: HomeAssistant;
+  callService: Function;
   cameraList: string[];
   isOpen: boolean;
   onRequestClose: () => void;
@@ -44,11 +47,14 @@ export default class Tile<
     this._activeSubscriptions = [];
     this._longPressTimer = null;
     this._wasScrolling = false;
+
+    this.callService = this.callService.bind(this);
+
     this.state = this.getInitialState();
   }
 
   getInitialState(): any {
-    return { modalIsOpen: false };
+    return { modalIsOpen: false, isLoading: false };
   }
 
   componentDidMount() {
@@ -153,18 +159,21 @@ export default class Tile<
     serviceData: any,
     suggestedChanges?: any
   ) {
+    this.setState({ isLoading: true });
+
     return this.props.hass
       .callService(domain, service, serviceData, suggestedChanges)
       .catch((err: Error) => {
         toast.error(
           `Error occured when calling ${domain}.${service}: ${err.message}`
         );
+        this.setState({ isLoading: false });
       });
   }
 
   onStateChange = (entityId: string, newState: Entity) => {
     // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
-    this.forceUpdate();
+    this.setState({ isLoading: false });
   };
 
   getIcon(): string {
@@ -210,6 +219,7 @@ export default class Tile<
   };
 
   render() {
+    const { isLoading } = this.state;
     const isTouchable = this.isTouchable();
     const status = this.renderStatus();
     const title = this.renderTitle();
@@ -225,6 +235,7 @@ export default class Tile<
         onTouchEnd={this.handleButtonRelease}
         onTouchMove={this.handleTouchMove}
         style={{ cursor: isTouchable ? "pointer" : "normal" }}
+        data-testid="tile"
       >
         <div className="tile-container">
           {cover && <div className="tile-cover">{cover}</div>}
@@ -232,6 +243,11 @@ export default class Tile<
           <div className="tile-body">{this.renderBody()}</div>
           {title && <div className="tile-title">{title}</div>}
           {subtitle && <div className="tile-subtitle">{subtitle}</div>}
+          {isLoading && (
+            <div className="tile-loading">
+              <LoadingIndicator />
+            </div>
+          )}
           {this.state.modalIsOpen &&
             this.renderModal({
               hass: this.props.hass,
@@ -239,6 +255,7 @@ export default class Tile<
               isOpen: this.state.modalIsOpen,
               onRequestClose: this.closeModal,
               cameraList: this.props.cameraList,
+              callService: this.callService,
             })}
         </div>
       </div>

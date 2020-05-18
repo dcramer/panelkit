@@ -426,9 +426,9 @@ export default class HomeAssistant {
       this._pendingRequests.set(id, [resolve, reject]);
       if (suggestedChanges) {
         this._pendingChanges.set(id, suggestedChanges);
-        Object.keys(suggestedChanges).forEach((entityId) => {
-          this._notifySubscribers(entityId, this.getEntity(entityId));
-        });
+        // Object.keys(suggestedChanges).forEach((entityId) => {
+        //   this._notifySubscribers(entityId, this.getEntity(entityId));
+        // });
       }
       this.sendMessage({
         id,

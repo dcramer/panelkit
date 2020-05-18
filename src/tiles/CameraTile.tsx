@@ -29,6 +29,7 @@ export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
     loading: true,
     result: null,
     modalIsOpen: false,
+    isLoading: false,
   };
 
   static defaultProps = {

@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Icon from "./Icon";
 import Modal, { ModalHeader } from "./Modal";
 import { ModalParams } from "../tiles/Tile";
-import HomeAssistant from "../hass";
 import { toTitleCase } from "../utils";
 
 // maps to constants in alarm_control_panel component
@@ -50,83 +49,32 @@ const Action = styled.div`
   }
 `;
 
-const setAlarm = (
-  hass: HomeAssistant,
-  onRequestClose: () => void,
-  entityId: string,
-  service: string
-) => {
-  let state: string = "";
-  switch (service) {
-    case "alarm_arm_home":
-      state = "armed_home";
-      break;
-    case "alarm_arm_away":
-      state = "armed_away";
-      break;
-    case "alarm_arm_night":
-      state = "armed_night";
-      break;
-    default:
-  }
-
-  hass.callService(
-    "alarm_control_panel",
-    service,
-    {
-      entity_id: entityId,
-    },
-    {
-      [entityId]: {
-        state,
-      },
-    }
-  );
-  onRequestClose();
-};
-
 type AlarmStateControlProps = {
-  onRequestClose: () => void;
-  entityId: string;
   supportedFeatures: number;
-  hass: HomeAssistant;
+  setAlarm: Function;
 };
 
 const AlarmStateControl = ({
-  onRequestClose,
-  entityId,
   supportedFeatures,
-  hass,
+  setAlarm,
 }: AlarmStateControlProps) => {
   return (
     <ControlContainer>
       {!!(supportedFeatures & FEAT_HOME) && (
-        <Action
-          onClick={() =>
-            setAlarm(hass, onRequestClose, entityId, "alarm_arm_home")
-          }
-        >
+        <Action onClick={() => setAlarm("alarm_arm_home")}>
           <Icon name="bell" />
           <h6>Arm Home</h6>
         </Action>
       )}
       {!!(supportedFeatures & FEAT_AWAY) && (
-        <Action
-          onClick={() =>
-            setAlarm(hass, onRequestClose, entityId, "alarm_arm_away")
-          }
-        >
+        <Action onClick={() => setAlarm("alarm_arm_away")}>
           <Icon name="bell" />
           <h6>Arm Away</h6>
         </Action>
       )}
 
       {!!(supportedFeatures & FEAT_NIGHT) && (
-        <Action
-          onClick={() =>
-            setAlarm(hass, onRequestClose, entityId, "alarm_arm_night")
-          }
-        >
+        <Action onClick={() => setAlarm("alarm_arm_night")}>
           <Icon name="bell" />
           <h6>Arm Night</h6>
         </Action>
@@ -142,12 +90,43 @@ export type AlarmModalProps = {
 
 export default ({
   hass,
+  callService,
   entityId,
   isOpen,
   onRequestClose,
 }: AlarmModalProps) => {
   const entity = hass.getEntity(entityId);
   const { supported_features } = entity.attributes;
+
+  const setAlarm = (service: string) => {
+    let state: string = "";
+    switch (service) {
+      case "alarm_arm_home":
+        state = "armed_home";
+        break;
+      case "alarm_arm_away":
+        state = "armed_away";
+        break;
+      case "alarm_arm_night":
+        state = "armed_night";
+        break;
+      default:
+    }
+
+    callService(
+      "alarm_control_panel",
+      service,
+      {
+        entity_id: entityId,
+      },
+      {
+        [entityId]: {
+          state,
+        },
+      }
+    );
+    onRequestClose();
+  };
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} small>
@@ -161,10 +140,8 @@ export default ({
 
         <AlarmControlsContainer>
           <AlarmStateControl
-            hass={hass}
-            entityId={entityId}
+            setAlarm={setAlarm}
             supportedFeatures={supported_features}
-            onRequestClose={onRequestClose}
           />
         </AlarmControlsContainer>
       </AlarmControllerContainer>

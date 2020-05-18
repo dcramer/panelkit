@@ -152,3 +152,20 @@
   right: 0;
   font-size: 0.9em;
 }
+
+.tile-loading {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+}
+
+.tile-loading div {
+  width: 50px;
+  height: 50px;
+}

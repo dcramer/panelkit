@@ -222,6 +222,7 @@ export class Modal extends Component<ModalProps, ModalState> {
           style={{
             display: this.props.isOpen ? "block" : "none",
           }}
+          data-testid="modal-overlay"
         >
           <ModalDialog small={this.props.small}>
             {this.props.children}

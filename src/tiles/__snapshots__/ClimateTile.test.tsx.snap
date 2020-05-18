@@ -3,6 +3,7 @@
 exports[`renders 1`] = `
 <div
   class="tile state-cool false"
+  data-testid="tile"
   style="cursor: normal;"
 >
   <div
