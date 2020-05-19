@@ -155,9 +155,6 @@ export default class HomeAssistant {
   };
 
   private _onError = (ev: Event) => {
-    const error = new Error(
-      "[hass] Error communicating with Home Assistant. Closing Socket"
-    );
     if (this._socket) {
       this._socket.close();
       this._socket = null;
@@ -165,7 +162,11 @@ export default class HomeAssistant {
     this.phase = Phase.AUTHENTICATION;
     this.state = State.DISCONNECTED;
 
-    this.onError(error);
+    // XXX(dcramer): seems to not matter as errors get duped with the onClose event for the most part
+    // const error = new Error(
+    //   "[hass] Error communicating with Home Assistant. Closing Socket"
+    // );
+    // this.onError(error);
   };
 
   private _onClose = (ev: Event) => {
