@@ -154,6 +154,8 @@ And with that, you'll get a basic light tile control with custom icons:
 
 A basic alarm control, showing the current state of the alarm and allowing disarm, armed_home, armed_away, and armed_night state changes.
 
+![AlarmTile](/screenshots/alarm.png)
+
 ```javascript
 {
   type: TILE.ALARM,
@@ -165,6 +167,8 @@ A basic alarm control, showing the current state of the alarm and allowing disar
 ### AutomationTile
 
 A tile which to trigger an automation
+
+![AutomationTile](/screenshots/automation.png)
 
 ```javascript
 {
@@ -179,6 +183,8 @@ A tile which to trigger an automation
 ### CameraTile
 
 A still capture of a camera, refreshed every few seconds. A single press goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
+
+![CameraTile](/screenshots/camera.png)
 
 ```javascript
 {
@@ -195,6 +201,8 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
 **NOT FINISHED**
 
 A tile designed for climate control. A single press opens climate configuration.
+
+![ClimateTile](/screenshots/climate.png)
 
 ```javascript
 {
@@ -214,6 +222,8 @@ TODO:
 
 A tile designed for a door control system, including a main camera feed as well as various actions. A single press opens the full screen camera feed with door controls.
 
+![DoorControlTile](/screenshots/door-control.png)
+
 ```javascript
 {
   type: TILE.DOOR_CONTROL,
@@ -231,6 +241,8 @@ TODO:
 
 A simple fan switch. A single press toggles the fan, a long press brings up a speed control.
 
+![FanTile](/screenshots/fan.png)
+
 ```javascript
 {
   type: TILE.FAN,
@@ -246,6 +258,8 @@ TODO:
 ### LightTile
 
 A simple light switch. A single press toggles the light, a long press brings up a brightness control.
+
+![LightTile](/screenshots/light.png)
 
 ```javascript
 {
@@ -264,6 +278,8 @@ TODO:
 
 A simple lock swtich. A single press toggles the lock.
 
+![LockTile](/screenshots/lock.png)
+
 ```javascript
 {
   type: TILE.LOCK,
@@ -276,6 +292,8 @@ A simple lock swtich. A single press toggles the lock.
 
 A tile which can be pressed to activate a scene.
 
+![SceneTile](/screenshots/scene.png)
+
 ```javascript
 {
   type: TILE.SCENE,
@@ -287,6 +305,8 @@ A tile which can be pressed to activate a scene.
 ### SensorTile
 
 A tile which displays the result of a sensor.
+
+![SensorTile](/screenshots/alarm.png)
 
 ```javascript
 {
@@ -301,6 +321,8 @@ A tile which displays the result of a sensor.
 ### ScriptTile
 
 A tile which can be pressed to activate a script.
+
+![ScriptTile](/screenshots/script.png)
 
 ```javascript
 {
