@@ -10,7 +10,8 @@ export default class InputSelectTile extends Tile<InputSelectTileProps> {
       state,
       attributes: { options },
     } = this.getEntity(this.props.entityId);
-    const curOption = options.indexOf(state) || -1;
+    if (!options || !options.length) return;
+    const curOption = options.indexOf(state);
     const nextOption =
       curOption >= options.length - 1 ? options[0] : options[curOption + 1];
     this.callService("input_select", "select_option", {
