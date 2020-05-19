@@ -194,7 +194,7 @@ export default class HomeAssistant {
   };
 
   _onMessage = (event: WebSocketMessageEvent) => {
-    const payload: MessageResult | CommandResult = JSON.parse(event.data);
+    const payload: MessageResult = JSON.parse(event.data);
     console.debug(
       "[hass] Received message of type",
       payload.type,
@@ -394,7 +394,7 @@ export default class HomeAssistant {
     console.log("[hass] Disconnected");
   }
 
-  sendMessage(message: Message | Command) {
+  sendMessage(message: Message) {
     console.debug(
       "[hass] Sending message of type",
       message.type,
@@ -436,7 +436,7 @@ export default class HomeAssistant {
       this.sendMessage({
         id,
         ...message,
-      } as Command);
+      });
     });
     (promise as any).cancel = () => {
       this._pendingRequests.delete(id);
