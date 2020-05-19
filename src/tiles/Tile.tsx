@@ -307,7 +307,9 @@ export default class Tile<
     );
   }
 
-  renderModal(params: ModalParams) {}
+  renderModal(params: ModalParams): any | null {
+    return null;
+  }
 
   renderBody() {
     const icon = this.getIcon();
@@ -319,7 +321,9 @@ export default class Tile<
     );
   }
 
-  renderCover(): any | null {}
+  renderCover(): any | null {
+    return null;
+  }
 
   renderSubtitle(): string | null {
     const { subtitle } = this.props;
@@ -341,6 +345,6 @@ export default class Tile<
     if (!entityId) return null;
     const { state } = this.getEntity(entityId as string);
     if (!state) return null;
-    return this.getState(state);
+    return this.getState(state) || null;
   }
 }

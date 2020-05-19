@@ -77,6 +77,10 @@ export interface SuggestedChanges {
   };
 }
 
+interface CancellablePromise<T> extends Promise<T> {
+  cancel: () => void;
+}
+
 // TODO(dcramer): move to home-assistant-js-websocket
 export default class HomeAssistant {
   private _socket: WebSocket | null = null;
@@ -423,7 +427,7 @@ export default class HomeAssistant {
   sendCommand(
     message: Message,
     suggestedChanges: SuggestedChanges | null = null
-  ): any {
+  ): CancellablePromise<MessageResult> {
     const id = this._messageCounter;
     const promise = new Promise((resolve, reject) => {
       this._pendingRequests.set(id, [resolve, reject]);
@@ -437,8 +441,8 @@ export default class HomeAssistant {
         id,
         ...message,
       });
-    });
-    (promise as any).cancel = () => {
+    }) as CancellablePromise<MessageResult>;
+    promise.cancel = () => {
       this._pendingRequests.delete(id);
       this._pendingChanges.delete(id);
     };
@@ -446,14 +450,16 @@ export default class HomeAssistant {
   }
 
   // TODO(dcramer): > The websocket command 'camera_thumbnail' has been deprecated.
-  fetchCameraThumbnail(entityId: string) {
+  fetchCameraThumbnail(entityId: string): CancellablePromise<MessageResult> {
     return this.sendCommand({
       type: "camera_thumbnail",
       entity_id: entityId,
     });
   }
 
-  fetchMediaPlayerThumbnail(entityId: string) {
+  fetchMediaPlayerThumbnail(
+    entityId: string
+  ): CancellablePromise<MessageResult> {
     return this.sendCommand({
       type: "media_player_thumbnail",
       entity_id: entityId,
@@ -465,7 +471,7 @@ export default class HomeAssistant {
     service: string,
     serviceData: any,
     suggestedChanges: SuggestedChanges | null = null
-  ) {
+  ): CancellablePromise<MessageResult> {
     return this.sendCommand(
       {
         type: "call_service",
@@ -477,13 +483,13 @@ export default class HomeAssistant {
     );
   }
 
-  getStates() {
+  getStates(): CancellablePromise<MessageResult> {
     return this.sendCommand({
       type: "get_states",
     });
   }
 
-  subscribe(entityId: string, callback: SubscriberCallback) {
+  subscribe(entityId: string, callback: SubscriberCallback): string {
     const id = makeSubscriberId();
     this._eventSubscribers.push({
       entityId,

@@ -3,7 +3,7 @@ import React from "react";
 import Thumbnail from "../components/Thumbnail";
 import Tile, { TileProps, TileState } from "./Tile";
 import CameraModal, { CameraModalProps } from "../components/CameraModal";
-import { CommandResult } from "../hass";
+import { MessageResult } from "../hass";
 
 type CameraTileProps = TileProps & {
   entityId: string;
@@ -14,10 +14,6 @@ type ThumbnailResult = {
   content: string;
   content_type: string;
 };
-
-type FetchCameraThumbnailCommandResult = {
-  result: ThumbnailResult;
-} & CommandResult;
 
 type CameraTileState = TileState & {
   loading: boolean;
@@ -55,7 +51,7 @@ export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
   refreshCameraImage = () => {
     return this.props.hass
       .fetchCameraThumbnail(this.props.entityId)
-      .then(({ result }: FetchCameraThumbnailCommandResult) => {
+      .then(({ result }: MessageResult) => {
         this.setState({
           result,
           loading: false,
