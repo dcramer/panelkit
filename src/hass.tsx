@@ -307,9 +307,11 @@ export default class HomeAssistant {
   }
 
   getEntity(entityId: string): Entity {
-    const result: Entity = { ...this._entityCache.get(entityId) };
-    if (!result)
-      throw new Error(`Unable to find entity in state cache: ${entityId}`);
+    const cachedEntity = this._entityCache.get(entityId);
+    if (!cachedEntity) {
+      throw new Error(`Unknown entity: ${entityId}`);
+    }
+    const result: Entity = { ...cachedEntity };
 
     Object.values(this._pendingChanges).forEach((data) => {
       Object.keys(data).forEach((eId) => {
