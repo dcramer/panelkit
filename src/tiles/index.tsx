@@ -4,6 +4,7 @@ import CameraTile from "./CameraTile";
 import ClimateTile from "./ClimateTile";
 import DoorControlTile from "./DoorControlTile";
 import FanTile from "./FanTile";
+import InputSelectTile from "./InputSelectTile";
 import LightTile from "./LightTile";
 import LockTile from "./LockTile";
 import SceneTile from "./SceneTile";
@@ -18,6 +19,7 @@ export const TILE = {
   CLIMATE: ClimateTile,
   DOOR_CONTROL: DoorControlTile,
   FAN: FanTile,
+  INPUT_SELECT: InputSelectTile,
   LIGHT: LightTile,
   LOCK: LockTile,
   SCENE: SceneTile,

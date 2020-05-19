@@ -234,6 +234,12 @@ export default class Tile<
    * Return the default icon when no overrides are present.
    */
   getDefaultIcon(): string {
+    if (this.props.entityId) {
+      const {
+        attributes: { icon },
+      } = this.getEntity(this.props.entityId as string);
+      if (icon) return icon.split("mdi:", 2)[1];
+    }
     return (this.constructor as typeof Tile).defaultIcon;
   }
 

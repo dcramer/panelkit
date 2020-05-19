@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<div
+  class="tile state-Afternoon touchable"
+  data-testid="tile"
+  style="cursor: pointer;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Afternoon
+    </div>
+    <div
+      class="tile-body"
+    >
+      <span
+        class="tile-icon"
+      >
+        <svg />
+      </span>
+    </div>
+    <div
+      class="tile-title"
+    >
+      Test Input Select
+    </div>
+  </div>
+</div>
+`;

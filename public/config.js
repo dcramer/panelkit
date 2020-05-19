@@ -40,6 +40,10 @@ window.CONFIG = {
           },
         },
         {
+          type: TILE.INPUT_SELECT,
+          entityId: "input_select.house_mode",
+        },
+        {
           type: TILE.SENSOR,
           entityId: "sensor.dryer_power",
           subtitle: "Garage",

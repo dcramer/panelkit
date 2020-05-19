@@ -21,6 +21,7 @@ It's heavily inspired by [tileboard](https://github.com/resoai/TileBoard), but b
     - [ClimateTile](#climatetile)
     - [DoorControlTile](#doorcontroltile)
     - [FanTile](#fantile)
+    - [InputSelectTile](#inputselecttile)
     - [LightTile](#lighttile)
     - [LockTile](#locktile)
     - [SceneTile](#scenetile)
@@ -268,6 +269,24 @@ A simple fan switch. A single press toggles the fan, a long press brings up a sp
 TODO:
 
 - Add speed control
+
+### InputSelectTile
+
+An input selector. A single press activates the next option. A long press brings up a selector.
+
+![InputSelectTile](/screenshots/input-select.png)
+
+```javascript
+{
+  type: TILE.INPUT_SELECT,
+  // The `input_select` entity ID.
+  entityId: "",
+}
+```
+
+TODO:
+
+- Add long press widget
 
 ### LightTile
 
