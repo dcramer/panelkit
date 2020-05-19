@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`renderStatus title cases state by default 1`] = `
+<div
+  class="tile state-not_armed false"
+  data-testid="tile"
+  style="cursor: normal;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Not armed
+    </div>
+    <div
+      class="tile-body"
+    />
+    <div
+      class="tile-title"
+    >
+      Test Alarm
+    </div>
+  </div>
+</div>
+`;
+
 exports[`renderStatus uses states 1`] = `
 <div
   class="tile state-disarmed false"

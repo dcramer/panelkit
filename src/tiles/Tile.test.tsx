@@ -40,7 +40,7 @@ describe("renderStatus", () => {
       }
     );
 
-    expect(getByText(/Not armmed/i)).toBeInTheDocument();
+    expect(getByText(/Not armed/i)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });
