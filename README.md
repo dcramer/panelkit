@@ -154,7 +154,7 @@ And with that, you'll get a basic light tile control with custom icons:
 
 A basic alarm control, showing the current state of the alarm and allowing disarm, armed_home, armed_away, and armed_night state changes.
 
-![AlarmTile](/screenshots/alarm.png)
+![AlarmTile](/screenshots/alarm.png | height=250)
 
 ```javascript
 {
@@ -168,7 +168,7 @@ A basic alarm control, showing the current state of the alarm and allowing disar
 
 A tile which to trigger an automation
 
-![AutomationTile](/screenshots/automation.png)
+![AutomationTile](/screenshots/automation.png | height=250)
 
 ```javascript
 {
@@ -184,7 +184,7 @@ A tile which to trigger an automation
 
 A still capture of a camera, refreshed every few seconds. A single press goes into a full screen video, which will progressively load a streaming gif and video feed when possible. It also gives quick access to any other defined camera entities.
 
-![CameraTile](/screenshots/camera.png)
+![CameraTile](/screenshots/camera.png | height=250)
 
 ```javascript
 {
@@ -198,7 +198,9 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
 }
 ```
 
-![CameraModal](/screenshots/camera-modal.png)
+The modal allows cycling through camera feeds:
+
+![CameraModal](/screenshots/camera-modal.png | height=250)
 
 ### ClimateTile
 
@@ -206,7 +208,7 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
 
 A tile designed for climate control. A single press opens climate configuration.
 
-![ClimateTile](/screenshots/climate.png)
+![ClimateTile](/screenshots/climate.png | height=250)
 
 ```javascript
 {
@@ -226,7 +228,7 @@ TODO:
 
 A tile designed for a door control system, including a main camera feed as well as various actions. A single press opens the full screen camera feed with door controls.
 
-![DoorControlTile](/screenshots/door-control.png)
+![DoorControlTile](/screenshots/door-control.png | height=250)
 
 ```javascript
 {
@@ -245,7 +247,7 @@ TODO:
 
 A simple fan switch. A single press toggles the fan, a long press brings up a speed control.
 
-![FanTile](/screenshots/fan.png)
+![FanTile](/screenshots/fan.png | height=250)
 
 ```javascript
 {
@@ -263,7 +265,7 @@ TODO:
 
 A simple light switch. A single press toggles the light, a long press brings up a brightness control.
 
-![LightTile](/screenshots/light.png)
+![LightTile](/screenshots/light.png | width=250)
 
 ```javascript
 {
@@ -282,7 +284,7 @@ TODO:
 
 A simple lock swtich. A single press toggles the lock.
 
-![LockTile](/screenshots/lock.png)
+![LockTile](/screenshots/lock.png | height=250)
 
 ```javascript
 {
@@ -296,7 +298,7 @@ A simple lock swtich. A single press toggles the lock.
 
 A tile which can be pressed to activate a scene.
 
-![SceneTile](/screenshots/scene.png)
+![SceneTile](/screenshots/scene.png | height=250)
 
 ```javascript
 {
@@ -310,7 +312,7 @@ A tile which can be pressed to activate a scene.
 
 A tile which displays the result of a sensor.
 
-![SensorTile](/screenshots/alarm.png)
+![SensorTile](/screenshots/alarm.png | height=250)
 
 ```javascript
 {
@@ -326,7 +328,7 @@ A tile which displays the result of a sensor.
 
 A tile which can be pressed to activate a script.
 
-![ScriptTile](/screenshots/script.png)
+![ScriptTile](/screenshots/script.png | height=250)
 
 ```javascript
 {
