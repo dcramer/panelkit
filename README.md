@@ -342,6 +342,18 @@ A tile which can be pressed to activate a script.
 }
 ```
 
+An example using a custom Pi-hole script:
+
+![ScriptTile](/screenshots/custom-script.png)
+
+```javascript
+{
+  type: TILE.SCRIPT,
+  entityId: "switch.pi_hole",
+  icon: "pi-hole",
+}
+```
+
 ### SwitchTile
 
 A simple switch. A single press toggles the switch.
