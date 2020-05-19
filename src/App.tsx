@@ -65,6 +65,29 @@ interface PanelKitState {
   isReady: boolean;
 }
 
+class TileErrorBoundary extends Component {
+  readonly state: {
+    error: Error | ErrorEvent | null;
+  } = {
+    error: null,
+  };
+
+  componentDidCatch(error: ErrorEvent | Error) {
+    this.setState({ error });
+  }
+
+  render() {
+    if (this.state.error)
+      return (
+        <div>
+          <h3>Tile Error</h3>
+          {this.state.error.message}
+        </div>
+      );
+    return this.props.children;
+  }
+}
+
 class PanelKit extends Component<PanelKitProps, PanelKitState> {
   static defaultProps = {
     gridWidth: 8,
@@ -73,8 +96,12 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
 
   hass: HomeAssistant;
 
-  constructor(props: PanelKitProps) {
-    super(props);
+  readonly state = {
+    isReady: false,
+  };
+
+  constructor(props: PanelKitProps, context: any) {
+    super(props, context);
 
     const sentryDsn =
       process.env.REACT_APP_SENTRY_DSN || this.props.config.sentryDsn;
@@ -113,10 +140,6 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
         toast.success("Connected to Home Assistant.");
       },
     });
-
-    this.state = {
-      isReady: false,
-    };
   }
 
   componentDidMount() {
@@ -173,7 +196,9 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
                 p="4px"
                 style={{ minHeight: tileSize * height }}
               >
-                <tile.type hass={hass} cameraList={cameraList} {...tile} />
+                <TileErrorBoundary>
+                  <tile.type hass={hass} cameraList={cameraList} {...tile} />
+                </TileErrorBoundary>
               </Box>
             );
           }
