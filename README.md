@@ -371,7 +371,7 @@ A tile which can be pressed to activate a script.
 
 An example using a custom Pi-hole script:
 
-![ScriptTile](/screenshots/custom-script.png)
+![ScriptTile](/screenshots/script-custom.png)
 
 ```javascript
 {
