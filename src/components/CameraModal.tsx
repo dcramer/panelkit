@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import CameraStream from "./CameraStream";
 import Modal, { ModalHeader } from "./Modal";
@@ -11,14 +11,29 @@ import { DeviceMedia } from "../ui";
 // TODO(dcramer): when modal is opened we should force landscape on small screens
 // https://stackoverflow.com/questions/27146742/foundation-force-landscape-mode-on-mobile-devices
 
+type CameraViewerContainerProps = {
+  sidebar?: boolean;
+};
+
 const CameraViewerContainer = styled.div`
   display: grid;
   height: 100%;
-  grid-template-columns: 240px auto;
-  grid-template-rows: 60px auto;
-  grid-template-areas:
-    "header header"
-    "sidebar main";
+  grid-template-rows: 50px auto;
+
+  ${(props: CameraViewerContainerProps) =>
+    props.sidebar
+      ? css`
+          grid-template-columns: 240px auto;
+          grid-template-areas:
+            "header header"
+            "sidebar main";
+        `
+      : css`
+          grid-template-columns: auto;
+          grid-template-areas:
+            "header"
+            "main";
+        `}
 
   @media ${DeviceMedia.MOBILE}, ${DeviceMedia.PORTRAIT} {
     grid-template-areas:
@@ -83,36 +98,40 @@ export default ({
   isOpen,
   onRequestClose,
 }: CameraModalProps) => {
-  let [activeCamera, selectCamera] = React.useState(entityId);
-  let activeEntity = hass.getEntity(activeCamera);
+  const [activeCamera, selectCamera] = React.useState(entityId);
+  const activeEntity = hass.getEntity(activeCamera);
+
+  const hasCameraSelection = cameraList.length > 1;
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} landscapeOnly>
-      <CameraViewerContainer>
+      <CameraViewerContainer sidebar={hasCameraSelection}>
         <ModalHeader
           title={hass.getEntityName(activeEntity)}
           onRequestClose={onRequestClose}
         />
-        <CameraListContainer>
-          <h3>Cameras Available</h3>
-          <ul>
-            {cameraList.map((entityId) => {
-              const {
-                attributes: { friendly_name },
-              } = hass.getEntity(entityId);
-              return (
-                <li
-                  key={entityId}
-                  className={entityId === activeCamera ? "active" : ""}
-                >
-                  <TransparentButton onClick={() => selectCamera(entityId)}>
-                    {friendly_name}
-                  </TransparentButton>
-                </li>
-              );
-            })}
-          </ul>
-        </CameraListContainer>
+        {hasCameraSelection && (
+          <CameraListContainer>
+            <h3>Cameras Available</h3>
+            <ul>
+              {cameraList.map((entityId) => {
+                const {
+                  attributes: { friendly_name },
+                } = hass.getEntity(entityId);
+                return (
+                  <li
+                    key={entityId}
+                    className={entityId === activeCamera ? "active" : ""}
+                  >
+                    <TransparentButton onClick={() => selectCamera(entityId)}>
+                      {friendly_name}
+                    </TransparentButton>
+                  </li>
+                );
+              })}
+            </ul>
+          </CameraListContainer>
+        )}
         <CameraStreamContainer>
           <CameraStream
             hass={hass}

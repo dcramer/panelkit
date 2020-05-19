@@ -144,6 +144,7 @@ window.CONFIG = {
           width: 4,
           type: TILE.CAMERA,
           entityId: "camera.backyard",
+          cameraList: [],
         },
       ],
     },

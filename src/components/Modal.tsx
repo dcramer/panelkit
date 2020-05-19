@@ -73,7 +73,6 @@ export const ModalHeader = styled(UnstyledModalHeader)`
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--bg-color);
-  height: 40px;
 
   ${(props: ModalHeaderProps) =>
     props.light &&
@@ -84,7 +83,7 @@ export const ModalHeader = styled(UnstyledModalHeader)`
   ${(props: ModalHeaderProps) =>
     props.small &&
     css`
-      padding: 6px;
+      height: 50px;
     `}
 
   button {
@@ -117,7 +116,7 @@ export const ModalHeader = styled(UnstyledModalHeader)`
   h2 {
     display: inline-block;
     margin: 0;
-    padding: 20px;
+    padding: 0 20px;
 
     ${(props: ModalHeaderProps) =>
       props.small &&
