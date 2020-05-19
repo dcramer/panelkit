@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renderStatus uses states 1`] = `
+<div
+  class="tile state-disarmed false"
+  data-testid="tile"
+  style="cursor: normal;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Really Disarmed
+    </div>
+    <div
+      class="tile-body"
+    />
+    <div
+      class="tile-title"
+    >
+      Test Alarm
+    </div>
+  </div>
+</div>
+`;
+
+exports[`renderStatus uses states when available 1`] = `
+<div
+  class="tile state-disarmed false"
+  data-testid="tile"
+  style="cursor: normal;"
+>
+  <div
+    class="tile-container"
+  >
+    <div
+      class="tile-status"
+    >
+      Really Disarmed
+    </div>
+    <div
+      class="tile-body"
+    />
+    <div
+      class="tile-title"
+    >
+      Test Alarm
+    </div>
+  </div>
+</div>
+`;

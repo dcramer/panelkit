@@ -10,10 +10,12 @@ export interface TileComponentConfig {
   icons?: {
     [state: string]: string;
   };
+  states?: {
+    [state: string]: string;
+  };
 }
 
 type _TileConfig<T> = {
-  // TODO:
   type: any;
   tiles: T[];
 } & TileComponentConfig;

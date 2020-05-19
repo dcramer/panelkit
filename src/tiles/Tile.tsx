@@ -209,6 +209,12 @@ export default class Tile<
     this.setState({ isLoading: false });
   };
 
+  getState(state: string): string {
+    if (this.props.states && this.props.states[state])
+      return this.props.states[state] as string;
+    return toTitleCase(state);
+  }
+
   getIcon(): string {
     const { entityId, icon } = this.props;
     if (entityId) return this.getIconForEntity(entityId as string);
@@ -328,6 +334,7 @@ export default class Tile<
     const { entityId } = this.props;
     if (!entityId) return null;
     const { state } = this.getEntity(entityId as string);
-    return toTitleCase(state);
+    if (!state) return null;
+    return this.getState(state);
   }
 }

@@ -129,6 +129,10 @@ Every tile is a React component. A few common attributes are shared within confi
 
   <dt><code>icon</code></dt>
   <dd>Optional icon component to override the default (and the fallback when no other icon is available).</dd>
+
+  <dt><code>state</code></dt>
+  <dd>Optional mapping of states for labels</dd>
+
 </dl>
 
 An example basic tile configuration:
@@ -142,6 +146,10 @@ An example basic tile configuration:
   icons: {
     "on": "string-lights",
     "off": "string-lights-off"
+  },
+  states: {
+    "on": "Really On",
+    "on": "Really Off",
   }
 }
 ```
