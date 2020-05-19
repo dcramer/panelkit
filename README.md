@@ -193,8 +193,12 @@ A still capture of a camera, refreshed every few seconds. A single press goes in
   entityId: "",
   // (Optional) The refresh interval for the camera still (in milliseconds). Defaults to `3000` (3s).
   refreshInterval: 3000,
+  // (Optional) List of cameras to show. Defaults to all cameras with active tiles.
+  cameraList: ["camera.name"]
 }
 ```
+
+![CameraModal](/screenshots/camera-modal.png)
 
 ### ClimateTile
 

@@ -173,7 +173,7 @@ class PanelKit extends Component<PanelKitProps, PanelKitState> {
                 p="4px"
                 style={{ minHeight: tileSize * height }}
               >
-                <tile.type hass={hass} {...tile} cameraList={cameraList} />
+                <tile.type hass={hass} cameraList={cameraList} {...tile} />
               </Box>
             );
           }
