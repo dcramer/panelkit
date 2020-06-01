@@ -187,7 +187,7 @@ export class Modal extends Component<ModalProps, ModalState> {
     if (this.context) {
       ReactDOM.render(this.renderContents(), this.context.ref.current);
     }
-    document.addEventListener("keyup", this.onDocumentKeyDown);
+    document.addEventListener("keyup", this.onDocumentKeyUp);
     if (this.props.landscapeOnly) {
       orientation.lock("landscape-primary").catch(() => {});
     }
@@ -203,7 +203,7 @@ export class Modal extends Component<ModalProps, ModalState> {
     if (this.context) {
       ReactDOM.unmountComponentAtNode(this.context.ref.current);
     }
-    document.removeEventListener("keyup", this.onDocumentKeyDown);
+    document.removeEventListener("keyup", this.onDocumentKeyUp);
     orientation.unlock();
   }
 
@@ -212,7 +212,7 @@ export class Modal extends Component<ModalProps, ModalState> {
     this.props.onRequestClose && this.props.onRequestClose();
   };
 
-  onDocumentKeyDown = (ev: any) => {
+  onDocumentKeyUp = (ev: any) => {
     if (ev.key === "Escape") {
       this.props.onRequestClose && this.props.onRequestClose();
     }

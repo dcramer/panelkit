@@ -91,6 +91,33 @@ export type CameraModalProps = {
   cameraList: string[];
 } & ModalParams;
 
+// https://usehooks.com/useEventListener/
+function useEventListener(
+  eventName: string,
+  handler: (ev: any) => void,
+  element: any = window
+) {
+  const savedHandler = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    if (savedHandler) savedHandler.current = handler;
+  }, [handler]);
+
+  React.useEffect(() => {
+    const eventListener = (ev: any) => {
+      if (savedHandler && savedHandler.current) {
+        savedHandler.current(ev);
+      }
+    };
+
+    element.addEventListener(eventName, eventListener);
+
+    return () => {
+      element.removeEventListener(eventName, eventListener);
+    };
+  }, [eventName, element]);
+}
+
 export default ({
   hass,
   entityId,
@@ -102,6 +129,23 @@ export default ({
   const activeEntity = hass.getEntity(activeCamera);
 
   const hasCameraSelection = cameraList.length > 1;
+
+  const onKeyUp = (ev: any) => {
+    const curCameraIdx = cameraList.indexOf(activeCamera);
+    if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
+      ev.stopPropagation();
+      selectCamera(
+        cameraList[curCameraIdx > 0 ? curCameraIdx - 1 : cameraList.length - 1]
+      );
+    } else if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
+      ev.stopPropagation();
+      selectCamera(
+        cameraList[curCameraIdx + 1 < cameraList.length ? curCameraIdx + 1 : 0]
+      );
+    }
+  };
+
+  useEventListener("keyup", onKeyUp, document);
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} landscapeOnly>
