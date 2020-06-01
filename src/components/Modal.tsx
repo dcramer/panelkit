@@ -187,6 +187,7 @@ export class Modal extends Component<ModalProps, ModalState> {
     if (this.context) {
       ReactDOM.render(this.renderContents(), this.context.ref.current);
     }
+    document.addEventListener("keyup", this.onDocumentKeyDown);
     if (this.props.landscapeOnly) {
       orientation.lock("landscape-primary").catch(() => {});
     }
@@ -202,13 +203,19 @@ export class Modal extends Component<ModalProps, ModalState> {
     if (this.context) {
       ReactDOM.unmountComponentAtNode(this.context.ref.current);
     }
-
+    document.removeEventListener("keyup", this.onDocumentKeyDown);
     orientation.unlock();
   }
 
   onClickOverlay = (ev: any) => {
     if (ev.target !== this.overlayRef.current) return;
     this.props.onRequestClose && this.props.onRequestClose();
+  };
+
+  onDocumentKeyDown = (ev: any) => {
+    if (ev.key === "Escape") {
+      this.props.onRequestClose && this.props.onRequestClose();
+    }
   };
 
   renderContents() {
