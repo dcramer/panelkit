@@ -25,6 +25,7 @@
     "gulp-replace": "^1.0.0",
     "hls.js": "^0.13.2",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "moment": "^2.26.0",
     "o9n": "^2.1.0",
     "rc-slider": "^9.2.4",
     "react": "^16.13.1",
