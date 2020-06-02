@@ -29,7 +29,7 @@ class DateTime<DateTimeProps> extends Component {
 
   componentDidMount() {
     this.setState({ time: new Date().getTime() });
-    this.timer = setTimeout(() => {
+    this.timer = setInterval(() => {
       this.setState({ time: new Date().getTime() });
     }, 60000);
   }
