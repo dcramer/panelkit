@@ -3,7 +3,6 @@ import React from "react";
 import Thumbnail from "../components/Thumbnail";
 import Tile, { TileProps, TileState } from "./Tile";
 import CameraModal, { CameraModalProps } from "../components/CameraModal";
-import { MessageResult } from "../hass";
 
 type CameraTileProps = TileProps & {
   entityId: string;
@@ -17,13 +16,13 @@ type ThumbnailResult = {
 
 type CameraTileState = TileState & {
   loading: boolean;
-  result: ThumbnailResult | null;
+  cameraUrl: string | null;
 };
 
 export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
   readonly state: CameraTileState = {
     loading: true,
-    result: null,
+    cameraUrl: null,
     modalIsOpen: false,
     isLoading: false,
   };
@@ -48,12 +47,17 @@ export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
     return [];
   }
 
+  async getCameraThumbnailUrl() {
+    const { hass, entityId } = this.props;
+    const result = await hass.signPath(`/api/camera_proxy/${entityId}`);
+    return result;
+  }
+
   refreshCameraImage = () => {
-    return this.props.hass
-      .fetchCameraThumbnail(this.props.entityId)
-      .then(({ result }: MessageResult) => {
+    this.getCameraThumbnailUrl()
+      .then((cameraUrl) => {
         this.setState({
-          result,
+          cameraUrl,
           loading: false,
         });
       })
@@ -76,8 +80,13 @@ export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
   renderStatus() {}
 
   renderCover() {
-    const { loading, result } = this.state;
-    if (loading || !result) return <div>loading camera</div>;
-    return <Thumbnail result={result} alt={this.props.entityId} />;
+    const { loading, cameraUrl } = this.state;
+    if (loading || !cameraUrl) return <div>loading camera</div>;
+    return (
+      <Thumbnail
+        url={this.props.hass.buildUrl(cameraUrl)}
+        alt={this.props.entityId}
+      />
+    );
   }
 }

@@ -449,12 +449,11 @@ export default class HomeAssistant {
     return promise;
   }
 
-  // TODO(dcramer): > The websocket command 'camera_thumbnail' has been deprecated.
-  fetchCameraThumbnail(entityId: string): CancellablePromise<MessageResult> {
+  signPath(path: string): Promise<string> {
     return this.sendCommand({
-      type: "camera_thumbnail",
-      entity_id: entityId,
-    });
+      type: "auth/sign_path",
+      path,
+    }).then(({ result }) => result.path);
   }
 
   fetchMediaPlayerThumbnail(
