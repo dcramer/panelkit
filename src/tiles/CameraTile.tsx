@@ -9,11 +9,6 @@ type CameraTileProps = TileProps & {
   refreshInterval?: number;
 };
 
-type ThumbnailResult = {
-  content: string;
-  content_type: string;
-};
-
 type CameraTileState = TileState & {
   loading: boolean;
   cameraUrl: string | null;
