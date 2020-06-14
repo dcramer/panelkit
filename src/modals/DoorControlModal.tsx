@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import CameraStream from "./CameraStream";
+import CameraStream from "../components/CameraStream";
 import Modal, { ModalHeader, ModalProps } from "./Modal";
 import HomeAssistant from "../hass";
 

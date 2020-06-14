@@ -1,7 +1,7 @@
 import React from "react";
 
 import Tile, { TileProps, ModalParams } from "./Tile";
-import DoorControlModal from "../components/DoorControlModal";
+import DoorControlModal from "../modals/DoorControlModal";
 
 type DoorControlTileProps = TileProps & {
   camera: string;

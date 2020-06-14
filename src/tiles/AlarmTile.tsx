@@ -1,7 +1,7 @@
 import React from "react";
 
 import Tile, { TileProps } from "./Tile";
-import AlarmModal, { AlarmModalProps } from "../components/AlarmModal";
+import AlarmModal, { AlarmModalProps } from "../modals/AlarmModal";
 
 const ARMED_STATES = new Set(["armed_home", "armed_away", "armed_night"]);
 

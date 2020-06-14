@@ -1,4 +1,4 @@
-// import React from "react";
+import React from "react";
 
 export interface TileComponentConfig {
   entityId?: string;
@@ -13,6 +13,7 @@ export interface TileComponentConfig {
   states?: {
     [state: string]: string;
   };
+  [key: string]: any;
 }
 
 type _TileConfig<T> = {
@@ -22,10 +23,23 @@ type _TileConfig<T> = {
 
 export interface TileConfig extends _TileConfig<TileConfig> {}
 
+export interface ModalConfig {
+  type: any;
+  title?: string;
+  [key: string]: any;
+}
+
+export interface EventConfig {
+  entityId: string;
+  state: string;
+  modal: ModalConfig;
+}
+
 export interface Config {
   readonly url?: string;
   readonly sentryDsn?: string;
   readonly accessToken?: string;
+  readonly events?: EventConfig[];
   readonly tiles: TileConfig[];
 }
 

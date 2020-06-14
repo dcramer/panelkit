@@ -1,7 +1,7 @@
 import React from "react";
 
 import Tile, { TileProps } from "./Tile";
-import LightModal, { LightModalProps } from "../components/LightModal";
+import LightModal, { LightModalProps } from "../modals/LightModal";
 
 type LightTileProps = TileProps & {
   entityId: string;

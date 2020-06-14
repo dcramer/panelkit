@@ -6,8 +6,9 @@ import WebFont from "webfontloader";
 
 import "./index.css";
 
-import { ModalProvider } from "./components/Modal";
+import { ModalProvider } from "./modals/Modal";
 import { loadIcons } from "./components/Icon";
+import { MODAL } from "./modals";
 import { TILE } from "./tiles";
 
 import { Config } from "./types";
@@ -17,6 +18,7 @@ declare global {
     CONFIG: Config;
     CONFIG_FILE: string;
     TILE: React.ReactNode;
+    MODAL: React.ReactNode;
     ICONS: Map<string, string>;
   }
 }
@@ -73,6 +75,7 @@ const bootApp = () => {
   const configFile =
     window.CONFIG_FILE || process.env.PUBLIC_URL + "/config.js";
 
+  window.MODAL = MODAL;
   window.TILE = TILE;
   window.React = React;
 

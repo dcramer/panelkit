@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import styled, { css } from "styled-components";
 import { orientation } from "o9n";
 
-import Icon from "./Icon";
-import TransparentButton from "./TransparentButton";
+import Icon from "../components/Icon";
+import TransparentButton from "../components/TransparentButton";
 
 interface ModalContextInterface {
   ref: any;

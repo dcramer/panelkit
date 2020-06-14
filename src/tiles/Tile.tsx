@@ -205,7 +205,6 @@ export default class Tile<
   }
 
   onStateChange = (entityId: string, newState: Entity) => {
-    // XXX(dcramer): Yes, you shouldn't do this. No I don't care about your opinions.
     this.setState({ isLoading: false });
   };
 

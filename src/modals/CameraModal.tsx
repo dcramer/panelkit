@@ -1,9 +1,9 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import CameraStream from "./CameraStream";
+import CameraStream from "../components/CameraStream";
 import Modal, { ModalHeader } from "./Modal";
-import TransparentButton from "./TransparentButton";
+import TransparentButton from "../components/TransparentButton";
 import { ModalParams } from "../tiles/Tile";
 
 import { DeviceMedia } from "../ui";

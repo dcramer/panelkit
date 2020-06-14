@@ -1,8 +1,19 @@
-/* global TILE, React */
+/* global MODAL, TILE, React */
 
 window.CONFIG = {
   url: "http://localhost:8123",
   accessToken: "",
+  events: [
+    {
+      entityId: "binary_sensor.motion_front_door_exterior",
+      state: "on",
+      modal: {
+        type: MODAL.DOOR_CONTROL,
+        camera: "camera.front_door_exterior",
+        title: "Front Door",
+      },
+    },
+  ],
   tiles: [
     {
       width: 2,

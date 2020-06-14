@@ -2,7 +2,7 @@ import React from "react";
 
 import Thumbnail from "../components/Thumbnail";
 import Tile, { TileProps, TileState } from "./Tile";
-import CameraModal, { CameraModalProps } from "../components/CameraModal";
+import CameraModal, { CameraModalProps } from "../modals/CameraModal";
 
 type CameraTileProps = TileProps & {
   entityId: string;
