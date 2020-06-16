@@ -5,8 +5,8 @@ type SceneTileProps = TileProps & {
 };
 
 export default class SceneTile extends Tile<SceneTileProps> {
-  onTouch = () => {
-    this.callService("scene", "turn_on", {
+  onTouch = async () => {
+    await this.callService("scene", "turn_on", {
       entity_id: this.props.entityId,
     });
   };

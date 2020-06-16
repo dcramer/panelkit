@@ -5,7 +5,7 @@ type InputSelectTileProps = TileProps & {
 };
 
 export default class InputSelectTile extends Tile<InputSelectTileProps> {
-  onTouch = () => {
+  onTouch = async () => {
     const {
       state,
       attributes: { options },

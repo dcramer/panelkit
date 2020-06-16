@@ -64,7 +64,7 @@ export default class CameraTile extends Tile<CameraTileProps, CameraTileState> {
       });
   };
 
-  onTouch = () => {
+  onTouch = async () => {
     this.openModal();
   };
 

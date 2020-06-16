@@ -8,9 +8,9 @@ type LightTileProps = TileProps & {
 };
 
 export default class LightTile extends Tile<LightTileProps> {
-  onTouch = () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
-    this.callService(
+    await this.callService(
       "light",
       state === "on" ? "turn_off" : "turn_on",
       {
@@ -22,7 +22,7 @@ export default class LightTile extends Tile<LightTileProps> {
     );
   };
 
-  onLongTouch = () => {
+  onLongTouch = async () => {
     this.openModal();
   };
 

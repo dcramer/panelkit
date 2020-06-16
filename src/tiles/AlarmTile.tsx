@@ -10,10 +10,10 @@ type AlarmTileProps = TileProps & {
 };
 
 export default class AlarmTile extends Tile<AlarmTileProps> {
-  onTouch = () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
     if (ARMED_STATES.has(state)) {
-      this.callService(
+      await this.callService(
         "alarm_control_panel",
         "alarm_disarm",
         {
