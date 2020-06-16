@@ -5,9 +5,9 @@ type LockTileProps = TileProps & {
 };
 
 export default class LockTile extends Tile<LockTileProps> {
-  onTouch = () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
-    this.callService(
+    await this.callService(
       "lock",
       state === "locked" ? "unlock" : "lock",
       {

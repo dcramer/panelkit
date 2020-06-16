@@ -11,7 +11,7 @@ type DoorControlTileProps = TileProps & {
 export default class DoorControlTile extends Tile<DoorControlTileProps> {
   static defaultIcon = "door";
 
-  onTouch = () => {
+  onTouch = async () => {
     this.openModal();
   };
 

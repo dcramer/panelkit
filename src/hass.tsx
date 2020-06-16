@@ -1,4 +1,6 @@
 import { Entity } from "./types";
+import { startSpan } from "./sentry";
+import { Span, SpanStatus } from "@sentry/apm";
 
 enum State {
   DISCONNECTED = "DISCONNECTED",
@@ -12,6 +14,19 @@ enum Phase {
 }
 
 const DEFAULT_TIMEOUT = 250; // ms
+
+const ERROR_MAP: {
+  [code: number]: SpanStatus;
+} = {
+  // default
+  0: SpanStatus.UnknownError,
+  // A non-increasing identifier has been supplied.
+  1: SpanStatus.InvalidArgument,
+  // Received message is not in expected format (voluptuous validation error).
+  2: SpanStatus.InvalidArgument,
+  // Requested item cannot be found
+  3: SpanStatus.NotFound,
+};
 
 const makeSubscriberId = (): string => {
   const s4 = () => {
@@ -59,6 +74,7 @@ export interface MessageResult {
   result: any;
   error: {
     message: string;
+    code?: number;
   } | null;
   success: boolean;
   [key: string]: any;
@@ -89,7 +105,7 @@ export default class HomeAssistant {
   private _messageCounter: number = 1;
   private _hasPrepared: boolean = false;
   private _shouldReconnect: boolean = false;
-  private _pendingRequests: Map<number, [Function, Function]>;
+  private _pendingRequests: Map<number, [Function, Function, Span | undefined]>;
   private _pendingChanges: Map<number, SuggestedChanges>;
   private _eventSubscribers: EventSubscriber[];
   private _rootSubscriptions: Map<string, string>;
@@ -209,10 +225,17 @@ export default class HomeAssistant {
     switch (payload.type) {
       case "auth_required":
         if (this.accessToken) {
+          // auth requires _no_ ID, which means we can't correlate the message directly
+          const span = startSpan({
+            op: "sendCommand",
+            description: "auth",
+          });
           this.sendMessage({
             type: "auth",
             access_token: this.accessToken,
           });
+          // TODO(dcramer): this should finish only after auth response
+          if (span) span.finish();
         } else {
           console.error("[hass] No authentication token configured");
           this.disconnect();
@@ -239,14 +262,22 @@ export default class HomeAssistant {
         if (!promiseHandler) {
           console.warn("[hass] No pending request found for event", payload.id);
         } else {
-          let [resolve, reject] = promiseHandler;
+          let [resolve, reject, span] = promiseHandler;
           this._pendingRequests.delete(payload.id);
           if (payload.success) {
+            if (span) {
+              span.setStatus(SpanStatus.Ok);
+            }
             setTimeout(() => {
               this._pendingChanges.delete(payload.id);
             }, 1000);
             resolve(payload);
           } else if (payload.error) {
+            if (span) {
+              span.setStatus(
+                ERROR_MAP[payload.error.code || 0] || SpanStatus.UnknownError
+              );
+            }
             const error = new Error(payload.error.message);
             (error as any).payload = payload;
             const changes = this._pendingChanges.get(payload.id);
@@ -257,6 +288,10 @@ export default class HomeAssistant {
               });
             }
             reject(error);
+          }
+
+          if (span) {
+            span.finish();
           }
         }
         break;
@@ -429,8 +464,12 @@ export default class HomeAssistant {
     suggestedChanges: SuggestedChanges | null = null
   ): CancellablePromise<MessageResult> {
     const id = this._messageCounter;
+    const span = startSpan({
+      op: "sendCommand",
+      description: message.type,
+    });
     const promise = new Promise((resolve, reject) => {
-      this._pendingRequests.set(id, [resolve, reject]);
+      this._pendingRequests.set(id, [resolve, reject, span]);
       if (suggestedChanges) {
         this._pendingChanges.set(id, suggestedChanges);
         // Object.keys(suggestedChanges).forEach((entityId) => {

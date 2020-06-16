@@ -8,9 +8,9 @@ type ScriptTileProps = TileProps & {
 export default class ScriptTile extends Tile<ScriptTileProps> {
   static defaultIcon = "script";
 
-  onTouch = () => {
+  onTouch = async () => {
     let [domain, service] = this.props.entityId.split(".", 2);
-    this.callService(domain, service, this.props.data);
+    await this.callService(domain, service, this.props.data);
   };
 
   renderTitle() {

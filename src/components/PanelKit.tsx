@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import { Flex, Box } from "reflexbox/styled-components";
 import * as Sentry from "@sentry/browser";
-import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 
 import "react-toastify/dist/ReactToastify.css";
 import "../Toast.css";
@@ -13,6 +12,7 @@ import HomeAssistant from "../hass";
 import EventManager from "./EventManager";
 import Header from "./Header";
 import TileErrorBoundary from "./TileErrorBoundary";
+import { setupSentry } from "../sentry";
 
 const Container = styled.div``;
 
@@ -44,14 +44,13 @@ export default class PanelKit extends Component<Props, State> {
     const sentryDsn =
       process.env.REACT_APP_SENTRY_DSN || this.props.config.sentryDsn;
     if (sentryDsn) {
-      console.log(`[sentry] Initialized with DSN: ${sentryDsn}`);
-      Sentry.init({
+      setupSentry({
         dsn: sentryDsn,
-        integrations: [
-          new CaptureConsoleIntegration({
-            levels: ["warn", "error"],
-          }),
-        ],
+        release: process.env.REACT_APP_GIT_SHA,
+        environment: process.env.NODE_ENV || "development",
+      });
+      Sentry.configureScope((scope) => {
+        scope.setTransaction("panelkit.boot");
       });
     }
 

@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
+import * as Sentry from "@sentry/browser";
 
 import "./Tile.css";
 import LoadingIndicator from "../components/LoadingIndicator";
 import Icon from "../components/Icon";
+import { startTransaction } from "../sentry";
 import { toTitleCase } from "../utils";
 
 import HomeAssistant from "../hass";
@@ -82,7 +84,7 @@ export default class Tile<
     if (this._loadingTimer) clearTimeout(this._loadingTimer);
   }
 
-  handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
+  handleMouseDown = async (e: React.MouseEvent<HTMLElement>) => {
     if ((e.button === 0 && e.ctrlKey) || e.button > 0) {
       console.debug("[panelkit] Ignoring click due to mouse button(s)");
       return;
@@ -90,12 +92,12 @@ export default class Tile<
     return this.handleButtonPress(e);
   };
 
-  handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+  handleTouchStart = async (e: React.TouchEvent<HTMLElement>) => {
     if (e.touches.length > 1) return;
     return this.handleButtonPress(e);
   };
 
-  handleTouchMove = (e: any) => {
+  handleTouchMove = async (e: any) => {
     // We handle the touch move event to avoid a "long press" event from being
     // fired after someone touchhes and attempts to scroll
     if (this._longPressTimer) {
@@ -105,16 +107,16 @@ export default class Tile<
     this._wasScrolling = true;
   };
 
-  handleButtonPress = (e: any) => {
+  handleButtonPress = async (e: any) => {
     if (this.onLongTouch) {
-      this._longPressTimer = setTimeout(() => {
-        this.onLongTouch && this.onLongTouch();
+      this._longPressTimer = setTimeout(async () => {
+        this.handleOnLongTouch();
         this._longPressTimer = null;
       }, LONG_PRESS_TIME);
     }
   };
 
-  handleButtonRelease = (
+  handleButtonRelease = async (
     e: React.TouchEvent<HTMLElement> | React.MouseEvent<HTMLElement>
   ) => {
     e.cancelable && e.preventDefault();
@@ -126,19 +128,47 @@ export default class Tile<
     if (this.onLongTouch && this._longPressTimer) {
       clearTimeout(this._longPressTimer);
       this._longPressTimer = null;
-      this.onTouch && this.onTouch();
+      this.handleOnTouch();
     } else if (!this.onLongTouch && this.onTouch) {
-      this.onTouch();
+      this.handleOnTouch();
     }
   };
 
-  handleButtonLeave = (
+  handleButtonLeave = async (
     e: React.TouchEvent<HTMLElement> | React.MouseEvent<HTMLElement>
   ) => {
     if (this._longPressTimer) {
       clearTimeout(this._longPressTimer);
       this._longPressTimer = null;
     }
+  };
+
+  handleOnTouch = async () => {
+    if (!this.onTouch) return;
+    Sentry.withScope(async (scope) => {
+      scope.setTransaction(`panelkit.touch ${this.constructor.name}`);
+      const transaction = startTransaction({
+        name: `panelkit.touch ${this.constructor.name}`,
+        op: "tile.touch",
+        description: this.constructor.name,
+      });
+      this.onTouch && (await this.onTouch());
+      if (transaction) transaction.finish();
+    });
+  };
+
+  handleOnLongTouch = async () => {
+    if (!this.onLongTouch) return;
+    Sentry.withScope(async (scope) => {
+      scope.setTransaction(`panelkit.long-touch ${this.constructor.name}`);
+      const transaction = startTransaction({
+        name: `panelkit.long-touch ${this.constructor.name}`,
+        op: "tile.long-touch",
+        description: this.constructor.name,
+      });
+      this.onLongTouch && (await this.onLongTouch());
+      if (transaction) transaction.finish();
+    });
   };
 
   onTouch: (() => void) | null = null;
@@ -160,7 +190,7 @@ export default class Tile<
     return this.props.hass.getEntity(entityId);
   }
 
-  callService(
+  async callService(
     domain: string,
     service: string,
     serviceData: any,

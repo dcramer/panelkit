@@ -17,9 +17,9 @@ export default class SwitchTile extends Tile<SwitchTileProps> {
     }
   }
 
-  onTouch = () => {
+  onTouch = async () => {
     const { state } = this.getEntity(this.props.entityId);
-    this.callService(
+    await this.callService(
       "switch",
       state === "on" ? "turn_off" : "turn_on",
       {
